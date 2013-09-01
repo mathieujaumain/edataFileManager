@@ -1,0 +1,24 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:View="clr-namespace:AlterALB_DB.View" x:Class="EdataFileManager.MainWindow"
+        Title="MainWindow" Height="384" Width="746">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25*" />
+            <ColumnDefinition Width="75*" />
+        </Grid.ColumnDefinitions>
+        <DataGrid x:Name="dataGrid" Grid.Column="1" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" ItemsSource="{Binding Files}" IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="True" CanUserResizeRows="False" />
+        <TabControl HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" >
+            <TabItem Header="TabItem">
+                <Grid>
+                    <Button Content="Export NDF" HorizontalAlignment="Right" Margin="0,0,5,5" VerticalAlignment="Bottom" Width="127" Command="{Binding Path=ExportNdfCommand}" CommandParameter="{Binding SelectedValue, ElementName=dataGrid}"/>
+                    <Button Content="Export Raw/Texture" HorizontalAlignment="Right" Margin="0,0,5,32" VerticalAlignment="Bottom" Width="127" Command="{Binding ExportTextureCommand}" CommandParameter="{Binding SelectedValue, ElementName=dataGrid}"/>
+                </Grid>
+            </TabItem>
+            <!--<TabItem Header="TabItem">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>-->
+        </TabControl>
+    </Grid>
+</Window>
