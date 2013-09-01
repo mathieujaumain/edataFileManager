@@ -67,8 +67,7 @@
     <Compile Include="NdfBin\Model\NdfEntity.cs" />
     <Compile Include="NdfBin\Model\NdfFile.cs" />
     <Compile Include="NdfBin\Model\NdfFileContent.cs" />
-    <Compile Include="NdfBin\Model\NdfHeader.cs" />
-    <Compile Include="ViewModel\AlbModderViewModel.cs" />
+    <Compile Include="ViewModel\ManagerMainViewModel.cs" />
     <Compile Include="ViewModel\Base\ActionCommand.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
     <Compile Include="View\NdfFileView.xaml.cs">
