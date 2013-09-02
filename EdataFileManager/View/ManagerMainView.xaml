@@ -7,8 +7,21 @@
             <ColumnDefinition Width="25*" />
             <ColumnDefinition Width="75*" />
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="dataGrid" Grid.Column="1" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" ItemsSource="{Binding Files}" IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="True" CanUserResizeRows="False" />
-        <TabControl HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="22" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <Menu Grid.Row="0" Grid.ColumnSpan="2" IsMainMenu="True">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Command="{Binding Path=OpenFileCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Settings">
+                <MenuItem Header="Change export _path" Command="{Binding Path=ChangeExportPathCommand}" />
+            </MenuItem>
+        </Menu>
+        <DataGrid Grid.Row="1" x:Name="dataGrid" Grid.Column="1" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" ItemsSource="{Binding Files}" IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="True" CanUserResizeRows="False" />
+        <TabControl Grid.Row="1" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" >
             <TabItem Header="TabItem">
                 <Grid VerticalAlignment="Bottom">
                     <Grid.RowDefinitions>

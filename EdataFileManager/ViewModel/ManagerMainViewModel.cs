@@ -1,36 +1,49 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows.Forms;
 using System.Windows.Input;
 using EdataFileManager.NdfBin;
 using EdataFileManager.NdfBin.Model;
+using EdataFileManager.Settings;
 using EdataFileManager.ViewModel.Base;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace EdataFileManager.ViewModel
 {
     public class ManagerMainViewModel : ViewModelBase
     {
-        protected NdfBinManager NdfManager { get; set; }
+        private ObservableCollection<NdfFile> _files;
 
-        public ObservableCollection<NdfFile> Files { get; set; }
+        protected NdfBinManager NdfManager { get; set; }
 
         public ICommand ExportNdfCommand { get; set; }
         public ICommand ExportTextureCommand { get; set; }
+        public ICommand OpenFileCommand { get; set; }
+        public ICommand ChangeExportPathCommand { get; set; }
 
-        public string current_file {get; set; }
+        public string LoadedFile { get; set; }
 
-        public string export_path { get; set; }
-
+        public ObservableCollection<NdfFile> Files
+        {
+            get { return _files; }
+            set { _files = value; OnPropertyChanged(() => Files); }
+        }
 
         protected void ExportNdfExecute(object obj)
         {
-            
             var file = obj as NdfFile;
+
+            if (file == null)
+                return;
+
+            var settings = SettingsManager.Load();
 
             var content = NdfManager.GetNdfContent(file);
 
             var f = new FileInfo(file.Path);
 
-            using (var fs = new FileStream(export_path + f.Name, FileMode.OpenOrCreate))
+            using (var fs = new FileStream(Path.Combine(settings.SavePath, f.Name), FileMode.OpenOrCreate))
             {
                 fs.Write(content.Body, 0, content.Body.Length);
                 fs.Flush();
@@ -41,51 +54,24 @@ namespace EdataFileManager.ViewModel
         {
             var file = obj as NdfFile;
 
+            if (file == null)
+                return;
+
+            var settings = SettingsManager.Load();
+
             var buffer = NdfManager.GetRawData(file);
 
             var f = new FileInfo(file.Path);
 
-            using (var fs = new FileStream(export_path + f.Name, FileMode.OpenOrCreate))
+            using (var fs = new FileStream(Path.Combine(settings.SavePath , f.Name), FileMode.OpenOrCreate))
             {
                 fs.Write(buffer, 0, buffer.Length);
                 fs.Flush();
             }
         }
 
-        public ManagerMainViewModel()
+        protected void ExportAll()
         {
-            ExportNdfCommand = new ActionCommand(ExportNdfExecute);
-            ExportTextureCommand = new ActionCommand(ExportTextureExecute);
-
-
-            //@"E:\Programme\Steam\SteamApps\common\Wargame Airland Battle\Data\wargame\PC\2100001470\NDF_Win.dat"
-            export_path = @"D:\SCIENCE\";
-
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.FileName = @"D:\Steam\SteamApps\common\Wargame Airland Battle\Data\wargame\PC\2060001225\ZZ_3.dat";
-            dlg.DefaultExt = ".dat";
-            dlg.Filter = "Edat (.dat)|*.dat";
-
-            bool? result = dlg.ShowDialog();
-
-            if (result == true)
-            {
-                current_file = dlg.FileName;
-            }
-            else
-            {
-                current_file = @"D:\Steam\SteamApps\common\Wargame Airland Battle\Data\wargame\PC\2060001225\ZZ_3.dat";
-            }
-
-
-            NdfManager = new NdfBinManager(current_file);
-
-
-            NdfManager.ParseEdataFile();
-            Files = NdfManager.Files;
-
-
-
             //foreach (var file in Files)
             //{
             //    var f = new FileInfo(file.Path);
@@ -105,6 +91,64 @@ namespace EdataFileManager.ViewModel
             //}
         }
 
+        public ManagerMainViewModel()
+        {
+            ExportNdfCommand = new ActionCommand(ExportNdfExecute);
+            ExportTextureCommand = new ActionCommand(ExportTextureExecute);
+            OpenFileCommand = new ActionCommand(OpenFileExecute);
+            ChangeExportPathCommand = new ActionCommand(ChangeExportPathExecute);
 
+            var settings = SettingsManager.Load();
+
+            LoadedFile = settings.LastOpenedFile;
+
+            NdfManager = new NdfBinManager(LoadedFile);
+
+            NdfManager.ParseEdataFile();
+            Files = NdfManager.Files;
+        }
+
+        protected void ChangeExportPathExecute(object obj)
+        {
+            var settings = SettingsManager.Load();
+
+            var folderDlg = new FolderBrowserDialog
+            {
+                SelectedPath = settings.SavePath,
+                //RootFolder = Environment.SpecialFolder.MyComputer,
+                ShowNewFolderButton = true,
+            };
+
+            if (folderDlg.ShowDialog() == DialogResult.OK)
+            {
+                settings.SavePath = folderDlg.SelectedPath;
+                SettingsManager.Save(settings);
+            }
+
+        }
+
+        protected void OpenFileExecute(object obj)
+        {
+            var settings = SettingsManager.Load();
+
+            var openfDlg = new OpenFileDialog
+            {
+                FileName = settings.LastOpenedFile,
+                DefaultExt = ".dat",
+                Multiselect = false,
+                Filter = "Edat (.dat)|*.dat"
+            };
+
+            if (openfDlg.ShowDialog().Value)
+            {
+                settings.LastOpenedFile = openfDlg.FileName;
+                SettingsManager.Save(settings);
+            }
+
+            NdfManager.FilePath = settings.LastOpenedFile;
+
+            NdfManager.ParseEdataFile();
+            Files = NdfManager.Files;
+        }
     }
 }

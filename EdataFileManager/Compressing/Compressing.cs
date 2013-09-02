@@ -10,7 +10,6 @@ namespace EdataFileManager.Compressing
         {
             try
             {
-
                 using (var output = new MemoryStream())
                 {
                     using (var zipStream = new ZOutputStream(output))
@@ -32,7 +31,8 @@ namespace EdataFileManager.Compressing
             }
             catch (Exception ex)
             {
-                return null;
+                // TODO: logging
+                return new byte[0];
             }
         }
     }

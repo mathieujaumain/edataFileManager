@@ -43,6 +43,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -67,6 +68,8 @@
     <Compile Include="NdfBin\Model\NdfEntity.cs" />
     <Compile Include="NdfBin\Model\NdfFile.cs" />
     <Compile Include="NdfBin\Model\NdfFileContent.cs" />
+    <Compile Include="Settings\SettingsManager.cs" />
+    <Compile Include="Settings\Settings.cs" />
     <Compile Include="ViewModel\ManagerMainViewModel.cs" />
     <Compile Include="ViewModel\Base\ActionCommand.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
