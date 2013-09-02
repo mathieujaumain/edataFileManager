@@ -77,11 +77,9 @@ namespace EdataFileManager.ViewModel
                 current_file = @"D:\Steam\SteamApps\common\Wargame Airland Battle\Data\wargame\PC\2060001225\ZZ_3.dat";
             }
 
-<<<<<<< HEAD
-            NdfManager = new NdfBinManager(@"E:\Programme\Steam\SteamApps\common\Wargame Airland Battle\Data\wargame\PC\2100001470\NDF_Win.dat");
-=======
+
             NdfManager = new NdfBinManager(current_file);
->>>>>>> c6ee8ff2f23d939334c107e6013bb9db72f0888f
+
 
             NdfManager.ParseEdataFile();
             Files = NdfManager.Files;
