@@ -89,9 +89,9 @@ namespace EdataFileManager.NdfBin
             {
                 ms.Seek(16, SeekOrigin.Begin);
                 var buffer = new byte[4];
-                
+
                 ms.Read(buffer, 0, 4);
-                fileContent.BlockSize = BitConverter.ToInt32(buffer,0);
+                fileContent.BlockSize = BitConverter.ToInt32(buffer, 0);
 
                 ms.Seek(12, SeekOrigin.Current);
 
@@ -104,7 +104,7 @@ namespace EdataFileManager.NdfBin
 
                 fileContent.BlockSizeWithoutHeader = BitConverter.ToInt32(buffer, 0);
 
-                buffer = new byte[f.Size-44];
+                buffer = new byte[f.Size - 44];
 
                 ms.Read(buffer, 0, buffer.Length);
                 fileContent.Body = Compressing.Compressing.Decomp(buffer);
