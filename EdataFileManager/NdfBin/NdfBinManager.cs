@@ -16,7 +16,7 @@ namespace EdataFileManager.NdfBin
         public string FilePath
         {
             get;
-            set;
+            protected set;
         }
 
         public EdatHeader Header

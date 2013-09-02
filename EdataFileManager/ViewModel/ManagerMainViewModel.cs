@@ -15,12 +15,12 @@ namespace EdataFileManager.ViewModel
     {
         private ObservableCollection<NdfFile> _files;
 
-        protected NdfBinManager NdfManager { get; set; }
-
         public ICommand ExportNdfCommand { get; set; }
         public ICommand ExportTextureCommand { get; set; }
         public ICommand OpenFileCommand { get; set; }
         public ICommand ChangeExportPathCommand { get; set; }
+
+        protected NdfBinManager NdfManager { get; set; }
 
         public string LoadedFile { get; set; }
 
@@ -28,6 +28,26 @@ namespace EdataFileManager.ViewModel
         {
             get { return _files; }
             set { _files = value; OnPropertyChanged(() => Files); }
+        }
+
+        public ManagerMainViewModel()
+        {
+            InitializeCommands();
+
+            var settings = SettingsManager.Load();
+
+            var fileInfo = new FileInfo(settings.LastOpenedFile);
+
+            if (fileInfo.Exists)
+                LoadFile(fileInfo.FullName);
+        }
+
+        protected void InitializeCommands()
+        {
+            ExportNdfCommand = new ActionCommand(ExportNdfExecute);
+            ExportTextureCommand = new ActionCommand(ExportTextureExecute);
+            OpenFileCommand = new ActionCommand(OpenFileExecute);
+            ChangeExportPathCommand = new ActionCommand(ChangeExportPathExecute);
         }
 
         protected void ExportNdfExecute(object obj)
@@ -63,7 +83,7 @@ namespace EdataFileManager.ViewModel
 
             var f = new FileInfo(file.Path);
 
-            using (var fs = new FileStream(Path.Combine(settings.SavePath , f.Name), FileMode.OpenOrCreate))
+            using (var fs = new FileStream(Path.Combine(settings.SavePath, f.Name), FileMode.OpenOrCreate))
             {
                 fs.Write(buffer, 0, buffer.Length);
                 fs.Flush();
@@ -89,23 +109,6 @@ namespace EdataFileManager.ViewModel
             //    }
 
             //}
-        }
-
-        public ManagerMainViewModel()
-        {
-            ExportNdfCommand = new ActionCommand(ExportNdfExecute);
-            ExportTextureCommand = new ActionCommand(ExportTextureExecute);
-            OpenFileCommand = new ActionCommand(OpenFileExecute);
-            ChangeExportPathCommand = new ActionCommand(ChangeExportPathExecute);
-
-            var settings = SettingsManager.Load();
-
-            LoadedFile = settings.LastOpenedFile;
-
-            NdfManager = new NdfBinManager(LoadedFile);
-
-            NdfManager.ParseEdataFile();
-            Files = NdfManager.Files;
         }
 
         protected void ChangeExportPathExecute(object obj)
@@ -145,7 +148,14 @@ namespace EdataFileManager.ViewModel
                 SettingsManager.Save(settings);
             }
 
-            NdfManager.FilePath = settings.LastOpenedFile;
+            LoadFile(settings.LastOpenedFile);
+        }
+
+        protected void LoadFile(string path)
+        {
+            NdfManager = new NdfBinManager(path);
+
+            LoadedFile = NdfManager.FilePath;
 
             NdfManager.ParseEdataFile();
             Files = NdfManager.Files;
