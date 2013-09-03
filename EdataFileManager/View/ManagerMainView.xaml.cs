@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Data;
 using EdataFileManager.ViewModel;
 
 namespace EdataFileManager
@@ -13,5 +14,6 @@ namespace EdataFileManager
             InitializeComponent();
             DataContext = new ManagerMainViewModel();
         }
+
     }
 }

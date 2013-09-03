@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using EdataFileManager.NdfBin;
@@ -15,6 +19,8 @@ namespace EdataFileManager.ViewModel
     public class ManagerMainViewModel : ViewModelBase
     {
         private ObservableCollection<NdfFile> _files;
+        private string _filterExpression = string.Empty;
+        private ICollectionView _filesCollectionView;
 
         public ICommand ExportNdfCommand { get; set; }
         public ICommand ExportTextureCommand { get; set; }
@@ -29,7 +35,37 @@ namespace EdataFileManager.ViewModel
         public ObservableCollection<NdfFile> Files
         {
             get { return _files; }
-            set { _files = value; OnPropertyChanged(() => Files); }
+            set
+            {
+                _files = value;
+                OnPropertyChanged(() => Files);
+            }
+        }
+
+        public ICollectionView FilesCollectionView
+        {
+            get
+            {
+                if (_filesCollectionView == null)
+                {
+                    _filesCollectionView = CollectionViewSource.GetDefaultView(Files);
+                    _filesCollectionView.Filter = FilterPath;
+                }
+
+                return _filesCollectionView;
+            }
+
+        }
+
+        public string FilterExpression
+        {
+            get { return _filterExpression; }
+            set
+            {
+                _filterExpression = value;
+                OnPropertyChanged(() => FilterExpression);
+                FilesCollectionView.Refresh();
+            }
         }
 
         public ManagerMainViewModel()
@@ -62,7 +98,7 @@ namespace EdataFileManager.ViewModel
 
             var vm = new NdfDetailsViewModel(file, EdataManager);
 
-            var view = new NdfDetailView {DataContext = vm};
+            var view = new NdfDetailView { DataContext = vm };
 
             view.Show();
         }
@@ -133,11 +169,11 @@ namespace EdataFileManager.ViewModel
             var settings = SettingsManager.Load();
 
             var folderDlg = new FolderBrowserDialog
-            {
-                SelectedPath = settings.SavePath,
-                //RootFolder = Environment.SpecialFolder.MyComputer,
-                ShowNewFolderButton = true,
-            };
+                                {
+                                    SelectedPath = settings.SavePath,
+                                    //RootFolder = Environment.SpecialFolder.MyComputer,
+                                    ShowNewFolderButton = true,
+                                };
 
             if (folderDlg.ShowDialog() == DialogResult.OK)
             {
@@ -152,12 +188,12 @@ namespace EdataFileManager.ViewModel
             var settings = SettingsManager.Load();
 
             var openfDlg = new OpenFileDialog
-            {
-                FileName = settings.LastOpenedFile,
-                DefaultExt = ".dat",
-                Multiselect = false,
-                Filter = "Edat (.dat)|*.dat"
-            };
+                               {
+                                   FileName = settings.LastOpenedFile,
+                                   DefaultExt = ".dat",
+                                   Multiselect = false,
+                                   Filter = "Edat (.dat)|*.dat"
+                               };
 
             if (openfDlg.ShowDialog().Value)
             {
@@ -176,6 +212,19 @@ namespace EdataFileManager.ViewModel
 
             EdataManager.ParseEdataFile();
             Files = EdataManager.Files;
+        }
+
+
+        public bool FilterPath(object item)
+        {
+            var file = item as NdfFile;
+
+            if (file == null || FilterExpression == string.Empty || FilterExpression.Length < 3)
+            {
+                return true;
+            }
+
+            return file.Path.Contains(FilterExpression);
         }
     }
 }
