@@ -14,6 +14,9 @@ namespace EdataFileManager.NdfBin
         public byte[] Data { get; set; }
         public NdfbinFooter Footer { get; protected set; }
         public ObservableCollection<NdfbinClass> Classes { get; set; }
+        public ObservableCollection<NdfbinString> Strings { get; set; }
+        public ObservableCollection<NdfbinTran> Trans { get; set; }
+
 
         public NdfbinManager(byte[] data)
         {
@@ -25,6 +28,71 @@ namespace EdataFileManager.NdfBin
             ReadFooter();
             ReadClasses();
             ReadProperties();
+
+            ReadStrings();
+            ReadTrans();
+        }
+
+        protected void ReadTrans()
+        {
+            var trans = new ObservableCollection<NdfbinTran>();
+
+            var stringEntry = Footer.Entries.Single(x => x.Name == "TRAN");
+
+            //TODO: int cast is a bit too hacky here, solution needed
+            using (var ms = new MemoryStream(Data, (int)stringEntry.Offset - 40, (int)stringEntry.Size))
+            {
+                int i = 0;
+                var buffer = new byte[4];
+                while (ms.Position < ms.Length)
+                {
+                    var ntran = new NdfbinTran { Offset = ms.Position, Id = i };
+
+                    ms.Read(buffer, 0, buffer.Length);
+                    var strLen = BitConverter.ToInt32(buffer, 0);
+
+                    var strBuffer = new byte[strLen];
+                    ms.Read(strBuffer, 0, strBuffer.Length);
+
+                    ntran.Value = Encoding.GetEncoding("ISO-8859-1").GetString(strBuffer);
+
+                    i++;
+                    trans.Add(ntran);
+                }
+            }
+
+            Trans = trans;
+        }
+
+        protected void ReadStrings()
+        {
+            var strings = new ObservableCollection<NdfbinString>();
+
+            var stringEntry = Footer.Entries.Single(x => x.Name == "STRG");
+
+            //TODO: int cast is a bit too hacky here, solution needed
+            using (var ms = new MemoryStream(Data, (int)stringEntry.Offset - 40, (int)stringEntry.Size))
+            {
+                int i = 0;
+                var buffer = new byte[4];
+                while (ms.Position < ms.Length)
+                {
+                    var nstring = new NdfbinString { Offset = ms.Position, Id = i };
+
+                    ms.Read(buffer, 0, buffer.Length);
+                    var strLen = BitConverter.ToInt32(buffer, 0);
+
+                    var strBuffer = new byte[strLen];
+                    ms.Read(strBuffer, 0, strBuffer.Length);
+
+                    nstring.Value = Encoding.GetEncoding("ISO-8859-1").GetString(strBuffer);
+
+                    i++;
+                    strings.Add(nstring);
+                }
+            }
+
+            Strings = strings;
         }
 
         protected void ReadProperties()

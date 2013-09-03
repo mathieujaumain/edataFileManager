@@ -72,6 +72,8 @@
     <Compile Include="NdfBin\Model\Ndfbin\NdfbinFooter.cs" />
     <Compile Include="NdfBin\Model\Ndfbin\NdfbinFooterEntry.cs" />
     <Compile Include="NdfBin\Model\Ndfbin\NdfbinProperty.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\NdfbinString.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\NdfbinTran.cs" />
     <Compile Include="NdfBin\NdfbinManager.cs" />
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\Settings.cs" />
