@@ -42,19 +42,31 @@ namespace EdataFileManager.ViewModel
             }
         }
 
+        public string TitleText
+        {
+            get { return string.Format("Edata File Manager [{0}]", EdataManager.FilePath); }
+        }
+
         public ICollectionView FilesCollectionView
         {
             get
             {
                 if (_filesCollectionView == null)
                 {
-                    _filesCollectionView = CollectionViewSource.GetDefaultView(Files);
-                    _filesCollectionView.Filter = FilterPath;
+                    CreateFilesCollectionView();
                 }
 
                 return _filesCollectionView;
             }
 
+        }
+
+        private void CreateFilesCollectionView()
+        {
+            _filesCollectionView = CollectionViewSource.GetDefaultView(Files);
+            _filesCollectionView.Filter = FilterPath;
+
+            OnPropertyChanged(() => FilesCollectionView);
         }
 
         public string FilterExpression
@@ -91,7 +103,7 @@ namespace EdataFileManager.ViewModel
 
         protected void ViewNdfContentExecute(object obj)
         {
-            var file = obj as NdfFile;
+            var file = FilesCollectionView.CurrentItem as NdfFile;
 
             if (file == null)
                 return;
@@ -105,7 +117,7 @@ namespace EdataFileManager.ViewModel
 
         protected void ExportNdfExecute(object obj)
         {
-            var file = obj as NdfFile;
+            var file = FilesCollectionView.CurrentItem as NdfFile;
 
             if (file == null)
                 return;
@@ -125,7 +137,7 @@ namespace EdataFileManager.ViewModel
 
         protected void ExportTextureExecute(object obj)
         {
-            var file = obj as NdfFile;
+            var file = FilesCollectionView.CurrentItem as NdfFile;
 
             if (file == null)
                 return;
@@ -212,6 +224,9 @@ namespace EdataFileManager.ViewModel
 
             EdataManager.ParseEdataFile();
             Files = EdataManager.Files;
+            CreateFilesCollectionView();
+
+            OnPropertyChanged(() => TitleText);
         }
 
 
