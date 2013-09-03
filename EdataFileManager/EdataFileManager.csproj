@@ -64,17 +64,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="NdfBin\Model\NdfDir.cs" />
-    <Compile Include="NdfBin\Model\NdfEntity.cs" />
-    <Compile Include="NdfBin\Model\NdfFile.cs" />
-    <Compile Include="NdfBin\Model\NdfFileContent.cs" />
+    <Compile Include="NdfBin\Model\Edata\NdfDir.cs" />
+    <Compile Include="NdfBin\Model\Edata\NdfEntity.cs" />
+    <Compile Include="NdfBin\Model\Edata\NdfFile.cs" />
+    <Compile Include="NdfBin\Model\Edata\NdfFileContent.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\NdfbinClass.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\NdfbinFooter.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\NdfbinFooterEntry.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\NdfbinProperty.cs" />
+    <Compile Include="NdfBin\NdfbinManager.cs" />
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Util\Utils.cs" />
     <Compile Include="ViewModel\ManagerMainViewModel.cs" />
     <Compile Include="ViewModel\Base\ActionCommand.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
-    <Compile Include="View\NdfFileView.xaml.cs">
-      <DependentUpon>NdfFileView.xaml</DependentUpon>
+    <Compile Include="ViewModel\NdfDetailsViewModel.cs" />
+    <Compile Include="View\NdfDetailView.xaml.cs">
+      <DependentUpon>NdfDetailView.xaml</DependentUpon>
     </Compile>
     <Page Include="View\ManagerMainView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -89,14 +96,14 @@
       <DependentUpon>ManagerMainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\NdfFileView.xaml">
+    <Page Include="View\NdfDetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NdfBin\Model\EdatHeader.cs" />
-    <Compile Include="NdfBin\NdfBinManager.cs" />
+    <Compile Include="NdfBin\Model\Edata\EdataHeader.cs" />
+    <Compile Include="NdfBin\EdataManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

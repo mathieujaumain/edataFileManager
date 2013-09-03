@@ -27,9 +27,11 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    <Button Grid.Row="0" Content="NDF Content" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Bottom" Width="127" Command="{Binding Path=ViewNdfContentCommand}" CommandParameter="{Binding SelectedValue, ElementName=dataGrid}"/>
                     <Button Grid.Row="1" Content="Export NDF" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Bottom" Width="127" Command="{Binding Path=ExportNdfCommand}" CommandParameter="{Binding SelectedValue, ElementName=dataGrid}"/>
-                    <Button Grid.Row="0" Content="Export Raw/Texture" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Bottom" Width="127" Command="{Binding ExportTextureCommand}" CommandParameter="{Binding SelectedValue, ElementName=dataGrid}"/>
+                    <Button Grid.Row="2" Content="Export Raw/Texture" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Bottom" Width="127" Command="{Binding ExportTextureCommand}" CommandParameter="{Binding SelectedValue, ElementName=dataGrid}"/>
                 </Grid>
             </TabItem>
             <!--<TabItem Header="TabItem">

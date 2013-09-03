@@ -6,6 +6,7 @@ using System.Windows.Input;
 using EdataFileManager.NdfBin;
 using EdataFileManager.NdfBin.Model;
 using EdataFileManager.Settings;
+using EdataFileManager.View;
 using EdataFileManager.ViewModel.Base;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
@@ -19,8 +20,9 @@ namespace EdataFileManager.ViewModel
         public ICommand ExportTextureCommand { get; set; }
         public ICommand OpenFileCommand { get; set; }
         public ICommand ChangeExportPathCommand { get; set; }
+        public ICommand ViewNdfContentCommand { get; set; }
 
-        protected NdfBinManager NdfManager { get; set; }
+        protected EdataManager EdataManager { get; set; }
 
         public string LoadedFile { get; set; }
 
@@ -48,6 +50,21 @@ namespace EdataFileManager.ViewModel
             ExportTextureCommand = new ActionCommand(ExportTextureExecute);
             OpenFileCommand = new ActionCommand(OpenFileExecute);
             ChangeExportPathCommand = new ActionCommand(ChangeExportPathExecute);
+            ViewNdfContentCommand = new ActionCommand(ViewNdfContentExecute);
+        }
+
+        protected void ViewNdfContentExecute(object obj)
+        {
+            var file = obj as NdfFile;
+
+            if (file == null)
+                return;
+
+            var vm = new NdfDetailsViewModel(file, EdataManager);
+
+            var view = new NdfDetailView {DataContext = vm};
+
+            view.Show();
         }
 
         protected void ExportNdfExecute(object obj)
@@ -59,7 +76,7 @@ namespace EdataFileManager.ViewModel
 
             var settings = SettingsManager.Load();
 
-            var content = NdfManager.GetNdfContent(file);
+            var content = EdataManager.GetNdfContent(file);
 
             var f = new FileInfo(file.Path);
 
@@ -79,7 +96,7 @@ namespace EdataFileManager.ViewModel
 
             var settings = SettingsManager.Load();
 
-            var buffer = NdfManager.GetRawData(file);
+            var buffer = EdataManager.GetRawData(file);
 
             var f = new FileInfo(file.Path);
 
@@ -153,12 +170,12 @@ namespace EdataFileManager.ViewModel
 
         protected void LoadFile(string path)
         {
-            NdfManager = new NdfBinManager(path);
+            EdataManager = new EdataManager(path);
 
-            LoadedFile = NdfManager.FilePath;
+            LoadedFile = EdataManager.FilePath;
 
-            NdfManager.ParseEdataFile();
-            Files = NdfManager.Files;
+            EdataManager.ParseEdataFile();
+            Files = EdataManager.Files;
         }
     }
 }

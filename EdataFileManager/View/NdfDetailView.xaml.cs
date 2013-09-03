@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,17 +9,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AlterALB_DB.View
+namespace EdataFileManager.View
 {
     /// <summary>
-    /// Interaction logic for NdfFileView.xaml
+    /// Interaction logic for NdfDetailView.xaml
     /// </summary>
-    public partial class NdfFileView : UserControl
+    public partial class NdfDetailView : Window
     {
-        public NdfFileView()
+        public NdfDetailView()
         {
             InitializeComponent();
         }
