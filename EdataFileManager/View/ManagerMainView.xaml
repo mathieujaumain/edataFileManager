@@ -5,9 +5,10 @@
         x:Class="EdataFileManager.View.MainWindow"
         Height="468" Width="902" Title="Edata File Manager">
     <Window.Resources>
+        <BitmapImage UriSource="\View\Images\about-26.png" x:Key="AboutIcon" />
         <BitmapImage UriSource="\View\Images\reuse-26.png" x:Key="ExtractRawIcon" />
         <BitmapImage UriSource="\View\Images\open_in_browser-26.png" x:Key="OpenDetailsIcon" />
-        <BitmapImage UriSource="\View\Images\play-26.png" x:Key="OpenMovieIcon" />
+        <BitmapImage UriSource="\View\Images\play-26.png" x:Key="OpenMovieIcon" />        
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -41,6 +42,9 @@
             </Button>
             <Button ToolTip="View Wmv file" Command="{Binding PlayMovieCommand}" >
                 <Image Source="{StaticResource OpenMovieIcon}" />
+            </Button>
+            <Button ToolTip="About" Command="{Binding AboutUsCommand}" >
+                <Image Source="{StaticResource AboutIcon}" />
             </Button>
 
 

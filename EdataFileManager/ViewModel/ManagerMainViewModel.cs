@@ -25,6 +25,7 @@ namespace EdataFileManager.ViewModel
         public ICommand ChangeExportPathCommand { get; set; }
         public ICommand ViewContentCommand { get; set; }
         public ICommand PlayMovieCommand { get; set; }
+        public ICommand AboutUsCommand { get; set; }
 
         public ObservableCollection<EdataFileViewModel> OpenFiles
         {
@@ -82,6 +83,8 @@ namespace EdataFileManager.ViewModel
             OpenFileCommand = new ActionCommand(OpenFileExecute);
             CloseFileCommand = new ActionCommand(CloseFileExecute);
             PlayMovieCommand = new ActionCommand(PlayMovieExecute);
+
+            AboutUsCommand = new ActionCommand(AboutUsExecute);
 
             ChangeExportPathCommand = new ActionCommand(ChangeExportPathExecute);
             ViewContentCommand = new ActionCommand(ViewContentExecute);
@@ -248,6 +251,12 @@ namespace EdataFileManager.ViewModel
             var view = new movie_playback { DataContext = detailsVm };
 
             view.Show();
+        }
+
+        protected void AboutUsExecute(object obj)
+        {
+            //TOOD: MAKE IT MORE PROPER.
+            MessageBox.Show("EdataFileManager V.0.0.0.0.1\nMade by enohka with contributions from Kamrat Roger\nThanks to Wargame:EE DAT Unpacker by Giovanni Condello \n Uses Icon8 link: http://icons8.com/license/");
         }
     }
 }
