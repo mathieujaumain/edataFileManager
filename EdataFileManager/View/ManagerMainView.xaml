@@ -7,7 +7,6 @@
     <Window.Resources>
         <BitmapImage UriSource="\View\Images\reuse-26.png" x:Key="ExtractRawIcon" />
         <BitmapImage UriSource="\View\Images\open_in_browser-26.png" x:Key="OpenDetailsIcon" />
-
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -23,6 +22,9 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_Open" Command="{Binding Path=OpenFileCommand}" />
                 <MenuItem Header="_Close" Command="{Binding Path=CloseFileCommand}" />
+                <Separator />
+                <MenuItem Header="_Close" Command="{Binding Path=CloseFileCommand}" />
+
             </MenuItem>
             <MenuItem Header="_Settings">
                 <MenuItem Header="Change export _path" Command="{Binding Path=ChangeExportPathCommand}" />
@@ -51,8 +53,6 @@
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
-
-
 
         <!--<TabControl Grid.Row="1" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" >
             <TabItem Header="Actions">

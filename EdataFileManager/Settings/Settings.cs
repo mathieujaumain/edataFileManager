@@ -1,11 +1,13 @@
-﻿using EdataFileManager.ViewModel.Base;
+﻿using System.Collections.Generic;
+using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.Settings
 {
     public class Settings : ViewModelBase
     {
-        private string _lastOpenedFile = @"C:\";
+        private List<string> _lastOpenedFile = new List<string>();
         private string _savePath = @"C:\";
+        private string _lastOpenFolder = @"C:\";
 
         public string SavePath
         {
@@ -17,14 +19,20 @@ namespace EdataFileManager.Settings
             }
         }
 
-        public string LastOpenedFile
+        public List<string> LastOpenedFiles
         {
             get { return _lastOpenedFile; }
             set
             {
                 _lastOpenedFile = value;
-                OnPropertyChanged(() => LastOpenedFile);
+                OnPropertyChanged(() => LastOpenedFiles);
             }
+        }
+
+        public string LastOpenFolder
+        {
+            get { return _lastOpenFolder; }
+            set { _lastOpenFolder = value; }
         }
     }
 }

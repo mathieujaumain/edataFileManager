@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -35,12 +36,25 @@ namespace EdataFileManager.ViewModel
 
             Settings.Settings settings = SettingsManager.Load();
 
-            var fileInfo = new FileInfo(settings.LastOpenedFile);
+            foreach (var file in settings.LastOpenedFiles)
+            {
+                var fileInfo = new FileInfo(file);
 
-            if (fileInfo.Exists)
-                AddFile(fileInfo.FullName);
+                if (fileInfo.Exists)
+                    AddFile(fileInfo.FullName);
+            }
 
             CollectionViewSource.GetDefaultView(OpenFiles).MoveCurrentToFirst();
+
+            OpenFiles.CollectionChanged += OpenFilesCollectionChanged;
+        }
+
+        protected void OpenFilesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            var set = SettingsManager.Load();
+            set.LastOpenedFiles.Clear();
+            set.LastOpenedFiles.AddRange(OpenFiles.Select(x => x.LoadedFile).ToList());
+            SettingsManager.Save(set);
         }
 
         public void AddFile(string path)
@@ -180,17 +194,20 @@ namespace EdataFileManager.ViewModel
 
             var openfDlg = new OpenFileDialog
                                {
-                                   FileName = settings.LastOpenedFile,
+                                   InitialDirectory = settings.LastOpenFolder,
                                    DefaultExt = ".dat",
-                                   Multiselect = false,
+                                   Multiselect = true,
                                    Filter = "Edat (.dat)|*.dat|All Files|*.*"
                                };
 
             if (openfDlg.ShowDialog().Value)
             {
-                settings.LastOpenedFile = openfDlg.FileName;
+                settings.LastOpenFolder = new FileInfo(openfDlg.FileName).DirectoryName;
                 SettingsManager.Save(settings);
-                AddFile(settings.LastOpenedFile);
+                foreach (var fileName in openfDlg.FileNames)
+                {
+                    AddFile(fileName);
+                }
             }
         }
 
