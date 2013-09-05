@@ -32,8 +32,8 @@
         </Menu>
 
         <ToolBar Grid.Row="1">
-            <Button ToolTip="Export raw data" >
-                <Image Source="{StaticResource ExtractRawIcon}" />
+            <Button ToolTip="Export raw data" Command="{Binding Path=ExportRawCommand}">
+                <Image Source="{StaticResource ExtractRawIcon}"  />
             </Button>
             <Button ToolTip="View Ndf file" Command="{Binding ViewContentCommand}" >
                 <Image Source="{StaticResource OpenDetailsIcon}" />
