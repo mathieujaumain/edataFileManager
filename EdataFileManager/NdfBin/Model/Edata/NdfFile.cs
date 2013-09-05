@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace EdataFileManager.NdfBin.Model
+namespace EdataFileManager.NdfBin.Model.Edata
 {
     /// <summary>
     /// The reversed struct from Hex Workshop - much love to Hob_gadling for his hard work and help.

@@ -1,8 +1,7 @@
 ﻿using System.Windows;
-using System.Windows.Data;
 using EdataFileManager.ViewModel;
 
-namespace EdataFileManager
+namespace EdataFileManager.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

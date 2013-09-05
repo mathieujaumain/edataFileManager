@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using EdataFileManager.NdfBin;
-using EdataFileManager.NdfBin.Model;
+using EdataFileManager.NdfBin.Model.Edata;
 using EdataFileManager.Settings;
 using EdataFileManager.View;
 using EdataFileManager.ViewModel.Base;
@@ -19,8 +16,20 @@ namespace EdataFileManager.ViewModel
     public class ManagerMainViewModel : ViewModelBase
     {
         private ObservableCollection<NdfFile> _files;
-        private string _filterExpression = string.Empty;
         private ICollectionView _filesCollectionView;
+        private string _filterExpression = string.Empty;
+
+        public ManagerMainViewModel()
+        {
+            InitializeCommands();
+
+            Settings.Settings settings = SettingsManager.Load();
+
+            var fileInfo = new FileInfo(settings.LastOpenedFile);
+
+            if (fileInfo.Exists)
+                LoadFile(fileInfo.FullName);
+        }
 
         public ICommand ExportNdfCommand { get; set; }
         public ICommand ExportTextureCommand { get; set; }
@@ -60,14 +69,6 @@ namespace EdataFileManager.ViewModel
             }
         }
 
-        private void CreateFilesCollectionView()
-        {
-            _filesCollectionView = CollectionViewSource.GetDefaultView(Files);
-            _filesCollectionView.Filter = FilterPath;
-
-            OnPropertyChanged(() => FilesCollectionView);
-        }
-
         public string FilterExpression
         {
             get { return _filterExpression; }
@@ -79,16 +80,12 @@ namespace EdataFileManager.ViewModel
             }
         }
 
-        public ManagerMainViewModel()
+        private void CreateFilesCollectionView()
         {
-            InitializeCommands();
+            _filesCollectionView = CollectionViewSource.GetDefaultView(Files);
+            _filesCollectionView.Filter = FilterPath;
 
-            var settings = SettingsManager.Load();
-
-            var fileInfo = new FileInfo(settings.LastOpenedFile);
-
-            if (fileInfo.Exists)
-                LoadFile(fileInfo.FullName);
+            OnPropertyChanged(() => FilesCollectionView);
         }
 
         protected void InitializeCommands()
@@ -109,7 +106,7 @@ namespace EdataFileManager.ViewModel
 
             var vm = new NdfDetailsViewModel(file, EdataManager);
 
-            var view = new NdfDetailView { DataContext = vm };
+            var view = new NdfDetailView {DataContext = vm};
 
             view.Show();
         }
@@ -121,9 +118,9 @@ namespace EdataFileManager.ViewModel
             if (file == null)
                 return;
 
-            var settings = SettingsManager.Load();
+            Settings.Settings settings = SettingsManager.Load();
 
-            var content = EdataManager.GetNdfContent(file);
+            NdfFileContent content = EdataManager.GetNdfContent(file);
 
             var f = new FileInfo(file.Path);
 
@@ -141,9 +138,9 @@ namespace EdataFileManager.ViewModel
             if (file == null)
                 return;
 
-            var settings = SettingsManager.Load();
+            Settings.Settings settings = SettingsManager.Load();
 
-            var buffer = EdataManager.GetRawData(file);
+            byte[] buffer = EdataManager.GetRawData(file);
 
             var f = new FileInfo(file.Path);
 
@@ -177,7 +174,7 @@ namespace EdataFileManager.ViewModel
 
         protected void ChangeExportPathExecute(object obj)
         {
-            var settings = SettingsManager.Load();
+            Settings.Settings settings = SettingsManager.Load();
 
             var folderDlg = new FolderBrowserDialog
                                 {
@@ -191,12 +188,11 @@ namespace EdataFileManager.ViewModel
                 settings.SavePath = folderDlg.SelectedPath;
                 SettingsManager.Save(settings);
             }
-
         }
 
         protected void OpenFileExecute(object obj)
         {
-            var settings = SettingsManager.Load();
+            Settings.Settings settings = SettingsManager.Load();
 
             var openfDlg = new OpenFileDialog
                                {
@@ -227,7 +223,6 @@ namespace EdataFileManager.ViewModel
 
             OnPropertyChanged(() => TitleText);
         }
-
 
         public bool FilterPath(object item)
         {

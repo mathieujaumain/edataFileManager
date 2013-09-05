@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using EdataFileManager.NdfBin.Model;
 using EdataFileManager.NdfBin.Model.Edata;
 using EdataFileManager.Util;
 
@@ -15,28 +14,16 @@ namespace EdataFileManager.NdfBin
     /// </summary>
     public class EdataManager
     {
-        public string FilePath
-        {
-            get;
-            protected set;
-        }
-
-        public EdataHeader Header
-        {
-            get;
-            set;
-        }
-
-        public ObservableCollection<NdfFile> Files
-        {
-            get;
-            set;
-        }
-
         public EdataManager(string filePath)
         {
             FilePath = filePath;
         }
+
+        public string FilePath { get; protected set; }
+
+        public EdataHeader Header { get; set; }
+
+        public ObservableCollection<NdfFile> Files { get; set; }
 
         public void ParseEdataFile()
         {
@@ -49,11 +36,11 @@ namespace EdataFileManager.NdfBin
             //}
         }
 
-        public NdfFileContent GetNdfContent(NdfFile f)  //async Task<NdfFileContent> GetNdfContent(NdfFile f)
+        public NdfFileContent GetNdfContent(NdfFile f) //async Task<NdfFileContent> GetNdfContent(NdfFile f)
         {
             byte[] buffer;
 
-            using (var fs = File.Open(FilePath, FileMode.Open))
+            using (FileStream fs = File.Open(FilePath, FileMode.Open))
             {
                 long offset = Header.FileOffset + f.Offset;
 
@@ -71,7 +58,7 @@ namespace EdataFileManager.NdfBin
         {
             byte[] buffer;
 
-            using (var fs = File.Open(FilePath, FileMode.Open))
+            using (FileStream fs = File.Open(FilePath, FileMode.Open))
             {
                 long offset = Header.FileOffset + f.Offset;
                 fs.Seek(offset, SeekOrigin.Begin);
@@ -125,7 +112,7 @@ namespace EdataFileManager.NdfBin
             var dirs = new List<NdfDir>();
             var endings = new List<long>();
 
-            using (var fileStream = File.Open(FilePath, FileMode.Open))
+            using (FileStream fileStream = File.Open(FilePath, FileMode.Open))
             {
                 fileStream.Seek(Header.DirOffset, SeekOrigin.Begin);
 
@@ -157,7 +144,7 @@ namespace EdataFileManager.NdfBin
                         file.Name = Utils.ReadString(fileStream);
                         file.Path = MergePath(dirs, file.Name);
 
-                        if ((file.Name.Length + 1) % 2 == 1)
+                        if ((file.Name.Length + 1)%2 == 1)
                             fileStream.Seek(1, SeekOrigin.Current);
 
                         files.Add(file);
@@ -182,7 +169,7 @@ namespace EdataFileManager.NdfBin
 
                         dir.Name = Utils.ReadString(fileStream);
 
-                        if ((dir.Name.Length + 1) % 2 == 1)
+                        if ((dir.Name.Length + 1)%2 == 1)
                             fileStream.Seek(1, SeekOrigin.Current);
 
                         dirs.Add(dir);
@@ -196,7 +183,7 @@ namespace EdataFileManager.NdfBin
         {
             var b = new StringBuilder();
 
-            foreach (var dir in dirs)
+            foreach (NdfDir dir in dirs)
                 b.Append(dir.Name);
 
             b.Append(p);
@@ -208,7 +195,7 @@ namespace EdataFileManager.NdfBin
         {
             var header = new EdataHeader();
 
-            using (var fileStream = File.Open(FilePath, FileMode.Open))
+            using (FileStream fileStream = File.Open(FilePath, FileMode.Open))
             {
                 var buffer = new byte[4];
 
@@ -228,7 +215,5 @@ namespace EdataFileManager.NdfBin
 
             return header;
         }
-
-
     }
 }

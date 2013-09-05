@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace EdataFileManager.Settings
@@ -12,9 +9,10 @@ namespace EdataFileManager.Settings
     /// </summary>
     public static class SettingsManager
     {
-        public static string SettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "edataFileManager", "settings.xml");
+        public static string SettingsPath =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "edataFileManager", "settings.xml");
 
-        private static Settings LastLoadedSettings { get; set; }
+        //private static Settings LastLoadedSettings { get; set; }
 
         public static Settings Load()
         {
@@ -23,14 +21,14 @@ namespace EdataFileManager.Settings
             if (!File.Exists(SettingsPath))
                 return settings;
 
-            var serializer = new XmlSerializer(typeof(Settings));
+            var serializer = new XmlSerializer(typeof (Settings));
             using (var fs = new FileStream(SettingsPath, FileMode.Open))
             {
                 try
                 {
                     settings = serializer.Deserialize(fs) as Settings;
 
-                    LastLoadedSettings = settings;
+                    //LastLoadedSettings = settings;
                 }
                 catch (InvalidOperationException ex)
                 {
@@ -53,9 +51,9 @@ namespace EdataFileManager.Settings
 
             try
             {
-                using (var fs = File.Create(SettingsPath))
+                using (FileStream fs = File.Create(SettingsPath))
                 {
-                    var serializer = new XmlSerializer(typeof(Settings));
+                    var serializer = new XmlSerializer(typeof (Settings));
 
                     serializer.Serialize(fs, settingsToSave);
 

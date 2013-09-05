@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using EdataFileManager.ViewModel.Base;
+﻿using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.NdfBin.Model.Ndfbin
 {
@@ -15,19 +11,31 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
         public string Name
         {
             get { return _name; }
-            set { _name = value; OnPropertyChanged(() => Name);}
+            set
+            {
+                _name = value;
+                OnPropertyChanged(() => Name);
+            }
         }
 
         public long Offset
         {
             get { return _offset; }
-            set { _offset = value; OnPropertyChanged(() => Offset);}
+            set
+            {
+                _offset = value;
+                OnPropertyChanged(() => Offset);
+            }
         }
 
         public long Size
         {
             get { return _size; }
-            set { _size = value; OnPropertyChanged(() => Size); }
+            set
+            {
+                _size = value;
+                OnPropertyChanged(() => Size);
+            }
         }
     }
 }

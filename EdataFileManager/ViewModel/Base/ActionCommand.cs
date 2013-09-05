@@ -12,7 +12,7 @@ namespace EdataFileManager.ViewModel.Base
         public ActionCommand(Action<object> execute, Predicate<object> canExecute = null)
         {
             if (execute == null)
-                throw new ArgumentNullException("Execute cannot be null");
+                throw new ArgumentNullException("execute");
             _executeHandler = execute;
             _canExecuteHandler = canExecute;
         }

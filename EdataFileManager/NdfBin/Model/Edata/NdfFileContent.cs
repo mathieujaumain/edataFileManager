@@ -1,6 +1,6 @@
 ﻿using EdataFileManager.ViewModel.Base;
 
-namespace EdataFileManager.NdfBin.Model
+namespace EdataFileManager.NdfBin.Model.Edata
 {
     /// <summary>
     /// struct cndfHeader {
