@@ -76,8 +76,11 @@ namespace EdataFileManager.NdfBin
 
             using (var ms = new MemoryStream(content))
             {
-                ms.Seek(16, SeekOrigin.Begin);
+                ms.Seek(12, SeekOrigin.Begin);
                 var buffer = new byte[4];
+
+                ms.Read(buffer, 0, buffer.Length);
+                fileContent.IsCompressedBody = BitConverter.ToInt32(buffer, 0) == 128;
 
                 ms.Read(buffer, 0, 4);
                 fileContent.BlockSize = BitConverter.ToInt32(buffer, 0);
@@ -89,14 +92,20 @@ namespace EdataFileManager.NdfBin
 
                 ms.Seek(4, SeekOrigin.Current);
 
-                ms.Read(buffer, 0, 4);
+                if (fileContent.IsCompressedBody)
+                {
+                    ms.Read(buffer, 0, 4);
+                    fileContent.BlockSizeWithoutHeader = BitConverter.ToInt32(buffer, 0);
+                }
 
-                fileContent.BlockSizeWithoutHeader = BitConverter.ToInt32(buffer, 0);
-
-                buffer = new byte[f.Size - 44];
+                buffer = new byte[f.Size - ms.Position];
 
                 ms.Read(buffer, 0, buffer.Length);
-                fileContent.Body = Compressing.Compressing.Decomp(buffer);
+
+                if (fileContent.IsCompressedBody)
+                    fileContent.Body = Compressing.Compressing.Decomp(buffer);
+                else
+                    fileContent.Body = buffer;
             }
 
             return fileContent;
@@ -144,7 +153,7 @@ namespace EdataFileManager.NdfBin
                         file.Name = Utils.ReadString(fileStream);
                         file.Path = MergePath(dirs, file.Name);
 
-                        if ((file.Name.Length + 1)%2 == 1)
+                        if ((file.Name.Length + 1) % 2 == 1)
                             fileStream.Seek(1, SeekOrigin.Current);
 
                         files.Add(file);
@@ -169,7 +178,7 @@ namespace EdataFileManager.NdfBin
 
                         dir.Name = Utils.ReadString(fileStream);
 
-                        if ((dir.Name.Length + 1)%2 == 1)
+                        if ((dir.Name.Length + 1) % 2 == 1)
                             fileStream.Seek(1, SeekOrigin.Current);
 
                         dirs.Add(dir);

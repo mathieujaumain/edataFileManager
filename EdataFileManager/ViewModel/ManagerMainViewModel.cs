@@ -199,7 +199,7 @@ namespace EdataFileManager.ViewModel
                                    FileName = settings.LastOpenedFile,
                                    DefaultExt = ".dat",
                                    Multiselect = false,
-                                   Filter = "Edat (.dat)|*.dat"
+                                   Filter = "Edat (.dat)|*.dat|All Files|*.*"
                                };
 
             if (openfDlg.ShowDialog().Value)

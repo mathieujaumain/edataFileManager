@@ -17,12 +17,12 @@ namespace EdataFileManager.NdfBin.Model.Edata
     /// </summary>
     public class NdfFileContent : ViewModelBase
     {
+        private bool _isCompressedBody;
         private int _blockSize;
         private int _blockSizeE0;
         private int _blockSizeWithoutHeader;
 
         private byte[] _body;
-        private string _bodyReadable;
 
         public int BlockSize
         {
@@ -42,16 +42,16 @@ namespace EdataFileManager.NdfBin.Model.Edata
             set { _blockSizeWithoutHeader = value; OnPropertyChanged(() => BlockSizeWithoutHeader); }
         }
 
-        public string BodyReadable
-        {
-            get { return _bodyReadable; }
-            set { _bodyReadable = value; OnPropertyChanged(() => BodyReadable); }
-        }
-
         public byte[] Body
         {
             get { return _body; }
             set { _body = value; OnPropertyChanged(() => Body); }
+        }
+
+        public bool IsCompressedBody
+        {
+            get { return _isCompressedBody; }
+            set { _isCompressedBody = value; OnPropertyChanged(() => IsCompressedBody); }
         }
     }
 }

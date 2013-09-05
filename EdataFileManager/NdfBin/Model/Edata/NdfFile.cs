@@ -58,7 +58,7 @@ namespace EdataFileManager.NdfBin.Model.Edata
 
         public override string ToString()
         {
-            return Content.BodyReadable ?? Path.ToString(CultureInfo.CurrentCulture);
+            return  Path.ToString(CultureInfo.CurrentCulture);
         }
     }
 }
