@@ -57,7 +57,6 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="5*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -88,6 +87,7 @@
                         <DataGridTextColumn Binding="{Binding Path=Value}" Header="Name" IsReadOnly="True" Width="*" />
                     </DataGrid.Columns>
                 </DataGrid>
+                
                 <GridSplitter ResizeDirection="Columns" Width="5" Grid.RowSpan="2" />
 
                 <Grid Grid.Column="2">

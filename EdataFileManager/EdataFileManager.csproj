@@ -78,13 +78,21 @@
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Util\Utils.cs" />
+    <Compile Include="ViewModel\EdataFileViewModel.cs" />
     <Compile Include="ViewModel\ManagerMainViewModel.cs" />
     <Compile Include="ViewModel\Base\ActionCommand.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
     <Compile Include="ViewModel\NdfDetailsViewModel.cs" />
+    <Compile Include="View\EdataFileView.xaml.cs">
+      <DependentUpon>EdataFileView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\NdfDetailView.xaml.cs">
       <DependentUpon>NdfDetailView.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\EdataFileView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ManagerMainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -132,7 +140,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="View\Images\open_in_browser-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\reuse-26.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

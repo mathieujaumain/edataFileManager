@@ -15,9 +15,19 @@ namespace EdataFileManager.ViewModel
 {
     public class ManagerMainViewModel : ViewModelBase
     {
-        private ObservableCollection<NdfFile> _files;
-        private ICollectionView _filesCollectionView;
-        private string _filterExpression = string.Empty;
+        private readonly ObservableCollection<EdataFileViewModel> _openFiles = new ObservableCollection<EdataFileViewModel>();
+
+        public ICommand ExportNdfCommand { get; set; }
+        public ICommand ExportRawCommand { get; set; }
+        public ICommand OpenFileCommand { get; set; }
+        public ICommand CloseFileCommand { get; set; }
+        public ICommand ChangeExportPathCommand { get; set; }
+        public ICommand ViewContentCommand { get; set; }
+
+        public ObservableCollection<EdataFileViewModel> OpenFiles
+        {
+            get { return _openFiles; }
+        }
 
         public ManagerMainViewModel()
         {
@@ -28,121 +38,95 @@ namespace EdataFileManager.ViewModel
             var fileInfo = new FileInfo(settings.LastOpenedFile);
 
             if (fileInfo.Exists)
-                LoadFile(fileInfo.FullName);
+                AddFile(fileInfo.FullName);
+
+            CollectionViewSource.GetDefaultView(OpenFiles).MoveCurrentToFirst();
         }
 
-        public ICommand ExportNdfCommand { get; set; }
-        public ICommand ExportTextureCommand { get; set; }
-        public ICommand OpenFileCommand { get; set; }
-        public ICommand ChangeExportPathCommand { get; set; }
-        public ICommand ViewNdfContentCommand { get; set; }
-
-        protected EdataManager EdataManager { get; set; }
-
-        public string LoadedFile { get; set; }
-
-        public ObservableCollection<NdfFile> Files
+        public void AddFile(string path)
         {
-            get { return _files; }
-            set
-            {
-                _files = value;
-                OnPropertyChanged(() => Files);
-            }
+            var vm = new EdataFileViewModel();
+            vm.LoadFile(path);
+
+            OpenFiles.Add(vm);
+            CollectionViewSource.GetDefaultView(OpenFiles).MoveCurrentTo(vm);
         }
 
-        public string TitleText
+        public void CloseFile(EdataFileViewModel vm)
         {
-            get { return string.Format("Edata File Manager [{0}]", EdataManager.FilePath); }
-        }
+            if (!OpenFiles.Contains(vm))
+                return;
 
-        public ICollectionView FilesCollectionView
-        {
-            get
-            {
-                if (_filesCollectionView == null)
-                {
-                    CreateFilesCollectionView();
-                }
-
-                return _filesCollectionView;
-            }
-        }
-
-        public string FilterExpression
-        {
-            get { return _filterExpression; }
-            set
-            {
-                _filterExpression = value;
-                OnPropertyChanged(() => FilterExpression);
-                FilesCollectionView.Refresh();
-            }
-        }
-
-        private void CreateFilesCollectionView()
-        {
-            _filesCollectionView = CollectionViewSource.GetDefaultView(Files);
-            _filesCollectionView.Filter = FilterPath;
-
-            OnPropertyChanged(() => FilesCollectionView);
+            OpenFiles.Remove(vm);
         }
 
         protected void InitializeCommands()
         {
             ExportNdfCommand = new ActionCommand(ExportNdfExecute);
-            ExportTextureCommand = new ActionCommand(ExportTextureExecute);
+            ExportRawCommand = new ActionCommand(ExportRawExecute);
             OpenFileCommand = new ActionCommand(OpenFileExecute);
+            CloseFileCommand = new ActionCommand(CloseFileExecute);
+
             ChangeExportPathCommand = new ActionCommand(ChangeExportPathExecute);
-            ViewNdfContentCommand = new ActionCommand(ViewNdfContentExecute);
+            ViewContentCommand = new ActionCommand(ViewContentExecute);
         }
 
-        protected void ViewNdfContentExecute(object obj)
+        protected void ViewContentExecute(object obj)
         {
-            var file = FilesCollectionView.CurrentItem as NdfFile;
+            var vm = CollectionViewSource.GetDefaultView(OpenFiles).CurrentItem as EdataFileViewModel;
 
-            if (file == null)
+            if (vm == null)
                 return;
 
-            var vm = new NdfDetailsViewModel(file, EdataManager);
+            var ndf = vm.FilesCollectionView.CurrentItem as NdfFile;
 
-            var view = new NdfDetailView {DataContext = vm};
+            if (ndf == null)
+                return;
+
+            var detailsVm = new NdfDetailsViewModel(ndf, vm.EdataManager);
+
+            var view = new NdfDetailView { DataContext = detailsVm };
 
             view.Show();
         }
 
         protected void ExportNdfExecute(object obj)
         {
-            var file = FilesCollectionView.CurrentItem as NdfFile;
+            //var file = FilesCollectionView.CurrentItem as NdfFile;
 
-            if (file == null)
-                return;
+            //if (file == null)
+            //    return;
 
-            Settings.Settings settings = SettingsManager.Load();
+            //Settings.Settings settings = SettingsManager.Load();
 
-            NdfFileContent content = EdataManager.GetNdfContent(file);
+            //NdfFileContent content = EdataManager.GetNdfContent(file);
 
-            var f = new FileInfo(file.Path);
+            //var f = new FileInfo(file.Path);
 
-            using (var fs = new FileStream(Path.Combine(settings.SavePath, f.Name), FileMode.OpenOrCreate))
-            {
-                fs.Write(content.Body, 0, content.Body.Length);
-                fs.Flush();
-            }
+            //using (var fs = new FileStream(Path.Combine(settings.SavePath, f.Name), FileMode.OpenOrCreate))
+            //{
+            //    fs.Write(content.Body, 0, content.Body.Length);
+            //    fs.Flush();
+            //}
         }
 
-        protected void ExportTextureExecute(object obj)
+        protected void ExportRawExecute(object obj)
         {
-            var file = FilesCollectionView.CurrentItem as NdfFile;
+            var vm = CollectionViewSource.GetDefaultView(OpenFiles).CurrentItem as EdataFileViewModel;
 
-            if (file == null)
+            if (vm == null)
+                return;
+
+            var ndf = vm.FilesCollectionView.CurrentItem as NdfFile;
+
+            if (ndf == null)
                 return;
 
             Settings.Settings settings = SettingsManager.Load();
 
-            byte[] buffer = EdataManager.GetRawData(file);
+            byte[] buffer = vm.EdataManager.GetRawData(ndf);
 
-            var f = new FileInfo(file.Path);
+            var f = new FileInfo(ndf.Path);
 
             using (var fs = new FileStream(Path.Combine(settings.SavePath, f.Name), FileMode.OpenOrCreate))
             {
@@ -206,34 +190,13 @@ namespace EdataFileManager.ViewModel
             {
                 settings.LastOpenedFile = openfDlg.FileName;
                 SettingsManager.Save(settings);
+                AddFile(settings.LastOpenedFile);
             }
-
-            LoadFile(settings.LastOpenedFile);
         }
 
-        protected void LoadFile(string path)
+        protected void CloseFileExecute(object obj)
         {
-            EdataManager = new EdataManager(path);
-
-            LoadedFile = EdataManager.FilePath;
-
-            EdataManager.ParseEdataFile();
-            Files = EdataManager.Files;
-            CreateFilesCollectionView();
-
-            OnPropertyChanged(() => TitleText);
-        }
-
-        public bool FilterPath(object item)
-        {
-            var file = item as NdfFile;
-
-            if (file == null || FilterExpression == string.Empty || FilterExpression.Length < 3)
-            {
-                return true;
-            }
-
-            return file.Path.Contains(FilterExpression);
+            CloseFile(CollectionViewSource.GetDefaultView(OpenFiles).CurrentItem as EdataFileViewModel);
         }
     }
 }
