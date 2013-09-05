@@ -78,6 +78,7 @@
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Util\Utils.cs" />
+    <Compile Include="ViewModel\movie_playbackViewModel.cs" />
     <Compile Include="ViewModel\EdataFileViewModel.cs" />
     <Compile Include="ViewModel\ManagerMainViewModel.cs" />
     <Compile Include="ViewModel\Base\ActionCommand.cs" />
@@ -85,6 +86,9 @@
     <Compile Include="ViewModel\NdfDetailsViewModel.cs" />
     <Compile Include="View\EdataFileView.xaml.cs">
       <DependentUpon>EdataFileView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\movie_playback.xaml.cs">
+      <DependentUpon>movie_playback.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\NdfDetailView.xaml.cs">
       <DependentUpon>NdfDetailView.xaml</DependentUpon>
@@ -106,6 +110,10 @@
       <DependentUpon>ManagerMainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\movie_playback.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\NdfDetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -148,6 +156,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="View\Images\add_file-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\play_movie-26.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

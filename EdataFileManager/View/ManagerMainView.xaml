@@ -7,6 +7,7 @@
     <Window.Resources>
         <BitmapImage UriSource="\View\Images\reuse-26.png" x:Key="ExtractRawIcon" />
         <BitmapImage UriSource="\View\Images\open_in_browser-26.png" x:Key="OpenDetailsIcon" />
+        <BitmapImage UriSource="\View\Images\play_movie-26.png" x:Key="OpenMovieIcon" />
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -38,6 +39,10 @@
             <Button ToolTip="View Ndf file" Command="{Binding ViewContentCommand}" >
                 <Image Source="{StaticResource OpenDetailsIcon}" />
             </Button>
+            <Button ToolTip="View Wmv file" Command="{Binding PlayMovieCommand}" >
+                <Image Source="{StaticResource OpenMovieIcon}" />
+            </Button>
+
 
         </ToolBar>
 

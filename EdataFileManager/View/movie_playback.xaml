@@ -1,0 +1,10 @@
+﻿<Window x:Class="EdataFileManager.View.movie_playback"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="movie_playback" Height="337" Width="565">
+    <Grid>
+        <MediaElement HorizontalAlignment="Left" Height="315" VerticalAlignment="Top" Width="558" Source="{Binding Path=File}" LoadedBehavior="Play"/>
+
+
+    </Grid>
+</Window>

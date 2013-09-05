@@ -24,6 +24,7 @@ namespace EdataFileManager.ViewModel
         public ICommand CloseFileCommand { get; set; }
         public ICommand ChangeExportPathCommand { get; set; }
         public ICommand ViewContentCommand { get; set; }
+        public ICommand PlayMovieCommand { get; set; }
 
         public ObservableCollection<EdataFileViewModel> OpenFiles
         {
@@ -80,6 +81,7 @@ namespace EdataFileManager.ViewModel
             ExportRawCommand = new ActionCommand(ExportRawExecute);
             OpenFileCommand = new ActionCommand(OpenFileExecute);
             CloseFileCommand = new ActionCommand(CloseFileExecute);
+            PlayMovieCommand = new ActionCommand(PlayMovieExecute);
 
             ChangeExportPathCommand = new ActionCommand(ChangeExportPathExecute);
             ViewContentCommand = new ActionCommand(ViewContentExecute);
@@ -214,6 +216,38 @@ namespace EdataFileManager.ViewModel
         protected void CloseFileExecute(object obj)
         {
             CloseFile(CollectionViewSource.GetDefaultView(OpenFiles).CurrentItem as EdataFileViewModel);
+        }
+
+        protected void PlayMovieExecute(object obj)
+        {
+            string name = "temp.wmv";
+            var vm = CollectionViewSource.GetDefaultView(OpenFiles).CurrentItem as EdataFileViewModel;
+
+            if (vm == null)
+                return;
+
+            var ndf = vm.FilesCollectionView.CurrentItem as NdfFile;
+
+            if (ndf == null)
+                return;
+
+            Settings.Settings settings = SettingsManager.Load();
+
+            byte[] buffer = vm.EdataManager.GetRawData(ndf);
+
+            var f = new FileInfo(ndf.Path);
+
+            using (var fs = new FileStream(Path.Combine(settings.SavePath, name), FileMode.OpenOrCreate))
+            {
+                fs.Write(buffer, 0, buffer.Length);
+                fs.Flush();
+            }
+
+            var detailsVm = new MoviePlaybackViewModel(settings.SavePath + "\\" + name, vm.EdataManager);
+
+            var view = new movie_playback { DataContext = detailsVm };
+
+            view.Show();
         }
     }
 }
