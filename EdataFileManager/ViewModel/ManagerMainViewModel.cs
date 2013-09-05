@@ -58,7 +58,6 @@ namespace EdataFileManager.ViewModel
 
                 return _filesCollectionView;
             }
-
         }
 
         private void CreateFilesCollectionView()

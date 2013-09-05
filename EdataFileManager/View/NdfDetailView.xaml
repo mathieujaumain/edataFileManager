@@ -1,7 +1,7 @@
 ﻿<Window x:Class="EdataFileManager.View.NdfDetailView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="NdfDetailView" Height="359" Width="947">
+        Title="{Binding Path=Title}" Height="359" Width="947">
     <TabControl>
         <TabItem Header="Classes">
             <Grid>
@@ -13,10 +13,44 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Label>Classes</Label>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label>Classes</Label>
+                    <TextBox Grid.Column="2" Width="150" Margin="5" Text="{Binding Path=ClassesFilterExpression, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+                <DataGrid x:Name="classGrid" Margin="5" Grid.Row="1" ItemsSource="{Binding Path=ClassesCollectoinView}" 
+                      IsSynchronizedWithCurrentItem="True"
+                      CanUserResizeRows="False"
+                      CanUserAddRows="False"  
+                      CanUserDeleteRows="False" 
+                      AutoGenerateColumns="False"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=Id}" Header="Id" IsReadOnly="True" Width="40" />
+                        <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" IsReadOnly="True" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <GridSplitter ResizeDirection="Columns" Width="5" Grid.RowSpan="2" />
                 <Label Grid.Column="1">Properties</Label>
-                <DataGrid x:Name="classGrid" Margin="5" Grid.Row="1" ItemsSource="{Binding Path=Classes}" />
-                <DataGrid Margin="5" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding SelectedValue.Properties, ElementName=classGrid}"/>
+                <DataGrid Margin="5" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding SelectedValue.Properties, ElementName=classGrid}"
+                      IsSynchronizedWithCurrentItem="True"
+                      CanUserResizeRows="False"
+                      CanUserAddRows="False"  
+                      CanUserDeleteRows="False" 
+                      AutoGenerateColumns="False"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=Id}" Header="Id" IsReadOnly="True" Width="50" />
+                        <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" IsReadOnly="True" Width="*" />
+                        <DataGridTextColumn Binding="{Binding Path=ClassId}" Header="Class" IsReadOnly="True" Width="40" />
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
         </TabItem>
         <TabItem Header="Strings/Trans">
