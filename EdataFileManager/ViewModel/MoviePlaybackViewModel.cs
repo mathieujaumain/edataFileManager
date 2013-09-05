@@ -11,22 +11,17 @@ namespace EdataFileManager.ViewModel
 {
     public class MoviePlaybackViewModel : ViewModelBase
     {
-        protected string derp { get; set; }
+        private string _derp;
 
-        public MoviePlaybackViewModel(string file, EdataManager manager)
+        public MoviePlaybackViewModel(string file)
         {
-            //System.Windows.MessageBox.Show(file);
-            derp = file;
+            _derp = file;
         }
-
-        
 
         public string File
         {
-            get { return derp; }
+            get { return _derp; }
+            set { _derp = value; OnPropertyChanged(() => File); }
         }
-
-        
-
     }
 }

@@ -16,9 +16,9 @@ namespace EdataFileManager.View
     /// <summary>
     /// Interaction logic for movie_playback.xaml
     /// </summary>
-    public partial class movie_playback : Window
+    public partial class MoviePlaybackView : Window
     {
-        public movie_playback()
+        public MoviePlaybackView()
         {
             InitializeComponent();
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -246,16 +247,16 @@ namespace EdataFileManager.ViewModel
                 fs.Flush();
             }
 
-            var detailsVm = new MoviePlaybackViewModel(settings.SavePath + "\\" + name, vm.EdataManager);
+            var detailsVm = new MoviePlaybackViewModel(Path.Combine(settings.SavePath, name));
 
-            var view = new movie_playback { DataContext = detailsVm };
+            var view = new MoviePlaybackView { DataContext = detailsVm };
 
             view.Show();
         }
 
         protected void AboutUsExecute(object obj)
         {
-            //TOOD: MAKE IT MORE PROPER.
+            //TODO: MAKE IT MORE PROPER.
             MessageBox.Show("EdataFileManager V.0.0.0.0.1\nMade by enohka with contributions from Kamrat Roger\nThanks to Wargame:EE DAT Unpacker by Giovanni Condello \n Uses Icon8 link: http://icons8.com/license/");
         }
     }

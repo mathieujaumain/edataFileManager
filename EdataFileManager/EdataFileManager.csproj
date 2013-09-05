@@ -78,7 +78,7 @@
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Util\Utils.cs" />
-    <Compile Include="ViewModel\movie_playbackViewModel.cs" />
+    <Compile Include="ViewModel\MoviePlaybackViewModel.cs" />
     <Compile Include="ViewModel\EdataFileViewModel.cs" />
     <Compile Include="ViewModel\ManagerMainViewModel.cs" />
     <Compile Include="ViewModel\Base\ActionCommand.cs" />
@@ -87,8 +87,8 @@
     <Compile Include="View\EdataFileView.xaml.cs">
       <DependentUpon>EdataFileView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\movie_playback.xaml.cs">
-      <DependentUpon>movie_playback.xaml</DependentUpon>
+    <Compile Include="View\MoviePlaybackView.xaml.cs">
+      <DependentUpon>MoviePlaybackView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\NdfDetailView.xaml.cs">
       <DependentUpon>NdfDetailView.xaml</DependentUpon>
@@ -110,7 +110,7 @@
       <DependentUpon>ManagerMainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\movie_playback.xaml">
+    <Page Include="View\MoviePlaybackView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
