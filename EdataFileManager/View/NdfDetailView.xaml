@@ -22,7 +22,7 @@
                     <Label>Classes</Label>
                     <TextBox Grid.Column="2" Width="150" Margin="5" Text="{Binding Path=ClassesFilterExpression, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
-                <DataGrid x:Name="classGrid" Margin="5" Grid.Row="1" ItemsSource="{Binding Path=ClassesCollectoinView}" 
+                <DataGrid x:Name="classGrid" Margin="5" Grid.Row="1" ItemsSource="{Binding Path=ClassesCollectionView}" 
                       IsSynchronizedWithCurrentItem="True"
                       CanUserResizeRows="False"
                       CanUserAddRows="False"  
@@ -57,17 +57,62 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="5*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Label Grid.Column="0">Strings</Label>
-                <DataGrid Margin="5" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Path=Strings}" />
 
-                <Label Grid.Column="1">TRANS</Label>
-                <DataGrid Margin="5" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Path=Trans}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label>Strings</Label>
+                    <TextBox Grid.Column="2" Width="150" Margin="5" Text="{Binding Path=StringFilterExpression, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+
+                <DataGrid Margin="5" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Path=StringCollectionView}"                      
+                      IsSynchronizedWithCurrentItem="True"
+                      CanUserResizeRows="False"
+                      CanUserAddRows="False"  
+                      CanUserDeleteRows="False" 
+                      AutoGenerateColumns="False"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=Id}" Header="Id" IsReadOnly="True" Width="50" />
+                        <DataGridTextColumn Binding="{Binding Path=Value}" Header="Name" IsReadOnly="True" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <GridSplitter ResizeDirection="Columns" Width="5" Grid.RowSpan="2" />
+
+                <Grid Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label>TRANS</Label>
+                    <TextBox Grid.Column="2" Width="150" Margin="5" Text="{Binding Path=TransFilterExpression, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+
+                <DataGrid Margin="5" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Path=TransCollectionView}"                      
+                      IsSynchronizedWithCurrentItem="True"
+                      CanUserResizeRows="False"
+                      CanUserAddRows="False"  
+                      CanUserDeleteRows="False" 
+                      AutoGenerateColumns="False"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=Id}" Header="Id" IsReadOnly="True" Width="50" />
+                        <DataGridTextColumn Binding="{Binding Path=Value}" Header="Name" IsReadOnly="True" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
         </TabItem>
     </TabControl>
