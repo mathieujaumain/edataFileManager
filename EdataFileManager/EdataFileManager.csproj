@@ -158,7 +158,7 @@
     <Resource Include="View\Images\add_file-26.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="View\Images\play_movie-26.png" />
+    <Resource Include="View\Images\play-26.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

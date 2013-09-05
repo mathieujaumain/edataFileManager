@@ -7,7 +7,7 @@
     <Window.Resources>
         <BitmapImage UriSource="\View\Images\reuse-26.png" x:Key="ExtractRawIcon" />
         <BitmapImage UriSource="\View\Images\open_in_browser-26.png" x:Key="OpenDetailsIcon" />
-        <BitmapImage UriSource="\View\Images\play_movie-26.png" x:Key="OpenMovieIcon" />
+        <BitmapImage UriSource="\View\Images\play-26.png" x:Key="OpenMovieIcon" />
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
