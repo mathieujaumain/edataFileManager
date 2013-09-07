@@ -4,7 +4,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
 {
     public class NdfbinProperty : ViewModelBase
     {
-        private int _classId;
+        private NdfbinClass _class;
         private int _id;
         private string _name;
         private long _offset;
@@ -19,13 +19,13 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
             }
         }
 
-        public int ClassId
+        public NdfbinClass Class
         {
-            get { return _classId; }
+            get { return _class; }
             set
             {
-                _classId = value;
-                OnPropertyChanged(() => ClassId);
+                _class = value;
+                OnPropertyChanged(() => Class);
             }
         }
 

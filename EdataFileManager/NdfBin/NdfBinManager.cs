@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using EdataFileManager.NdfBin.Model.Ndfbin;
-using EdataFileManager.Util;
 
 namespace EdataFileManager.NdfBin
 {
@@ -16,7 +15,6 @@ namespace EdataFileManager.NdfBin
         public ObservableCollection<NdfbinClass> Classes { get; set; }
         public ObservableCollection<NdfbinString> Strings { get; set; }
         public ObservableCollection<NdfbinTran> Trans { get; set; }
-
 
         public NdfbinManager(byte[] data)
         {
@@ -31,6 +29,8 @@ namespace EdataFileManager.NdfBin
 
             ReadStrings();
             ReadTrans();
+
+            ReadObjects();
         }
 
         protected void ReadTrans()
@@ -106,7 +106,7 @@ namespace EdataFileManager.NdfBin
                 var buffer = new byte[4];
                 while (ms.Position < ms.Length)
                 {
-                    var property = new NdfbinProperty() { Offset = ms.Position, Id = i };
+                    var property = new NdfbinProperty { Offset = ms.Position, Id = i };
 
                     ms.Read(buffer, 0, buffer.Length);
                     var strLen = BitConverter.ToInt32(buffer, 0);
@@ -117,10 +117,14 @@ namespace EdataFileManager.NdfBin
                     property.Name = Encoding.GetEncoding("ISO-8859-1").GetString(strBuffer);
 
                     ms.Read(buffer, 0, buffer.Length);
-                    property.ClassId = BitConverter.ToInt32(buffer,0);
+
+                    var cls = Classes.Single(x => x.Id == BitConverter.ToInt32(buffer, 0));
+                    property.Class = cls;
+
+                    cls.Properties.Add(property);
+
 
                     i++;
-                    Classes.Single(x => x.Id == property.ClassId).Properties.Add(property);
                 }
             }
         }
@@ -154,6 +158,94 @@ namespace EdataFileManager.NdfBin
             }
 
             Classes = classes;
+        }
+
+        protected void ReadObjects()
+        {
+            var objects = new ObservableCollection<NdfbinObject>();
+
+            var objEntry = Footer.Entries.Single(x => x.Name == "OBJE");
+
+            //TODO: int cast is a bit too hacky here, solution needed
+            using (var ms = new MemoryStream(Data, (int)objEntry.Offset - 40, (int)objEntry.Size))
+            {
+                var instanceOffsets = GetInstanceOffsets(ms).ToArray();
+
+                byte[] buffer;
+                long size;
+
+                for (int i = 0; i < instanceOffsets.Length; i++)
+                {
+                    if (i == instanceOffsets.Length - 1)
+                        size = ms.Length - instanceOffsets[i];
+                    else
+                        size = instanceOffsets[i + 1] - instanceOffsets[i] - 4;
+
+                    buffer = new byte[size];
+                    ms.Read(buffer, 0, buffer.Length);
+                    ms.Seek(4, SeekOrigin.Current);
+
+                    objects.Add(ParseObject(buffer, i));
+                }
+            }
+        }
+
+        private NdfbinObject ParseObject(byte[] data, int index)
+        {
+            var instance = new NdfbinObject { Id = index, Data = data };
+
+            using (var ms = new MemoryStream(data))
+            {
+                var buffer = new byte[4];
+                int classId;
+
+                while (ms.Position < ms.Length)
+                {
+                    ms.Read(buffer, 0, buffer.Length);
+                    classId = BitConverter.ToInt32(buffer, 0);
+
+                    var cls = instance.Class = Classes.SingleOrDefault(x => x.Id == classId);
+
+                    if (cls != null)
+                        cls.Instances.Add(instance);
+
+                    break;
+                }
+            }
+
+            return instance;
+        }
+
+        private List<long> GetInstanceOffsets(MemoryStream ms)
+        {
+            const byte ab = 0xAB;
+
+            var offsets = new List<long> { 0 };
+
+            byte abCount = 0;
+            byte[] buffer;
+
+            while (ms.Position < ms.Length)
+            {
+                buffer = new byte[1];
+                ms.Read(buffer, 0, buffer.Length);
+
+                if (buffer[0] == ab)
+                {
+                    abCount++;
+                    if (abCount == 4)
+                    {
+                        offsets.Add(ms.Position);
+                        abCount = 0;
+                    }
+                }
+                else if (abCount > 0)
+                    abCount = 0;
+            }
+
+            ms.Position = 0;
+
+            return offsets;
         }
 
         protected void ReadFooter()

@@ -4,10 +4,11 @@
         Title="{Binding Path=Title}" Height="359" Width="947">
     <TabControl>
         <TabItem Header="Classes">
+
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="30*"/>
-                    <ColumnDefinition Width="70*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="6*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -22,19 +23,41 @@
                     <Label>Classes</Label>
                     <TextBox Grid.Column="2" Width="150" Margin="5" Text="{Binding Path=ClassesFilterExpression, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
-                <DataGrid x:Name="classGrid" Margin="5" Grid.Row="1" ItemsSource="{Binding Path=ClassesCollectionView}" 
+                <Grid  Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="8*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <DataGrid x:Name="classGrid" Margin="5,5,0,5" ItemsSource="{Binding Path=ClassesCollectionView}" 
                       IsSynchronizedWithCurrentItem="True"
                       CanUserResizeRows="False"
                       CanUserAddRows="False"  
                       CanUserDeleteRows="False" 
                       AutoGenerateColumns="False"
+                      SelectionMode="Extended"
+                      SelectionUnit="FullRow">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Path=Id}" Header="Id" IsReadOnly="True" Width="40" />
+                            <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" IsReadOnly="True" Width="*" />
+                            <DataGridTextColumn Binding="{Binding Path=Instances.Count}" Header="Instances" IsReadOnly="True" Width="60" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <DataGrid x:Name="instanceGrid" Grid.Column="1" Margin="0,5,5,5" ItemsSource="{Binding SelectedValue.Instances, ElementName=classGrid}" 
+                      IsSynchronizedWithCurrentItem="True"
+                      CanUserResizeRows="False"
+                      CanUserAddRows="False"  
+                      CanUserDeleteRows="False" 
+                      AutoGenerateColumns="False"
+                      RowHeaderWidth="0"
                       SelectionMode="Single"
                       SelectionUnit="FullRow">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Path=Id}" Header="Id" IsReadOnly="True" Width="40" />
-                        <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" IsReadOnly="True" Width="*" />
-                    </DataGrid.Columns>
-                </DataGrid>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Path=Id}" Header="Instance" IsReadOnly="True" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </Grid>
                 <GridSplitter ResizeDirection="Columns" Width="5" Grid.RowSpan="2" />
                 <Label Grid.Column="1">Properties</Label>
                 <DataGrid Margin="5" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding SelectedValue.Properties, ElementName=classGrid}"
@@ -48,10 +71,11 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Path=Id}" Header="Id" IsReadOnly="True" Width="50" />
                         <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" IsReadOnly="True" Width="*" />
-                        <DataGridTextColumn Binding="{Binding Path=ClassId}" Header="Class" IsReadOnly="True" Width="40" />
+                        <DataGridTextColumn Binding="{Binding Path=Class.Id}" Header="Class" IsReadOnly="True" Width="40" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
+
         </TabItem>
         <TabItem Header="Strings/Trans">
             <Grid>
@@ -87,7 +111,7 @@
                         <DataGridTextColumn Binding="{Binding Path=Value}" Header="Name" IsReadOnly="True" Width="*" />
                     </DataGrid.Columns>
                 </DataGrid>
-                
+
                 <GridSplitter ResizeDirection="Columns" Width="5" Grid.RowSpan="2" />
 
                 <Grid Grid.Column="2">

@@ -36,7 +36,7 @@ namespace EdataFileManager.NdfBin
             //}
         }
 
-        public NdfFileContent GetNdfContent(NdfFile f) //async Task<NdfFileContent> GetNdfContent(NdfFile f)
+        public NdfFileContent GetNdfContent(NdfFile f) 
         {
             byte[] buffer;
 
