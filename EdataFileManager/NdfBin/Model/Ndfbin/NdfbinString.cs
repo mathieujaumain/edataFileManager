@@ -1,4 +1,5 @@
-﻿using EdataFileManager.ViewModel.Base;
+﻿using System.Globalization;
+using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.NdfBin.Model.Ndfbin
 {
@@ -36,6 +37,11 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
                 _value = value;
                 OnPropertyChanged(() => Value);
             }
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString(CultureInfo.InvariantCulture);
         }
     }
 }

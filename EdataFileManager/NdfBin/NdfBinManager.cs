@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using EdataFileManager.NdfBin.Model.Ndfbin;
+using EdataFileManager.NdfBin.Model.Ndfbin.Types;
 
 namespace EdataFileManager.NdfBin
 {
@@ -197,19 +198,42 @@ namespace EdataFileManager.NdfBin
             using (var ms = new MemoryStream(data))
             {
                 var buffer = new byte[4];
-                int classId;
+                byte[] contBuffer; 
 
+                ms.Read(buffer, 0, buffer.Length);
+                int classId = BitConverter.ToInt32(buffer, 0);
+
+                var cls = instance.Class = Classes.SingleOrDefault(x => x.Id == classId);
+
+                if (cls != null)
+                    cls.Instances.Add(instance);
+
+                NdfbinPropertyValue prop;
+
+                // Read properties
                 while (ms.Position < ms.Length)
                 {
+                    prop = new NdfbinPropertyValue();
+                    instance.PropertyValues.Add(prop);
+
                     ms.Read(buffer, 0, buffer.Length);
-                    classId = BitConverter.ToInt32(buffer, 0);
+                    prop.Property = cls.Properties.Single(x => x.Id == BitConverter.ToInt32(buffer, 0));
 
-                    var cls = instance.Class = Classes.SingleOrDefault(x => x.Id == classId);
+                    ms.Read(buffer, 0, buffer.Length);
 
-                    if (cls != null)
-                        cls.Instances.Add(instance);
+                    prop.TypeData = buffer;
+                    var type = NdfTypeManager.GetType(buffer);
 
-                    break;
+                    if (type == NdfType.Unknown)
+                        break;
+
+                    contBuffer = new byte[NdfTypeManager.SizeofType(type)];
+
+                    ms.Read(contBuffer, 0, contBuffer.Length);
+
+                    prop.Value = NdfTypeManager.GetValue(contBuffer, type, this);
+                    prop.ValueData = contBuffer;
+
                 }
             }
 

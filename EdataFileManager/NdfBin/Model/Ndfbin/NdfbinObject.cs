@@ -35,7 +35,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
             set { _name = value; OnPropertyChanged(() => Name); }
         }
 
-        public ObservableCollection<NdfbinPropertyValue> Propertyvalues
+        public ObservableCollection<NdfbinPropertyValue> PropertyValues
         {
             get { return _propertyValues; }
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EdataFileManager.NdfBin.Model.Ndfbin.Types;
 using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.NdfBin.Model.Ndfbin
@@ -10,20 +11,20 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
     {
         private NdfbinProperty _property;
         private object _value;
-        private Byte[] _data;
+        private NdfType _type;
         private byte[] _typeData;
         private byte[] _valueData;
 
-        public byte[] Data
+        public NdfType Type
         {
-            get { return _data; }
-            set { _data = value; OnPropertyChanged(() => Data); }
+            get { return _type; }
+            set { _type = value; OnPropertyChanged(() => Type); }
         }
 
         public byte[] TypeData
         {
             get { return _typeData; }
-            set { _typeData = value; OnPropertyChanged(() => Data); }
+            set { _typeData = value; OnPropertyChanged(() => TypeData); }
         }
 
         public byte[] ValueData
@@ -36,6 +37,12 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
         {
             get { return _value; }
             set { _value = value; OnPropertyChanged(() => Value); }
+        }
+
+        public NdfbinProperty Property
+        {
+            get { return _property; }
+            set { _property = value; OnPropertyChanged(() => Property); }
         }
     }
 }

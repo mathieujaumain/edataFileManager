@@ -76,6 +76,8 @@
     <Compile Include="NdfBin\Model\Ndfbin\NdfbinPropertyValue.cs" />
     <Compile Include="NdfBin\Model\Ndfbin\NdfbinString.cs" />
     <Compile Include="NdfBin\Model\Ndfbin\NdfbinTran.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\Types\NdfType.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\Types\NdfTypeManager.cs" />
     <Compile Include="NdfBin\NdfbinManager.cs" />
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\Settings.cs" />

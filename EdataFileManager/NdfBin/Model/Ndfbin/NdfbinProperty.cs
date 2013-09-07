@@ -1,4 +1,6 @@
-﻿using EdataFileManager.ViewModel.Base;
+﻿using System.Linq;
+using System.Windows.Data;
+using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.NdfBin.Model.Ndfbin
 {
@@ -46,6 +48,18 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
             {
                 _name = value;
                 OnPropertyChanged(() => Name);
+            }
+        }
+
+        public object Value
+        {
+            get
+            {
+                var value = ((NdfbinObject)CollectionViewSource.GetDefaultView(Class.Instances).CurrentItem).PropertyValues.SingleOrDefault(x => x.Property == this);
+                if (value != null)
+                    return value.Value;
+
+                return null;
             }
         }
     }

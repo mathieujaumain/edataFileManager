@@ -71,7 +71,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Path=Id}" Header="Id" IsReadOnly="True" Width="50" />
                         <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" IsReadOnly="True" Width="*" />
-                        <DataGridTextColumn Binding="{Binding Path=Class.Id}" Header="Class" IsReadOnly="True" Width="40" />
+                        <DataGridTextColumn Binding="{Binding Path=Value}" Header="Value" IsReadOnly="True" Width="40" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
