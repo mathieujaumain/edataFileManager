@@ -112,22 +112,27 @@ namespace EdataFileManager.ViewModel
 
         protected void ExportNdfExecute(object obj)
         {
-            //var file = FilesCollectionView.CurrentItem as NdfFile;
+            var vm = CollectionViewSource.GetDefaultView(OpenFiles).CurrentItem as EdataFileViewModel;
 
-            //if (file == null)
-            //    return;
+            if (vm == null)
+                return;
 
-            //Settings.Settings settings = SettingsManager.Load();
+            var ndf = vm.FilesCollectionView.CurrentItem as NdfFile;
 
-            //NdfFileContent content = EdataManager.GetNdfContent(file);
+            if (ndf == null)
+                return;
 
-            //var f = new FileInfo(file.Path);
+            Settings.Settings settings = SettingsManager.Load();
 
-            //using (var fs = new FileStream(Path.Combine(settings.SavePath, f.Name), FileMode.OpenOrCreate))
-            //{
-            //    fs.Write(content.Body, 0, content.Body.Length);
-            //    fs.Flush();
-            //}
+            NdfFileContent content = vm.EdataManager.GetNdfContent(ndf);
+
+            var f = new FileInfo(ndf.Path);
+
+            using (var fs = new FileStream(Path.Combine(settings.SavePath, f.Name), FileMode.OpenOrCreate))
+            {
+                fs.Write(content.Body, 0, content.Body.Length);
+                fs.Flush();
+            }
         }
 
         protected void ExportRawExecute(object obj)

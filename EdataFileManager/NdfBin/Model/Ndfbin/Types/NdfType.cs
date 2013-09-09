@@ -9,9 +9,13 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
     {
         Boolean = 0x00000000,
         Int32 = 0x00000002,
-        Unknown4Byte = 0x00000003,
+        UInt32 = 0x00000003,
         Float32 = 0x00000005,
-        TableString = 0x0000001C,
+        TableString = 0x00000007,
+
+        Color32 = 0x0000000d,
+
+        TableStringFile = 0x0000001C,
 
         Unknown = 0xFFFFFFFF
     }

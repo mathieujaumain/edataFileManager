@@ -43,7 +43,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <DataGrid x:Name="instanceGrid" Grid.Column="1" Margin="0,5,5,5" ItemsSource="{Binding SelectedValue.Instances, ElementName=classGrid}" 
+                    <DataGrid x:Name="instanceGrid" Grid.Column="1" Margin="0,5,5,5" ItemsSource="{Binding SelectedValue.InstancesCollectionView, ElementName=classGrid}" 
                       IsSynchronizedWithCurrentItem="True"
                       CanUserResizeRows="False"
                       CanUserAddRows="False"  

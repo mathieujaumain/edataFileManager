@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 
 namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
 {
@@ -17,10 +18,6 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
             if (Enum.IsDefined(typeof(NdfType), value))
                 return (NdfType)value;
 
-            //foreach (var val in Enum.GetValues((typeof(NdfType))))
-            //    if ((NdfType)val == (NdfType)BitConverter.ToUInt32(data, 0))
-            //        return (NdfType)val;
-
             return NdfType.Unknown;
         }
 
@@ -35,12 +32,16 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                     return BitConverter.ToBoolean(data, 0);
                 case NdfType.Int32:
                     return BitConverter.ToInt32(data, 0);
-                //case NdfType.Int64:
-                //    return BitConverter.ToInt64(data, 0);
+                case NdfType.UInt32:
+                    return BitConverter.ToUInt32(data, 0);
                 case NdfType.Float32:
                     return BitConverter.ToSingle(data, 0);
+                case NdfType.TableStringFile:
+                    return mgr.Strings.Single(x => x.Id == BitConverter.ToInt32(data, 0));
                 case NdfType.TableString:
                     return mgr.Strings.Single(x => x.Id == BitConverter.ToInt32(data, 0));
+                case NdfType.Color32:
+                    return Color.FromArgb(data[0], data[1], data[2], data[3]);
                 default:
                     return null;
             }
@@ -53,10 +54,11 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                 case NdfType.Boolean:
                     return 1;
                 case NdfType.Int32:
+                case NdfType.UInt32:
                 case NdfType.Float32:
+                case NdfType.TableStringFile:
                 case NdfType.TableString:
-
-                case NdfType.Unknown4Byte:
+                case NdfType.Color32:
                     return 4;
 
                 default:

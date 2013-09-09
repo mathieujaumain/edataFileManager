@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using EdataFileManager.NdfBin.Model.Ndfbin;
 using EdataFileManager.NdfBin.Model.Ndfbin.Types;
+using EdataFileManager.Util;
 
 namespace EdataFileManager.NdfBin
 {
@@ -16,6 +17,9 @@ namespace EdataFileManager.NdfBin
         public ObservableCollection<NdfbinClass> Classes { get; set; }
         public ObservableCollection<NdfbinString> Strings { get; set; }
         public ObservableCollection<NdfbinTran> Trans { get; set; }
+
+        protected List<byte[]> _unknownTypes = new List<byte[]>();
+        protected List<int> _unknownTypesCount = new List<int>();
 
         public NdfbinManager(byte[] data)
         {
@@ -198,7 +202,7 @@ namespace EdataFileManager.NdfBin
             using (var ms = new MemoryStream(data))
             {
                 var buffer = new byte[4];
-                byte[] contBuffer; 
+                byte[] contBuffer;
 
                 ms.Read(buffer, 0, buffer.Length);
                 int classId = BitConverter.ToInt32(buffer, 0);
@@ -225,7 +229,21 @@ namespace EdataFileManager.NdfBin
                     var type = NdfTypeManager.GetType(buffer);
 
                     if (type == NdfType.Unknown)
+                    {
+
+                        var t = _unknownTypes.SingleOrDefault(x => Utils.ByteArrayCompare(x, buffer));
+
+                        if (t == default(byte[]))
+                        {
+                            _unknownTypes.Add(buffer);
+                            _unknownTypesCount.Add(1);
+                        }
+                        else
+                        {
+                            _unknownTypesCount[_unknownTypes.IndexOf(t)]++;
+                        }
                         break;
+                    }
 
                     contBuffer = new byte[NdfTypeManager.SizeofType(type)];
 

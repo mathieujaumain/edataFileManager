@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace EdataFileManager.Util
@@ -24,6 +25,14 @@ namespace EdataFileManager.Util
         public static string StripString(string s)
         {
             return s.Split('\0')[0].TrimEnd();
+        }
+
+        public static bool ByteArrayCompare(byte[] a1, byte[] a2)
+        {
+            if (a1.Length != a2.Length)
+                return false;
+
+            return !a1.Where((t, i) => t != a2[i]).Any();
         }
     }
 }
