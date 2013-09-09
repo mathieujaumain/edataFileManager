@@ -228,20 +228,25 @@ namespace EdataFileManager.NdfBin
                     prop.TypeData = buffer;
                     var type = NdfTypeManager.GetType(buffer);
 
+                    if (type == NdfType.Reference)
+                    {
+                        ms.Read(buffer, 0, buffer.Length);
+                        type = NdfTypeManager.GetType(buffer);
+                    }
+
                     if (type == NdfType.Unknown)
                     {
+                        //var t = _unknownTypes.SingleOrDefault(x => Utils.ByteArrayCompare(x, buffer));
 
-                        var t = _unknownTypes.SingleOrDefault(x => Utils.ByteArrayCompare(x, buffer));
-
-                        if (t == default(byte[]))
-                        {
-                            _unknownTypes.Add(buffer);
-                            _unknownTypesCount.Add(1);
-                        }
-                        else
-                        {
-                            _unknownTypesCount[_unknownTypes.IndexOf(t)]++;
-                        }
+                        //if (t == default(byte[]))
+                        //{
+                        //    _unknownTypes.Add(buffer);
+                        //    _unknownTypesCount.Add(1);
+                        //}
+                        //else
+                        //{
+                        //    _unknownTypesCount[_unknownTypes.IndexOf(t)]++;
+                        //}
                         break;
                     }
 
