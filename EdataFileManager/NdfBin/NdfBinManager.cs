@@ -203,6 +203,7 @@ namespace EdataFileManager.NdfBin
             {
                 var buffer = new byte[4];
                 byte[] contBuffer;
+                uint contBufferlen;
 
                 ms.Read(buffer, 0, buffer.Length);
                 int classId = BitConverter.ToInt32(buffer, 0);
@@ -234,23 +235,34 @@ namespace EdataFileManager.NdfBin
                         type = NdfTypeManager.GetType(buffer);
                     }
 
+                    switch (type)
+                    {
+                        case NdfType.WideString:
+                            ms.Read(buffer, 0, buffer.Length);
+                            contBufferlen = BitConverter.ToUInt32(buffer, 0);
+                            break;
+                        default:
+                            contBufferlen = NdfTypeManager.SizeofType(type);
+                            break;
+                    }
+
                     if (type == NdfType.Unknown)
                     {
-                        //var t = _unknownTypes.SingleOrDefault(x => Utils.ByteArrayCompare(x, buffer));
+                        var t = _unknownTypes.SingleOrDefault(x => Utils.ByteArrayCompare(x, buffer));
 
-                        //if (t == default(byte[]))
-                        //{
-                        //    _unknownTypes.Add(buffer);
-                        //    _unknownTypesCount.Add(1);
-                        //}
-                        //else
-                        //{
-                        //    _unknownTypesCount[_unknownTypes.IndexOf(t)]++;
-                        //}
+                        if (t == default(byte[]))
+                        {
+                            _unknownTypes.Add(buffer);
+                            _unknownTypesCount.Add(1);
+                        }
+                        else
+                        {
+                            _unknownTypesCount[_unknownTypes.IndexOf(t)]++;
+                        }
                         break;
                     }
 
-                    contBuffer = new byte[NdfTypeManager.SizeofType(type)];
+                    contBuffer = new byte[contBufferlen];
 
                     ms.Read(contBuffer, 0, contBuffer.Length);
 

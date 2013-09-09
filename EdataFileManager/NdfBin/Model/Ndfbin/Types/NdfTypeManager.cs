@@ -24,12 +24,13 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
 
         public static object GetValue(byte[] data, NdfType type, NdfbinManager mgr)
         {
-            if (data.Length != SizeofType(type))
-                return null;
+            //if (data.Length != SizeofType(type))
+            //    return null;
 
             switch (type)
             {
                 case NdfType.Boolean:
+                case NdfType.Boolean2:
                     return BitConverter.ToBoolean(data, 0);
                 case NdfType.Int32:
                     return BitConverter.ToInt32(data, 0);
@@ -37,6 +38,8 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                     return BitConverter.ToUInt32(data, 0);
                 case NdfType.Float32:
                     return BitConverter.ToSingle(data, 0);
+                case NdfType.Float64:
+                    return BitConverter.ToDouble(data, 0);
                 case NdfType.TableStringFile:
                     return mgr.Strings.Single(x => x.Id == BitConverter.ToInt32(data, 0));
                 case NdfType.TableString:
@@ -58,17 +61,24 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                 case NdfType.DescriptorId:
                     return BitConverter.ToInt32(data.Skip(12).ToArray(), 0);
 
+                case NdfType.WideString:
+                    return Encoding.UTF7.GetString(data);
+
+                case NdfType.TransTableReference:
+                    return mgr.Trans.Single(x => x.Id == BitConverter.ToInt32(data, 0));
+
 
                 default:
                     return null;
             }
         }
 
-        public static byte SizeofType(NdfType type)
+        public static uint SizeofType(NdfType type)
         {
             switch (type)
             {
                 case NdfType.Boolean:
+                case NdfType.Boolean2:
                     return 1;
                 case NdfType.Int32:
                 case NdfType.UInt32:
@@ -76,6 +86,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                 case NdfType.TableStringFile:
                 case NdfType.TableString:
                 case NdfType.Color32:
+                case NdfType.WideString:
                     return 4;
                 case NdfType.Unknown8Byte:
                 case NdfType.ObjectReference:
@@ -84,7 +95,12 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                     return 12;
                 case NdfType.DescriptorId:
                     return 16;
-                    
+
+                case NdfType.Float64:
+                    return 8;
+
+                case NdfType.TransTableReference:
+                    return 4;
 
                 default:
                     return 0;
