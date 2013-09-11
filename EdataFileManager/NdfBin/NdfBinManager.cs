@@ -202,8 +202,6 @@ namespace EdataFileManager.NdfBin
             using (var ms = new MemoryStream(data))
             {
                 var buffer = new byte[4];
-                byte[] contBuffer;
-                uint contBufferlen;
 
                 ms.Read(buffer, 0, buffer.Length);
                 int classId = BitConverter.ToInt32(buffer, 0);
@@ -214,6 +212,7 @@ namespace EdataFileManager.NdfBin
                     cls.Instances.Add(instance);
 
                 NdfbinPropertyValue prop;
+                bool triggerBreak;
 
                 // Read properties
                 while (ms.Position < ms.Length)
@@ -224,55 +223,94 @@ namespace EdataFileManager.NdfBin
                     ms.Read(buffer, 0, buffer.Length);
                     prop.Property = cls.Properties.Single(x => x.Id == BitConverter.ToInt32(buffer, 0));
 
-                    ms.Read(buffer, 0, buffer.Length);
+                    var res = ReadTypeValuePair(ms, out triggerBreak, prop);
 
-                    prop.TypeData = buffer;
-                    var type = NdfTypeManager.GetType(buffer);
+                    prop.Type = res.Key;
+                    prop.Value = res.Value;
 
-                    if (type == NdfType.Reference)
-                    {
-                        ms.Read(buffer, 0, buffer.Length);
-                        type = NdfTypeManager.GetType(buffer);
-                    }
-
-                    switch (type)
-                    {
-                        case NdfType.WideString:
-                            ms.Read(buffer, 0, buffer.Length);
-                            contBufferlen = BitConverter.ToUInt32(buffer, 0);
-                            break;
-                        default:
-                            contBufferlen = NdfTypeManager.SizeofType(type);
-                            break;
-                    }
-
-                    if (type == NdfType.Unknown)
-                    {
-                        //var t = _unknownTypes.SingleOrDefault(x => Utils.ByteArrayCompare(x, buffer));
-
-                        //if (t == default(byte[]))
-                        //{
-                        //    _unknownTypes.Add(buffer);
-                        //    _unknownTypesCount.Add(1);
-                        //}
-                        //else
-                        //{
-                        //    _unknownTypesCount[_unknownTypes.IndexOf(t)]++;
-                        //}
+                    if (triggerBreak)
                         break;
-                    }
-
-                    contBuffer = new byte[contBufferlen];
-
-                    ms.Read(contBuffer, 0, contBuffer.Length);
-
-                    prop.Value = NdfTypeManager.GetValue(contBuffer, type, this);
-                    prop.ValueData = contBuffer;
-
                 }
             }
-
             return instance;
+        }
+
+        protected KeyValuePair<NdfType, object> ReadTypeValuePair(MemoryStream ms, out bool triggerBreak, NdfbinPropertyValue prop = null)
+        {
+            var buffer = new byte[4];
+            uint contBufferlen;
+            object value;
+            triggerBreak = false;
+
+            ms.Read(buffer, 0, buffer.Length);
+            var type = NdfTypeManager.GetType(buffer);
+
+            if (type == NdfType.Reference)
+            {
+                ms.Read(buffer, 0, buffer.Length);
+                type = NdfTypeManager.GetType(buffer);
+            }
+
+            switch (type)
+            {
+                case NdfType.WideString:
+                case NdfType.List:
+                    ms.Read(buffer, 0, buffer.Length);
+                    contBufferlen = BitConverter.ToUInt32(buffer, 0);
+                    break;
+                default:
+                    contBufferlen = NdfTypeManager.SizeofType(type);
+                    break;
+            }
+
+            if (type == NdfType.Unknown)
+            {
+                var t = _unknownTypes.SingleOrDefault(x => Utils.ByteArrayCompare(x, buffer));
+
+                if (t == default(byte[]))
+                {
+                    _unknownTypes.Add(buffer);
+                    _unknownTypesCount.Add(1);
+                }
+                else
+                    _unknownTypesCount[_unknownTypes.IndexOf(t)]++;
+
+                triggerBreak = true;
+                return new KeyValuePair<NdfType, object>(type, null);
+            }
+
+            if (type == NdfType.List)
+            {
+                var lstValue = new List<object>();
+
+                for (int i = 0; i < contBufferlen; i++)
+                {
+                    var res = ReadTypeValuePair(ms, out triggerBreak);
+
+                    if (triggerBreak)
+                        break;
+
+                    lstValue.Add(res.Value);
+                }
+
+                value = lstValue;
+            }
+            else if (type == NdfType.Map)
+            {
+                value = new KeyValuePair<object, object>(ReadTypeValuePair(ms, out triggerBreak).Value, ReadTypeValuePair(ms, out triggerBreak).Value);
+            }
+            else
+            {
+                var contBuffer = new byte[contBufferlen];
+                ms.Read(contBuffer, 0, contBuffer.Length);
+
+                if (prop != null)
+                    prop.ValueData = contBuffer;
+                 
+                value = NdfTypeManager.GetValue(contBuffer, type, this);
+            }
+
+            return new KeyValuePair<NdfType, object>(type, value);
         }
 
         private List<long> GetInstanceOffsets(MemoryStream ms)

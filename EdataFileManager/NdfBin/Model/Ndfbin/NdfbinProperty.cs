@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Globalization;
+using System.Linq;
 using System.Windows.Data;
+using EdataFileManager.Util;
 using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.NdfBin.Model.Ndfbin
@@ -19,6 +22,11 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
                 _id = value;
                 OnPropertyChanged(() => Id);
             }
+        }
+
+        public string BinId
+        {
+            get { return Utils.Int32ToBigEndianHexByteString(Id); }
         }
 
         public NdfbinClass Class
@@ -67,6 +75,48 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
 
                 return null;
             }
+        }
+
+        public string ValueType
+        {
+            get
+            {
+                var currentInstance = Class.InstancesCollectionView.CurrentItem as NdfbinObject;
+
+                if (currentInstance == null)
+                    return null;
+
+                var value = currentInstance.PropertyValues.SingleOrDefault(x => x.Property == this);
+
+                if (value == null)
+                    return null;
+
+                return value.Type.ToString();
+
+            }
+        }
+
+        public string ValueData
+        {
+            get
+            {
+                var currentInstance = Class.InstancesCollectionView.CurrentItem as NdfbinObject;
+
+                if (currentInstance == null)
+                    return null;
+
+                var value = currentInstance.PropertyValues.SingleOrDefault(x => x.Property == this);
+
+                if (value == null)
+                    return null;
+
+                return Utils.ByteArrayToBigEndianHeyByteString(value.ValueData);
+            }
+        }
+
+        public override string ToString()
+        {
+            return Name.ToString(CultureInfo.InvariantCulture);
         }
     }
 }

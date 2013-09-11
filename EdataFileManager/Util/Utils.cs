@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -33,6 +34,28 @@ namespace EdataFileManager.Util
                 return false;
 
             return !a1.Where((t, i) => t != a2[i]).Any();
+        }
+
+        public static string Int32ToBigEndianHexByteString(Int32 i)
+        {
+            byte[] bytes = BitConverter.GetBytes(i);
+            string format = BitConverter.IsLittleEndian
+                ? "{0:X2} {1:X2} {2:X2} {3:X2}"
+                : "{3:X2} {2:X2} {1:X2} {0:X2}";
+            return String.Format(format, bytes[0], bytes[1], bytes[2], bytes[3]);
+        }
+
+        public static string ByteArrayToBigEndianHeyByteString(byte[] data)
+        {
+            if (data == null)
+                return string.Empty;
+
+            var stringBuilderb = new StringBuilder();
+
+            foreach (var b in data)
+                stringBuilderb.Append(string.Format("{0:X2}", b));
+
+            return stringBuilderb.ToString();
         }
     }
 }

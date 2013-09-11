@@ -111,7 +111,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
         protected void InstancesCollectionViewCurrentChanged(object sender, EventArgs e)
         {
             foreach (var property in Properties)
-                property.OnPropertyChanged(() => property.Value);
+                property.OnPropertyChanged(() => property.Value, () => property.ValueData, () => property.ValueType);
         }
 
         public override string ToString()

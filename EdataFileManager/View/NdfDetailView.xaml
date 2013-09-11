@@ -111,10 +111,13 @@
                       CanUserDeleteRows="False" 
                       AutoGenerateColumns="False"
                       SelectionMode="Single"
-                      SelectionUnit="FullRow">
+                      SelectionUnit="Cell">
                     <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=BinId}" Header="BinId" IsReadOnly="True" Width="50" />
                         <DataGridTextColumn Binding="{Binding Path=Id}" Header="Id" IsReadOnly="True" Width="50" />
                         <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" IsReadOnly="True" Width="*" />
+                        <DataGridTextColumn Binding="{Binding Path=ValueType}" Header="Type" IsReadOnly="True" Width="150" />
+                        <DataGridTextColumn Binding="{Binding Path=ValueData}" Header="Biniary Value" IsReadOnly="True" Width="150" />
                         <DataGridTextColumn Binding="{Binding Path=Value}" Header="Value" IsReadOnly="True" Width="150" />
                     </DataGrid.Columns>
                 </DataGrid>

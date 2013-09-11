@@ -8,12 +8,13 @@ namespace EdataFileManager.ViewModel.Base
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void OnPropertyChanged<T>(Expression<Func<T>> prop)
+        public void OnPropertyChanged<T>(params Expression<Func<T>>[] props)
         {
-            var body = prop.Body as MemberExpression;
-            if (PropertyChanged != null && body != null)
+            foreach (var prop in props)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(body.Member.Name));
+                var body = prop.Body as MemberExpression;
+                if (PropertyChanged != null && body != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(body.Member.Name));
             }
         }
 
