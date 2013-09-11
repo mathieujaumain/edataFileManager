@@ -58,15 +58,14 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                     // TODO: object
                     return cls;
 
-                case NdfType.DescriptorId:
-                    return BitConverter.ToInt32(data.Skip(12).ToArray(), 0);
+                case NdfType.Guid:
+                    return new Guid(data);
 
                 case NdfType.WideString:
                     return Encoding.UTF7.GetString(data);
 
                 case NdfType.TransTableReference:
                     return mgr.Trans.Single(x => x.Id == BitConverter.ToInt32(data, 0));
-
 
                 default:
                     return null;
@@ -93,8 +92,13 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                     return 8;
                 case NdfType.Vector:
                     return 12;
-                case NdfType.DescriptorId:
+                case NdfType.Guid:
                     return 16;
+
+                case NdfType.Map:
+                    return 0;
+                case NdfType.List:
+                    return 4;
 
                 case NdfType.Float64:
                     return 8;

@@ -22,7 +22,8 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
         ObjectReference = 0xBBBBBBBB,
         TransTableReference = 0xAAAAAAAA,
 
-        DescriptorId = 26,
+        Map = 0x00000022,
+        Guid = 26,
         Unknown8Byte = 29,
 
         Vector = 0x0000000b,
@@ -30,6 +31,8 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
         Color32 = 0x0000000d,
 
         TableStringFile = 0x0000001C,
+
+        List = 0x00000011,
 
         Unknown = 0xFFFFFFFF
     }
