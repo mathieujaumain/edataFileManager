@@ -55,7 +55,13 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
         {
             get
             {
-                var value = ((NdfbinObject)CollectionViewSource.GetDefaultView(Class.Instances).CurrentItem).PropertyValues.SingleOrDefault(x => x.Property == this);
+                var currentInstance = Class.InstancesCollectionView.CurrentItem as NdfbinObject;
+
+                if (currentInstance == null)
+                    return null;
+
+                var value = currentInstance.PropertyValues.SingleOrDefault(x => x.Property == this);
+
                 if (value != null)
                     return value.Value;
 

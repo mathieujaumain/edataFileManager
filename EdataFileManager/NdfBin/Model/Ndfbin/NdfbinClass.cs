@@ -6,7 +6,9 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Data;
+using System.Windows.Input;
 using EdataFileManager.ViewModel.Base;
+using EdataFileManager.ViewModel.Filter;
 
 namespace EdataFileManager.NdfBin.Model.Ndfbin
 {
@@ -18,6 +20,22 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
         private readonly ObservableCollection<NdfbinProperty> _properties = new ObservableCollection<NdfbinProperty>();
         private readonly ObservableCollection<NdfbinObject> _instances = new ObservableCollection<NdfbinObject>();
         private ICollectionView _instancesCollectionView;
+        private readonly ObservableCollection<PropertyFilterExpression> _propertyFilterExpressions = new ObservableCollection<PropertyFilterExpression>();
+
+        public NdfbinClass()
+        {
+            ApplyPropertyFilter = new ActionCommand(ApplyPropertyFilterExecute);
+        }
+
+        private void ApplyPropertyFilterExecute(object obj)
+        {
+            InstancesCollectionView.Refresh();
+        }
+
+        public ObservableCollection<PropertyFilterExpression> PropertyFilterExpressions
+        {
+            get { return _propertyFilterExpressions; }
+        }
 
         public int Id
         {
@@ -47,6 +65,8 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
             get { return _instances; }
         }
 
+        public ICommand ApplyPropertyFilter { get; set; }
+
         public ICollectionView InstancesCollectionView
         {
             get
@@ -56,11 +76,36 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
                     _instancesCollectionView = CollectionViewSource.GetDefaultView(Instances);
                     OnPropertyChanged(() => InstancesCollectionView);
                     _instancesCollectionView.CurrentChanged += InstancesCollectionViewCurrentChanged;
+                    _instancesCollectionView.Filter = FilterInstances;
                 }
 
                 return _instancesCollectionView;
             }
 
+        }
+
+        public bool FilterInstances(object o)
+        {
+            var obj = o as NdfbinObject;
+
+            if (obj == null)
+                return false;
+
+            foreach (var expr in PropertyFilterExpressions)
+            {
+                if (expr.PropertyName == null)
+                    continue;
+
+                var propVal = obj.PropertyValues.SingleOrDefault(x => x.Property.Name == expr.PropertyName);
+
+                if (propVal == null)
+                    return false;
+
+                if (!propVal.Value.ToString().Contains(expr.Value) || expr.Value.Length == 0)
+                    return false;
+            }
+
+            return true;
         }
 
         protected void InstancesCollectionViewCurrentChanged(object sender, EventArgs e)

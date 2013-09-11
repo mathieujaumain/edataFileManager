@@ -6,6 +6,7 @@ using EdataFileManager.NdfBin;
 using EdataFileManager.NdfBin.Model.Edata;
 using EdataFileManager.NdfBin.Model.Ndfbin;
 using EdataFileManager.ViewModel.Base;
+using EdataFileManager.ViewModel.Filter;
 
 namespace EdataFileManager.ViewModel
 {
@@ -35,6 +36,7 @@ namespace EdataFileManager.ViewModel
             Classes = ndfbinManager.Classes;
             Strings = ndfbinManager.Strings;
             Trans = ndfbinManager.Trans;
+
         }
 
         protected NdfFile OwnerFile { get; set; }

@@ -82,6 +82,8 @@
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Util\Utils.cs" />
+    <Compile Include="ViewModel\Filter\FilterDiscriminator.cs" />
+    <Compile Include="ViewModel\Filter\PropertyFilterExpression.cs" />
     <Compile Include="ViewModel\MoviePlaybackViewModel.cs" />
     <Compile Include="ViewModel\EdataFileViewModel.cs" />
     <Compile Include="ViewModel\ManagerMainViewModel.cs" />
