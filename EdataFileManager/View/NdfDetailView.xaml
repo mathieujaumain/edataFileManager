@@ -97,8 +97,8 @@
                         </DataGrid.Columns>
                     </DataGrid>
                     <Button Grid.Column="3" VerticalAlignment="Bottom" Command="{Binding SelectedValue.ApplyPropertyFilter,  ElementName=classGrid}" Margin="3">Apply</Button>
-                    
-                    
+
+
                     <!--<ComboBox Grid.Column="2" Margin="5" ItemsSource="{Binding SelectedValue.Properties, ElementName=classGrid}" DisplayMemberPath="Name" />
                     <TextBlock Grid.Column="3" Text="=" VerticalAlignment="Center" Margin="5" />
                     <TextBox Grid.Column="4" Text="{Binding Path=PropertyValueFilter}" Width="70" Margin="5" /> -->
@@ -111,7 +111,8 @@
                       CanUserDeleteRows="False" 
                       AutoGenerateColumns="False"
                       SelectionMode="Single"
-                      SelectionUnit="Cell">
+                      SelectionUnit="CellOrRowHeader"
+                          RowDetailsVisibilityMode="VisibleWhenSelected">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Path=BinId}" Header="BinId" IsReadOnly="True" Width="50" />
                         <DataGridTextColumn Binding="{Binding Path=Id}" Header="Id" IsReadOnly="True" Width="50" />
@@ -120,6 +121,13 @@
                         <DataGridTextColumn Binding="{Binding Path=ValueData}" Header="Biniary Value" IsReadOnly="True" Width="150" />
                         <DataGridTextColumn Binding="{Binding Path=Value}" Header="Value" IsReadOnly="True" Width="150" />
                     </DataGrid.Columns>
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate>
+                            <Border BorderThickness="0" Background="BlanchedAlmond" Padding="10">
+                                <ListBox ItemsSource="{Binding Path=Value}" />
+                            </Border>
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
                 </DataGrid>
             </Grid>
 
