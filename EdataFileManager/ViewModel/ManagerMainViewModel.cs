@@ -25,6 +25,7 @@ namespace EdataFileManager.ViewModel
         public ICommand CloseFileCommand { get; set; }
         public ICommand ChangeExportPathCommand { get; set; }
         public ICommand ViewContentCommand { get; set; }
+        public ICommand ViewTradFileCommand { get; set; }
         public ICommand PlayMovieCommand { get; set; }
         public ICommand AboutUsCommand { get; set; }
 
@@ -82,6 +83,7 @@ namespace EdataFileManager.ViewModel
             ExportNdfCommand = new ActionCommand(ExportNdfExecute);
             ExportRawCommand = new ActionCommand(ExportRawExecute);
             OpenFileCommand = new ActionCommand(OpenFileExecute);
+            ViewTradFileCommand = new ActionCommand(ViewTradFileExecute);
             CloseFileCommand = new ActionCommand(CloseFileExecute);
             PlayMovieCommand = new ActionCommand(PlayMovieExecute);
 
@@ -89,6 +91,25 @@ namespace EdataFileManager.ViewModel
 
             ChangeExportPathCommand = new ActionCommand(ChangeExportPathExecute);
             ViewContentCommand = new ActionCommand(ViewContentExecute);
+        }
+
+        private void ViewTradFileExecute(object obj)
+        {
+            var vm = CollectionViewSource.GetDefaultView(OpenFiles).CurrentItem as EdataFileViewModel;
+
+            if (vm == null)
+                return;
+
+            var ndf = vm.FilesCollectionView.CurrentItem as NdfFile;
+
+            if (ndf == null)
+                return;
+
+            var tradVm = new TradFileViewModel(vm.EdataManager.GetRawData(ndf), ndf);
+
+            var view = new TradFileView() {DataContext = tradVm};
+
+            view.Show();
         }
 
         protected void ViewContentExecute(object obj)

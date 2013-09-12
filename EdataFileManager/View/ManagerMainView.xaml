@@ -9,8 +9,9 @@
         <BitmapImage UriSource="\View\Images\reuse-26.png" x:Key="ExtractRawIcon" />
         <BitmapImage UriSource="\View\Images\zip-26.png" x:Key="ExtractZipedPartIcon" />
         <BitmapImage UriSource="\View\Images\open_in_browser-26.png" x:Key="OpenDetailsIcon" />
-        <BitmapImage UriSource="\View\Images\play-26.png" x:Key="OpenMovieIcon" />        
-        
+        <BitmapImage UriSource="\View\Images\play-26.png" x:Key="OpenMovieIcon" />
+        <BitmapImage UriSource="\View\Images\text-26.png" x:Key="OpenDictionayIcon" />
+
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -42,12 +43,17 @@
             <Button ToolTip="Export Uncompressed NDF content" Command="{Binding Path=ExportNdfCommand}">
                 <Image Source="{StaticResource ExtractZipedPartIcon}"  />
             </Button>
+            <Separator />
             <Button ToolTip="View Ndf file" Command="{Binding ViewContentCommand}" >
                 <Image Source="{StaticResource OpenDetailsIcon}" />
+            </Button>
+            <Button ToolTip="View dictionary" Command="{Binding ViewTradFileCommand}" >
+                <Image Source="{StaticResource OpenDictionayIcon}" />
             </Button>
             <Button ToolTip="View Wmv file" Command="{Binding PlayMovieCommand}" >
                 <Image Source="{StaticResource OpenMovieIcon}" />
             </Button>
+            <Separator />
             <Button ToolTip="About" Command="{Binding AboutUsCommand}" >
                 <Image Source="{StaticResource AboutIcon}" />
             </Button>

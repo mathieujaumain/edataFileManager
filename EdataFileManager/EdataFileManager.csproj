@@ -78,6 +78,8 @@
     <Compile Include="NdfBin\Model\Ndfbin\NdfbinTran.cs" />
     <Compile Include="NdfBin\Model\Ndfbin\Types\NdfType.cs" />
     <Compile Include="NdfBin\Model\Ndfbin\Types\NdfTypeManager.cs" />
+    <Compile Include="NdfBin\Model\Trad\TradEntry.cs" />
+    <Compile Include="NdfBin\TradManager.cs" />
     <Compile Include="NdfBin\NdfbinManager.cs" />
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\Settings.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="ViewModel\Base\ActionCommand.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
     <Compile Include="ViewModel\NdfDetailsViewModel.cs" />
+    <Compile Include="ViewModel\TradFileViewModel.cs" />
     <Compile Include="View\EdataFileView.xaml.cs">
       <DependentUpon>EdataFileView.xaml</DependentUpon>
     </Compile>
@@ -98,6 +101,9 @@
     </Compile>
     <Compile Include="View\NdfDetailView.xaml.cs">
       <DependentUpon>NdfDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TradFileView.xaml.cs">
+      <DependentUpon>TradFileView.xaml</DependentUpon>
     </Compile>
     <Page Include="View\EdataFileView.xaml">
       <SubType>Designer</SubType>
@@ -121,6 +127,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\NdfDetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TradFileView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -175,6 +185,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="View\Images\zip-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\text-26.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

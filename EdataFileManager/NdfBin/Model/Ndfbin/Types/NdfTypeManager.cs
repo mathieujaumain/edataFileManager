@@ -62,7 +62,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                     return new Guid(data);
 
                 case NdfType.WideString:
-                    return Encoding.UTF7.GetString(data);
+                    return Encoding.Unicode.GetString(data);
 
                 case NdfType.TransTableReference:
                     return mgr.Trans.Single(x => x.Id == BitConverter.ToInt32(data, 0));
@@ -87,7 +87,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                 case NdfType.Color32:
                 case NdfType.WideString:
                     return 4;
-                case NdfType.Unknown8Byte:
+                case NdfType.LocalisationHash:
                 case NdfType.ObjectReference:
                     return 8;
                 case NdfType.Vector:
@@ -98,6 +98,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                 case NdfType.Map:
                     return 0;
                 case NdfType.List:
+                case NdfType.MapList:
                     return 4;
 
                 case NdfType.Float64:

@@ -1,0 +1,25 @@
+﻿<Window x:Class="EdataFileManager.View.TradFileView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Path=TitleText}" Height="438" Width="669">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBox Text="{Binding Path=FilterExpression, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="200" Margin="5" />
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Path=EntriesCollectionView}" Margin="5"
+            IsSynchronizedWithCurrentItem="True"
+                      CanUserResizeRows="False"
+                      CanUserAddRows="False"  
+                      CanUserDeleteRows="False" 
+                      AutoGenerateColumns="False"
+                      SelectionMode="Extended"
+                      SelectionUnit="CellOrRowHeader">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=HashView}" Header="Hash" IsReadOnly="True" Width="120" />
+                <DataGridTextColumn Binding="{Binding Path=Content}" Header="Value" IsReadOnly="True" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

@@ -24,7 +24,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
 
         Map = 0x00000022,
         Guid = 26,
-        Unknown8Byte = 29,
+        LocalisationHash = 29,
 
         Vector = 0x0000000b,
 
@@ -33,6 +33,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
         TableStringFile = 0x0000001C,
 
         List = 0x00000011,
+        MapList = 0x00000012,
 
         Unknown = 0xFFFFFFFF
     }

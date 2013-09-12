@@ -255,6 +255,7 @@ namespace EdataFileManager.NdfBin
             {
                 case NdfType.WideString:
                 case NdfType.List:
+                case NdfType.MapList:
                     ms.Read(buffer, 0, buffer.Length);
                     contBufferlen = BitConverter.ToUInt32(buffer, 0);
                     break;
@@ -295,6 +296,22 @@ namespace EdataFileManager.NdfBin
 
                 value = lstValue;
             }
+            else if (type == NdfType.MapList)
+            {
+                var lstValue = new List<object>();
+
+                for (int i = 0; i < contBufferlen; i++)
+                {
+                    var res = new KeyValuePair<object, object>(ReadTypeValuePair(ms, out triggerBreak).Value, ReadTypeValuePair(ms, out triggerBreak).Value);
+
+                    if (triggerBreak)
+                        break;
+
+                    lstValue.Add(res.Value);
+                }
+
+                value = lstValue;
+            }
             else if (type == NdfType.Map)
             {
                 value = new KeyValuePair<object, object>(ReadTypeValuePair(ms, out triggerBreak).Value, ReadTypeValuePair(ms, out triggerBreak).Value);
@@ -306,7 +323,7 @@ namespace EdataFileManager.NdfBin
 
                 if (prop != null)
                     prop.ValueData = contBuffer;
-                 
+
                 value = NdfTypeManager.GetValue(contBuffer, type, this);
             }
 
