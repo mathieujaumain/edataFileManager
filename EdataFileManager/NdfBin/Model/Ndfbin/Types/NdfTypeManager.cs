@@ -55,9 +55,10 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                                        BitConverter.ToSingle(py, 0),
                                        BitConverter.ToSingle(pz, 0));
                 case NdfType.ObjectReference:
-                    var cls = mgr.Classes.SingleOrDefault(x => x.Id == BitConverter.ToUInt32(data, 0));
+                    string s = string.Format("{0} : {1}", BitConverter.ToUInt32(data.Take(4).ToArray(), 0), BitConverter.ToUInt32(data.Skip(4).ToArray(), 0));
+                    //var cls = mgr.Classes.SingleOrDefault(x => x.Id == BitConverter.ToUInt32(data, 0));
                     // TODO: object
-                    return cls;
+                    return s;
 
                 case NdfType.Guid:
                     return new Guid(data);
