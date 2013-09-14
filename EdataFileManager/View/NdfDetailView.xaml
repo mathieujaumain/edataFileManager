@@ -12,8 +12,10 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="8*" />
+                    <RowDefinition Height="2*" />
                 </Grid.RowDefinitions>
+                
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -23,7 +25,8 @@
                     <Label>Classes</Label>
                     <TextBox Grid.Column="2" VerticalAlignment="Top" Width="150" Margin="5" Text="{Binding Path=ClassesFilterExpression, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
-                <Grid  Grid.Row="1">
+                
+                <Grid  Grid.Row="1" Grid.RowSpan="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="8*" />
                         <ColumnDefinition Width="2*" />
@@ -56,9 +59,10 @@
                             <DataGridTextColumn Binding="{Binding Path=Id}" Header="Instance" IsReadOnly="True" Width="*" />
                         </DataGrid.Columns>
                     </DataGrid>
-
                 </Grid>
+                
                 <GridSplitter ResizeDirection="Columns" Width="5" Grid.RowSpan="2" />
+                
                 <Grid Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -97,14 +101,8 @@
                         </DataGrid.Columns>
                     </DataGrid>
                     <Button Grid.Column="3" VerticalAlignment="Bottom" Command="{Binding SelectedValue.ApplyPropertyFilter,  ElementName=classGrid}" Margin="3">Apply</Button>
-
-
-                    <!--<ComboBox Grid.Column="2" Margin="5" ItemsSource="{Binding SelectedValue.Properties, ElementName=classGrid}" DisplayMemberPath="Name" />
-                    <TextBlock Grid.Column="3" Text="=" VerticalAlignment="Center" Margin="5" />
-                    <TextBox Grid.Column="4" Text="{Binding Path=PropertyValueFilter}" Width="70" Margin="5" /> -->
-
                 </Grid>
-                <DataGrid Margin="5" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding SelectedValue.Properties, ElementName=classGrid}"
+                <DataGrid x:Name="propGrid" Margin="5" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding SelectedValue.Properties, ElementName=classGrid}"
                       IsSynchronizedWithCurrentItem="True"
                       CanUserResizeRows="False"
                       CanUserAddRows="False"  
@@ -129,6 +127,7 @@
                         </DataTemplate>
                     </DataGrid.RowDetailsTemplate>
                 </DataGrid>
+                <ContentPresenter  Grid.Column="1" Grid.Row="2" DataContext="{Binding Path=SelectedValue.Value, ElementName=propGrid}"></ContentPresenter>
             </Grid>
 
         </TabItem>

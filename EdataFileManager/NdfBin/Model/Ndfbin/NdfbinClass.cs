@@ -91,6 +91,8 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
             if (obj == null)
                 return false;
 
+            bool ret = true;
+
             foreach (var expr in PropertyFilterExpressions)
             {
                 if (expr.PropertyName == null)
@@ -99,13 +101,26 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
                 var propVal = obj.PropertyValues.SingleOrDefault(x => x.Property.Name == expr.PropertyName);
 
                 if (propVal == null)
-                    return false;
+                {
+                    ret = false;
+                    continue;
+                }
 
-                if (!propVal.Value.ToString().Contains(expr.Value) || expr.Value.Length == 0)
-                    return false;
+                if (propVal.Value == null)
+                {
+                    if (expr.Value.Length > 0)
+                        ret = false;
+
+                    continue;
+                }
+
+                if (propVal.Value.ToString().Contains(expr.Value) || propVal.Property.ValueData.ToLower().Contains(expr.Value))
+                    continue;
+
+                return false;
             }
 
-            return true;
+            return ret;
         }
 
         protected void InstancesCollectionViewCurrentChanged(object sender, EventArgs e)

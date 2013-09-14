@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using EdataFileManager.NdfBin.Model.Ndfbin;
 using EdataFileManager.NdfBin.Model.Ndfbin.Types;
 using EdataFileManager.Util;
@@ -165,7 +167,7 @@ namespace EdataFileManager.NdfBin
             Classes = classes;
         }
 
-        protected void ReadObjects()
+        protected ObservableCollection<NdfbinObject> ReadObjects()
         {
             var objects = new ObservableCollection<NdfbinObject>();
 
@@ -193,6 +195,8 @@ namespace EdataFileManager.NdfBin
                     objects.Add(ParseObject(buffer, i));
                 }
             }
+
+            return objects;
         }
 
         private NdfbinObject ParseObject(byte[] data, int index)

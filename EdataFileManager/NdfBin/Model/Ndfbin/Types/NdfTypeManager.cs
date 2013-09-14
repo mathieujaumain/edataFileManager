@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using EdataFileManager.Util;
 
 namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
 {
@@ -66,6 +67,10 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
 
                 case NdfType.TransTableReference:
                     return mgr.Trans.Single(x => x.Id == BitConverter.ToInt32(data, 0));
+
+                case NdfType.LocalisationHash:
+                    return Utils.ByteArrayToBigEndianHeyByteString(data);
+
 
                 default:
                     return null;

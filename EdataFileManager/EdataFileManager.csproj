@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EdataFileManager</RootNamespace>
     <AssemblyName>EdataFileManager</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -76,8 +78,16 @@
     <Compile Include="NdfBin\Model\Ndfbin\NdfbinPropertyValue.cs" />
     <Compile Include="NdfBin\Model\Ndfbin\NdfbinString.cs" />
     <Compile Include="NdfBin\Model\Ndfbin\NdfbinTran.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\Types\AllTypes\NdfBoolean.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\Types\AllTypes\NdfDouble.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\Types\AllTypes\NdfInt32.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\Types\AllTypes\NdfString.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\Types\AllTypes\NdfUInt32.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\Types\AllTypes\NdfSingle.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\Types\NdfStringValueWrapper.cs" />
     <Compile Include="NdfBin\Model\Ndfbin\Types\NdfType.cs" />
     <Compile Include="NdfBin\Model\Ndfbin\Types\NdfTypeManager.cs" />
+    <Compile Include="NdfBin\Model\Ndfbin\Types\NdfFlatTypeValueWrapper.cs" />
     <Compile Include="NdfBin\Model\Trad\TradEntry.cs" />
     <Compile Include="NdfBin\TradManager.cs" />
     <Compile Include="NdfBin\NdfbinManager.cs" />
