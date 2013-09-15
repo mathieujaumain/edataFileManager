@@ -74,8 +74,6 @@ namespace EdataFileManager.ViewModel
             EdataManager.ParseEdataFile();
             Files = EdataManager.Files;
             CreateFilesCollectionView();
-
-            //OnPropertyChanged(() => TitleText);
         }
 
         public bool FilterPath(object item)
@@ -100,8 +98,6 @@ namespace EdataFileManager.ViewModel
                 FilesCollectionView.Refresh();
             }
         }
-
-
 
         private void CreateFilesCollectionView()
         {

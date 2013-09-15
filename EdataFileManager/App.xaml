@@ -3,6 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="View/ManagerMainView.xaml">
     <Application.Resources>
-         
+        <BitmapImage UriSource="\View\Images\about-26.png" x:Key="AboutIcon" />
+        <BitmapImage UriSource="\View\Images\reuse-26.png" x:Key="ExtractRawIcon" />
+        <BitmapImage UriSource="\View\Images\zip-26.png" x:Key="ExtractZipedPartIcon" />
+        <BitmapImage UriSource="\View\Images\open_in_browser-26.png" x:Key="OpenDetailsIcon" />
+        <BitmapImage UriSource="\View\Images\play-26.png" x:Key="OpenMovieIcon" />
+        <BitmapImage UriSource="\View\Images\text-26.png" x:Key="OpenDictionayIcon" />
+
+        <BitmapImage UriSource="\View\Images\save-26.png" x:Key="SaveIcon" />
+
     </Application.Resources>
 </Application>

@@ -4,15 +4,6 @@
         xmlns:ViewModel="clr-namespace:EdataFileManager.ViewModel" xmlns:View="clr-namespace:EdataFileManager.View"
         x:Class="EdataFileManager.View.MainWindow"
         Height="468" Width="902" Title="Edata File Manager">
-    <Window.Resources>
-        <BitmapImage UriSource="\View\Images\about-26.png" x:Key="AboutIcon" />
-        <BitmapImage UriSource="\View\Images\reuse-26.png" x:Key="ExtractRawIcon" />
-        <BitmapImage UriSource="\View\Images\zip-26.png" x:Key="ExtractZipedPartIcon" />
-        <BitmapImage UriSource="\View\Images\open_in_browser-26.png" x:Key="OpenDetailsIcon" />
-        <BitmapImage UriSource="\View\Images\play-26.png" x:Key="OpenMovieIcon" />
-        <BitmapImage UriSource="\View\Images\text-26.png" x:Key="OpenDictionayIcon" />
-
-    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />

@@ -1,7 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Windows.Data;
+using System.Windows.Input;
 using EdataFileManager.NdfBin;
 using EdataFileManager.NdfBin.Model.Edata;
 using EdataFileManager.NdfBin.Model.Ndfbin;
@@ -24,12 +26,15 @@ namespace EdataFileManager.ViewModel
         private ICollectionView _transCollectionView;
         private string _transFilterExpression = string.Empty;
 
-        public NdfDetailsViewModel(NdfFile file, EdataManager manager)
+        public NdfDetailsViewModel(NdfFile file, EdataFileViewModel ownerVm)
         {
             OwnerFile = file;
-            NdfFileContent content = manager.GetNdfContent(file);
+            EdataFileViewModel = ownerVm;
+
+            NdfFileContent content = EdataFileViewModel.EdataManager.GetNdfContent(file);
 
             var ndfbinManager = new NdfbinManager(content.Body);
+            NdfbinManager = ndfbinManager;
 
             ndfbinManager.ParseData();
 
@@ -37,9 +42,36 @@ namespace EdataFileManager.ViewModel
             Strings = ndfbinManager.Strings;
             Trans = ndfbinManager.Trans;
 
+            SaveNdfbinCommand = new ActionCommand(SaveNdfbinExecute);
         }
 
+        private void SaveNdfbinExecute(object obj)
+        {
+            var newFile = NdfbinManager.BuildNdfFile(true);
+
+            EdataFileViewModel.EdataManager.ReplaceFile(OwnerFile, newFile);
+
+            EdataFileViewModel.LoadFile(EdataFileViewModel.LoadedFile);
+
+            //string p = Path.Combine(Settings.SettingsManager.Load().SavePath, "test.ndfbin");
+
+            //if (!File.Exists(p))
+            //    File.Create(p).Dispose();
+
+            //using (var fs = new FileStream(p, FileMode.Truncate))
+            //{
+            //    fs.Write(newFile, 0, newFile.Length);
+            //    fs.Flush();
+            //}
+        }
+
+        public NdfbinManager NdfbinManager { get; set; }
+
+        public EdataFileViewModel EdataFileViewModel { get; set; }
+
         protected NdfFile OwnerFile { get; set; }
+
+        public ICommand SaveNdfbinCommand { get; set; }
 
         public ObservableCollection<NdfbinClass> Classes
         {

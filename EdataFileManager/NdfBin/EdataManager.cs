@@ -30,11 +30,6 @@ namespace EdataFileManager.NdfBin
         {
             Header = ReadEdatHeader();
             Files = ReadEdatDictionary();
-
-            //foreach (var file in Files)
-            //{
-            //    file.Content = GetNdfContent(file);
-            //}
         }
 
         public NdfFileContent GetNdfContent(NdfFile f)
@@ -104,7 +99,7 @@ namespace EdataFileManager.NdfBin
                 ms.Read(buffer, 0, buffer.Length);
 
                 if (fileContent.IsCompressedBody)
-                    fileContent.Body = Compressing.Compressing.Decomp(buffer);
+                    fileContent.Body = Compressing.Compressor.Decomp(buffer);
                 else
                     fileContent.Body = buffer;
             }
@@ -230,7 +225,7 @@ namespace EdataFileManager.NdfBin
             return header;
         }
 
-        public byte[] ReplaceFile(NdfFile oldFile, byte[] newContent)
+        public byte[] ReplaceRebuild(NdfFile oldFile, byte[] newContent)
         {
             var reserveBuffer = new byte[200];
 
@@ -303,7 +298,7 @@ namespace EdataFileManager.NdfBin
                             newFile.Write(buffer, 0, buffer.Length);
 
                             var checkSum = curFile.Checksum;
-                            newFile.Read(checkSum, 0, checkSum.Length);
+                            newFile.Write(checkSum, 0, checkSum.Length);
 
                             var name = Utils.ReadString(newFile);
 
@@ -328,13 +323,31 @@ namespace EdataFileManager.NdfBin
 
                     var dirCheckSum = MD5.Create().ComputeHash(dirBuffer);
 
-                    newFile.Seek(0x31,SeekOrigin.Begin);
-                    
-                    newFile.Write(dirCheckSum,0,dirCheckSum.Length);
+                    newFile.Seek(0x31, SeekOrigin.Begin);
+
+                    newFile.Write(dirCheckSum, 0, dirCheckSum.Length);
 
                     return newFile.ToArray();
                 }
             }
+        }
+
+        public void ReplaceFile(NdfFile oldFile, byte[] newContent)
+        {
+            var newCont = ReplaceRebuild(oldFile, newContent);
+
+            if (!File.Exists(FilePath))
+            {
+                // TODO: Loggin
+                return;
+            }
+
+            using (var fs = new FileStream(FilePath, FileMode.Truncate))
+            {
+                fs.Write(newCont, 0, newCont.Length);
+                fs.Flush();
+            }
+
         }
     }
 }

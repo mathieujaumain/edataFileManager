@@ -125,7 +125,7 @@ namespace EdataFileManager.ViewModel
             if (ndf == null)
                 return;
 
-            var detailsVm = new NdfDetailsViewModel(ndf, vm.EdataManager);
+            var detailsVm = new NdfDetailsViewModel(ndf, vm);
 
             var view = new NdfbinView { DataContext = detailsVm };
 

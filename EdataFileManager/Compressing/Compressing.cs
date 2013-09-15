@@ -1,31 +1,14 @@
 ﻿using System.IO;
 using System;
-using System.IO.Compression;
-using zlib;
+using Ionic.Zlib;
+using CompressionLevel = Ionic.Zlib.CompressionLevel;
+using CompressionMode = System.IO.Compression.CompressionMode;
+using DeflateStream = System.IO.Compression.DeflateStream;
 
 namespace EdataFileManager.Compressing
 {
-    public static class Compressing
+    public static class Compressor
     {
-        /// <summary>
-        /// .NET internal deflate lib seems to be too strict for Eugen Systems :) This doesnt work
-        /// p/summary>
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static byte[] DecompAlt(byte[] input)
-        {
-            using (var deflateStream = new DeflateStream(new MemoryStream(input), CompressionMode.Decompress))
-            {
-                using (var outputStream = new MemoryStream())
-                {
-                    deflateStream.CopyTo(outputStream);
-
-                    return outputStream.ToArray();
-                }
-            }
-        }
-
         /// <summary>
         /// good ol' zlib.NET implementation likes Eugen
         /// </summary>
@@ -35,7 +18,7 @@ namespace EdataFileManager.Compressing
         {
             using (var output = new MemoryStream())
             {
-                using (var zipStream = new ZOutputStream(output))
+                using (var zipStream = new ZlibStream(output, Ionic.Zlib.CompressionMode.Decompress))
                 {
                     using (var inputStream = new MemoryStream(input))
                     {
@@ -52,5 +35,35 @@ namespace EdataFileManager.Compressing
                 return output.ToArray();
             }
         }
+
+        public static byte[] Comp(byte[] input)
+        {
+            using (var sourceStream = new MemoryStream(input))
+            {
+                using (var compressed = new MemoryStream())
+                {
+                    using (var zipSteam = new ZlibStream(compressed, Ionic.Zlib.CompressionMode.Compress, CompressionLevel.Level9, true))
+                    {
+                        zipSteam.FlushMode = FlushType.Full;
+
+                        //var buffer = new byte[1024];
+                        //int len = sourceStream.Read(buffer, 0, buffer.Length);
+                        
+                        //while (len > 0)
+                        //{
+                        //    zipSteam.Write(buffer, 0, len);
+                        //    len = sourceStream.Read(buffer, 0, buffer.Length);
+                        //}
+
+                        sourceStream.CopyTo(zipSteam);
+
+                        zipSteam.Flush();
+
+                        return compressed.ToArray();
+                    }
+                }
+            }
+        }
+
     }
 }

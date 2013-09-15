@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using EdataFileManager.Compressing;
 using EdataFileManager.NdfBin.Model.Ndfbin;
 using EdataFileManager.NdfBin.Model.Ndfbin.Types;
 using EdataFileManager.Util;
@@ -400,6 +401,41 @@ namespace EdataFileManager.NdfBin
             }
 
             Footer = footer;
+        }
+
+        public byte[] BuildNdfFile(bool compress)
+        {
+            var header = new byte[] { 0x45, 0x55, 0x47, 0x30, 0x00, 0x00, 0x00, 0x00, 0x43, 0x4E, 0x44, 0x46 };
+            var compressed = compress ? new byte[] { 0x80, 0x00, 0x00, 0x00 } : new byte[4];
+
+            var blockSize = BitConverter.GetBytes((long)Data.Length + 40 - 0xE0);
+            var blockSizeE0 = BitConverter.GetBytes((long)(Data.Length + 40));
+
+            var blockSize3 = BitConverter.GetBytes((Data.Length));
+
+            var contBuffer = Data;
+
+            using (var ms = new MemoryStream())
+            {
+                ms.Write(header, 0, header.Length);
+                ms.Write(compressed, 0, compressed.Length);
+
+                ms.Write(blockSize, 0, blockSize.Length);
+                ms.Write(BitConverter.GetBytes((long)40), 0, 8);
+                ms.Write(blockSizeE0, 0, blockSizeE0.Length);
+
+                if (compress)
+                {
+                    ms.Write(blockSize3, 0, blockSize3.Length);
+
+                    contBuffer = Compressor.Comp(Data);
+                }
+
+                ms.Write(contBuffer, 0, contBuffer.Length);
+
+                return ms.ToArray();
+            }
+
         }
     }
 }

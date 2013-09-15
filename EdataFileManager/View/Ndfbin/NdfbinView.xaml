@@ -2,7 +2,17 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Ndfbin="clr-namespace:EdataFileManager.View.Ndfbin" Title="{Binding Path=Title}" Height="500" Width="1000">
-    <TabControl>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ToolBar>
+            <Button ToolTip="Save changes back" Command="{Binding Path=SaveNdfbinCommand}">
+                <Image Source="{StaticResource SaveIcon}"  />
+            </Button>
+        </ToolBar>
+        <TabControl Grid.Row="1">
         <TabItem Header="Classes">
 
             <Grid>
@@ -103,31 +113,6 @@
                     <Button Grid.Column="3" VerticalAlignment="Bottom" Command="{Binding SelectedValue.ApplyPropertyFilter,  ElementName=classGrid}" Margin="3">Apply</Button>
                 </Grid>
                 <Ndfbin:InstanceView DataContext="{Binding SelectedValue, ElementName=classGrid}"  Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Margin="5"  />
-                <!--<DataGrid x:Name="propGrid" Margin="5" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" ItemsSource="{Binding SelectedValue.Properties, ElementName=classGrid}"
-                      IsSynchronizedWithCurrentItem="True"
-                      CanUserResizeRows="False"
-                      CanUserAddRows="False"  
-                      CanUserDeleteRows="False" 
-                      AutoGenerateColumns="False"
-                      SelectionMode="Single"
-                      SelectionUnit="CellOrRowHeader"
-                          RowDetailsVisibilityMode="VisibleWhenSelected">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Path=BinId}" Header="BinId" IsReadOnly="True" Width="50" />
-                        <DataGridTextColumn Binding="{Binding Path=Id}" Header="Id" IsReadOnly="True" Width="50" />
-                        <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" IsReadOnly="True" Width="*" />
-                        <DataGridTextColumn Binding="{Binding Path=ValueType}" Header="Type" IsReadOnly="True" Width="150" />
-                        <DataGridTextColumn Binding="{Binding Path=ValueData}" Header="Biniary Value" IsReadOnly="True" Width="150" />
-                        <DataGridTextColumn Binding="{Binding Path=Value}" Header="Value" IsReadOnly="True" Width="150" />
-                    </DataGrid.Columns>
-                    <DataGrid.RowDetailsTemplate>
-                        <DataTemplate>
-                            <Border BorderThickness="0" Background="BlanchedAlmond" Padding="10">
-                                <ListBox ItemsSource="{Binding Path=Value}" />
-                            </Border>
-                        </DataTemplate>
-                    </DataGrid.RowDetailsTemplate>
-                </DataGrid>-->
             </Grid>
 
         </TabItem>
@@ -194,7 +179,6 @@
             </Grid>
         </TabItem>
     </TabControl>
-    <!--<Button HorizontalAlignment="Right" Width="50" Grid.Column="1" Margin="5" IsEnabled="False">Save</Button>
-                    <Button HorizontalAlignment="Right" Width="50" Grid.Column="2" Margin="5" Command="{Binding Path=CloseCommand}" >Close</Button>-->
 
+    </Grid>
 </Window>

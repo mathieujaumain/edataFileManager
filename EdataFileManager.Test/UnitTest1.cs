@@ -48,7 +48,7 @@ namespace EdataFileManager.Test
 
             var file = mgr.GetRawData(mgr.Files.Single(x => x.Path.Contains("everything.ndfbin")));
 
-            var newFile = mgr.ReplaceFile(mgr.Files.Single(x => x.Path.Contains("everything.ndfbin")), file);
+            var newFile = mgr.ReplaceRebuild(mgr.Files.Single(x => x.Path.Contains("everything.ndfbin")), file);
 
             using (var fs = new FileStream(path,FileMode.Truncate))
             {
