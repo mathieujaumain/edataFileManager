@@ -47,9 +47,9 @@ namespace EdataFileManager.Compressing
                             size = inputStream.Read(buffer, 0, buffer.Length);
                             zipStream.Write(buffer, 0, size);
                         }
-                        return output.ToArray();
                     }
                 }
+                return output.ToArray();
             }
         }
     }

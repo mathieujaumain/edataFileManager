@@ -18,31 +18,25 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
         public NdfType Type
         {
             get { return _type; }
-            set { _type = value; OnPropertyChanged(() => Type); }
-        }
-
-        public byte[] TypeData
-        {
-            get { return _typeData; }
-            set { _typeData = value; OnPropertyChanged(() => TypeData); }
+            set { _type = value; OnPropertyChanged("Type"); }
         }
 
         public byte[] ValueData
         {
             get { return _valueData; }
-            set { _valueData = value;  OnPropertyChanged(() => ValueData);}
+            set { _valueData = value;  OnPropertyChanged("ValueData");}
         }
 
         public object Value
         {
             get { return _value; }
-            set { _value = value; OnPropertyChanged(() => Value); }
+            set { _value = value; OnPropertyChanged("Value"); }
         }
 
         public NdfbinProperty Property
         {
             get { return _property; }
-            set { _property = value; OnPropertyChanged(() => Property); }
+            set { _property = value; OnPropertyChanged("Property"); }
         }
     }
 }

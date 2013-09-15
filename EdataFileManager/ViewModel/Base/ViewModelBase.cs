@@ -18,6 +18,12 @@ namespace EdataFileManager.ViewModel.Base
             }
         }
 
+        public void OnPropertyChanged(string prop)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+
         public void BeginEdit()
         {
             //throw new NotImplementedException();

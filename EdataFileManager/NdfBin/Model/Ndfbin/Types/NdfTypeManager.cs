@@ -42,9 +42,13 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                 case NdfType.Float64:
                     return BitConverter.ToDouble(data, 0);
                 case NdfType.TableStringFile:
-                    return mgr.Strings.Single(x => x.Id == BitConverter.ToInt32(data, 0));
+                    var id = BitConverter.ToInt32(data, 0);
+                    return mgr.Strings[id];
+                    //return mgr.Strings.Single(x => x.Id == id);
                 case NdfType.TableString:
-                    return mgr.Strings.Single(x => x.Id == BitConverter.ToInt32(data, 0));
+                    var id2 = BitConverter.ToInt32(data, 0);
+                    return mgr.Strings[id2];
+                    //return mgr.Strings.Single(x => x.Id == id2);
                 case NdfType.Color32:
                     return Color.FromArgb(data[0], data[1], data[2], data[3]);
                 case NdfType.Vector:
