@@ -234,17 +234,17 @@ namespace EdataFileManager.NdfBin
         {
             var reserveBuffer = new byte[7500];
 
-            var filesToAlter = Files.Where(x => x.Offset >= oldFile.Offset).ToList();
+            //var filesToAlter = Files.Where(x => x.Offset >= oldFile.Offset).ToList();
 
             using (var fs = new FileStream(FilePath, FileMode.Open))
             {
                 using (var newFile = new MemoryStream())
                 {
-                    var headerPart = new byte[Header.DirOffset];
+                    var headerPart = new byte[Header.FileOffset];
                     fs.Read(headerPart, 0, headerPart.Length);
                     newFile.Write(headerPart, 0, headerPart.Length);
 
-                    fs.Seek(Header.FileOffset, SeekOrigin.Begin);
+                    //fs.Seek(Header.FileOffset, SeekOrigin.Begin);
 
                     uint filesContentLength = 0;
 
@@ -289,8 +289,6 @@ namespace EdataFileManager.NdfBin
 
                         if (fileGroupId == 0)
                         {
-                            id++;
-
                             var curFile = Files.Single(x => x.Id == id);
 
                             // FileEntrySize
@@ -305,6 +303,16 @@ namespace EdataFileManager.NdfBin
                             var checkSum = curFile.Checksum;
                             newFile.Read(checkSum, 0, checkSum.Length);
 
+                            var name = Utils.ReadString(newFile);
+
+                            if ((name.Length + 1) % 2 == 1)
+                                newFile.Seek(1, SeekOrigin.Current);
+
+                            id++;
+                        }
+                        else if (fileGroupId > 0)
+                        {
+                            newFile.Seek(4, SeekOrigin.Current);
                             var name = Utils.ReadString(newFile);
 
                             if ((name.Length + 1) % 2 == 1)
