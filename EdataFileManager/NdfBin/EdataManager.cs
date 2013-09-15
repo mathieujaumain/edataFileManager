@@ -232,7 +232,7 @@ namespace EdataFileManager.NdfBin
 
         public byte[] ReplaceFile(NdfFile oldFile, byte[] newContent)
         {
-            var reserveBuffer = new byte[7500];
+            var reserveBuffer = new byte[200];
 
             //var filesToAlter = Files.Where(x => x.Offset >= oldFile.Offset).ToList();
 
@@ -244,7 +244,7 @@ namespace EdataFileManager.NdfBin
                     fs.Read(headerPart, 0, headerPart.Length);
                     newFile.Write(headerPart, 0, headerPart.Length);
 
-                    //fs.Seek(Header.FileOffset, SeekOrigin.Begin);
+                    fs.Seek(Header.FileOffset, SeekOrigin.Begin);
 
                     uint filesContentLength = 0;
 
@@ -252,7 +252,8 @@ namespace EdataFileManager.NdfBin
                     {
                         byte[] fileBuffer;
 
-                        file.Offset = newFile.Position;
+                        var oldOffset = file.Offset;
+                        file.Offset = newFile.Position - Header.FileOffset;
 
                         if (file == oldFile)
                         {
@@ -262,6 +263,7 @@ namespace EdataFileManager.NdfBin
                         else
                         {
                             fileBuffer = new byte[file.Size];
+                            fs.Seek(oldOffset + Header.FileOffset, SeekOrigin.Begin);
                             fs.Read(fileBuffer, 0, fileBuffer.Length);
                         }
 
@@ -273,7 +275,7 @@ namespace EdataFileManager.NdfBin
                         filesContentLength += (uint)fileBuffer.Length + (uint)reserveBuffer.Length;
                     }
 
-                    newFile.Seek(0x24, SeekOrigin.Begin);
+                    newFile.Seek(0x25, SeekOrigin.Begin);
                     newFile.Write(BitConverter.GetBytes(filesContentLength), 0, 4);
 
 
@@ -319,6 +321,17 @@ namespace EdataFileManager.NdfBin
                                 newFile.Seek(1, SeekOrigin.Current);
                         }
                     }
+
+                    newFile.Seek(Header.DirOffset, SeekOrigin.Begin);
+                    var dirBuffer = new byte[Header.DirLengh];
+                    newFile.Read(dirBuffer, 0, dirBuffer.Length);
+
+                    var dirCheckSum = MD5.Create().ComputeHash(dirBuffer);
+
+                    newFile.Seek(0x31,SeekOrigin.Begin);
+                    
+                    newFile.Write(dirCheckSum,0,dirCheckSum.Length);
+
                     return newFile.ToArray();
                 }
             }
