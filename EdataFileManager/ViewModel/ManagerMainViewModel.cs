@@ -227,11 +227,14 @@ namespace EdataFileManager.ViewModel
 
             var openfDlg = new OpenFileDialog
                                {
-                                   InitialDirectory = settings.LastOpenFolder,
                                    DefaultExt = ".dat",
                                    Multiselect = true,
                                    Filter = "Edat (.dat)|*.dat|All Files|*.*"
                                };
+
+            if (File.Exists(settings.LastOpenFolder))
+                openfDlg.InitialDirectory = settings.LastOpenFolder;
+
 
             if (openfDlg.ShowDialog().Value)
             {
