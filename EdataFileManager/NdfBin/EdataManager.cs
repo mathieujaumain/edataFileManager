@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using EdataFileManager.NdfBin.Model.Edata;
 using EdataFileManager.Util;
@@ -36,7 +37,7 @@ namespace EdataFileManager.NdfBin
             //}
         }
 
-        public NdfFileContent GetNdfContent(NdfFile f) 
+        public NdfFileContent GetNdfContent(NdfFile f)
         {
             byte[] buffer;
 
@@ -126,6 +127,7 @@ namespace EdataFileManager.NdfBin
                 fileStream.Seek(Header.DirOffset, SeekOrigin.Begin);
 
                 long dirEnd = Header.DirOffset + Header.DirLengh;
+                uint id = 0;
 
                 while (fileStream.Position < dirEnd)
                 {
@@ -155,6 +157,9 @@ namespace EdataFileManager.NdfBin
 
                         if ((file.Name.Length + 1) % 2 == 1)
                             fileStream.Seek(1, SeekOrigin.Current);
+
+                        file.Id = id;
+                        id++;
 
                         files.Add(file);
 
@@ -223,6 +228,92 @@ namespace EdataFileManager.NdfBin
             }
 
             return header;
+        }
+
+        public byte[] ReplaceFile(NdfFile oldFile, byte[] newContent)
+        {
+            var reserveBuffer = new byte[7500];
+
+            var filesToAlter = Files.Where(x => x.Offset >= oldFile.Offset).ToList();
+
+            using (var fs = new FileStream(FilePath, FileMode.Open))
+            {
+                using (var newFile = new MemoryStream())
+                {
+                    var headerPart = new byte[Header.DirOffset];
+                    fs.Read(headerPart, 0, headerPart.Length);
+                    newFile.Write(headerPart, 0, headerPart.Length);
+
+                    fs.Seek(Header.FileOffset, SeekOrigin.Begin);
+
+                    uint filesContentLength = 0;
+
+                    foreach (var file in Files)
+                    {
+                        byte[] fileBuffer;
+
+                        file.Offset = newFile.Position;
+
+                        if (file == oldFile)
+                        {
+                            fileBuffer = newContent;
+                            file.Size = newContent.Length;
+                        }
+                        else
+                        {
+                            fileBuffer = new byte[file.Size];
+                            fs.Read(fileBuffer, 0, fileBuffer.Length);
+                        }
+
+                        file.Checksum = MD5.Create().ComputeHash(fileBuffer);
+
+                        newFile.Write(fileBuffer, 0, fileBuffer.Length);
+                        newFile.Write(reserveBuffer, 0, reserveBuffer.Length);
+
+                        filesContentLength += (uint)fileBuffer.Length + (uint)reserveBuffer.Length;
+                    }
+
+                    newFile.Seek(0x24, SeekOrigin.Begin);
+                    newFile.Write(BitConverter.GetBytes(filesContentLength), 0, 4);
+
+
+                    newFile.Seek(Header.DirOffset, SeekOrigin.Begin);
+                    long dirEnd = Header.DirOffset + Header.DirLengh;
+                    uint id = 0;
+
+                    while (newFile.Position < dirEnd)
+                    {
+                        var buffer = new byte[4];
+                        newFile.Read(buffer, 0, 4);
+                        int fileGroupId = BitConverter.ToInt32(buffer, 0);
+
+                        if (fileGroupId == 0)
+                        {
+                            id++;
+
+                            var curFile = Files.Single(x => x.Id == id);
+
+                            // FileEntrySize
+                            newFile.Seek(4, SeekOrigin.Current);
+
+                            buffer = BitConverter.GetBytes(curFile.Offset);
+                            newFile.Write(buffer, 0, buffer.Length);
+
+                            buffer = BitConverter.GetBytes(curFile.Size);
+                            newFile.Write(buffer, 0, buffer.Length);
+
+                            var checkSum = curFile.Checksum;
+                            newFile.Read(checkSum, 0, checkSum.Length);
+
+                            var name = Utils.ReadString(newFile);
+
+                            if ((name.Length + 1) % 2 == 1)
+                                newFile.Seek(1, SeekOrigin.Current);
+                        }
+                    }
+                    return newFile.ToArray();
+                }
+            }
         }
     }
 }

@@ -5,8 +5,11 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using EdataFileManager.NdfBin.Model.Ndfbin.Types;
+using EdataFileManager.View.Ndfbin;
 using EdataFileManager.ViewModel.Base;
 using EdataFileManager.ViewModel.Filter;
 
@@ -22,9 +25,42 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
         private ICollectionView _instancesCollectionView;
         private readonly ObservableCollection<PropertyFilterExpression> _propertyFilterExpressions = new ObservableCollection<PropertyFilterExpression>();
 
-        public NdfbinClass()
+        public NdfbinManager Manager { get; protected set; }
+
+        public NdfbinClass(NdfbinManager mgr)
         {
+            Manager = mgr;
             ApplyPropertyFilter = new ActionCommand(ApplyPropertyFilterExecute);
+            DetailsCommand = new ActionCommand(DetailsCommandExecute);
+        }
+
+        private void DetailsCommandExecute(object obj)
+        {
+            var item = obj as IEnumerable<DataGridCellInfo>;
+
+            var prop = item.First().Item as NdfbinProperty;
+
+            if (prop == null || prop.ValueType != NdfType.ObjectReference)
+                return;
+
+            var tVal = prop.Value.ToString().Split(new string[] { " : " }, StringSplitOptions.None);
+
+            var cls = Manager.Classes.SingleOrDefault(x => x.Id == Int32.Parse(tVal[0]));
+
+            if (cls == null)
+                return;
+
+            var inst = cls.Instances.SingleOrDefault(x => x.Id == Int32.Parse(tVal[1]));
+
+            if (inst == null)
+                return;
+
+            cls.InstancesCollectionView.MoveCurrentTo(inst);
+
+            var view = new InstanceWindowView();
+            view.DataContext = cls;
+
+            view.Show();
         }
 
         private void ApplyPropertyFilterExecute(object obj)
@@ -66,6 +102,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
         }
 
         public ICommand ApplyPropertyFilter { get; set; }
+        public ICommand DetailsCommand { get; set; }
 
         public ICollectionView InstancesCollectionView
         {
@@ -126,7 +163,10 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
         protected void InstancesCollectionViewCurrentChanged(object sender, EventArgs e)
         {
             foreach (var property in Properties)
+            {
                 property.OnPropertyChanged(() => property.Value, () => property.ValueData, () => property.ValueType);
+                property.OnPropertyChanged(() => property.ValueType);
+            }
         }
 
         public override string ToString()

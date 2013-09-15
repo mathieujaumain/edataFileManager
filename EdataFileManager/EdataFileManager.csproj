@@ -109,8 +109,14 @@
     <Compile Include="View\MoviePlaybackView.xaml.cs">
       <DependentUpon>MoviePlaybackView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\NdfDetailView.xaml.cs">
-      <DependentUpon>NdfDetailView.xaml</DependentUpon>
+    <Compile Include="View\Ndfbin\InstanceWindowView.xaml.cs">
+      <DependentUpon>InstanceWindowView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ndfbin\InstanceView.xaml.cs">
+      <DependentUpon>InstanceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ndfbin\NdfbinView.xaml.cs">
+      <DependentUpon>NdfbinView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TradFileView.xaml.cs">
       <DependentUpon>TradFileView.xaml</DependentUpon>
@@ -136,7 +142,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\NdfDetailView.xaml">
+    <Page Include="View\Ndfbin\InstanceWindowView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ndfbin\InstanceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ndfbin\NdfbinView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -199,6 +213,7 @@
   <ItemGroup>
     <Resource Include="View\Images\text-26.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

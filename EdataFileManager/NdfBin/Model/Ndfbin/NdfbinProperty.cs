@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using EdataFileManager.NdfBin.Model.Ndfbin.Types;
 using EdataFileManager.Util;
 using EdataFileManager.ViewModel.Base;
 
@@ -77,21 +78,21 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
             }
         }
 
-        public string ValueType
+        public NdfType ValueType
         {
             get
             {
                 var currentInstance = Class.InstancesCollectionView.CurrentItem as NdfbinObject;
 
                 if (currentInstance == null)
-                    return null;
+                    return NdfType.Unknown;
 
                 var value = currentInstance.PropertyValues.SingleOrDefault(x => x.Property == this);
 
                 if (value == null)
-                    return null;
+                    return NdfType.Unknown;
 
-                return value.Type.ToString();
+                return value.Type;
 
             }
         }

@@ -1,7 +1,7 @@
-﻿<Window x:Class="EdataFileManager.View.NdfDetailView"
+﻿<Window x:Class="EdataFileManager.View.Ndfbin.NdfbinView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="{Binding Path=Title}" Height="359" Width="947">
+        xmlns:Ndfbin="clr-namespace:EdataFileManager.View.Ndfbin" Title="{Binding Path=Title}" Height="500" Width="1000">
     <TabControl>
         <TabItem Header="Classes">
 
@@ -102,7 +102,8 @@
                     </DataGrid>
                     <Button Grid.Column="3" VerticalAlignment="Bottom" Command="{Binding SelectedValue.ApplyPropertyFilter,  ElementName=classGrid}" Margin="3">Apply</Button>
                 </Grid>
-                <DataGrid x:Name="propGrid" Margin="5" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding SelectedValue.Properties, ElementName=classGrid}"
+                <Ndfbin:InstanceView DataContext="{Binding SelectedValue, ElementName=classGrid}"  Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Margin="5"  />
+                <!--<DataGrid x:Name="propGrid" Margin="5" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" ItemsSource="{Binding SelectedValue.Properties, ElementName=classGrid}"
                       IsSynchronizedWithCurrentItem="True"
                       CanUserResizeRows="False"
                       CanUserAddRows="False"  
@@ -126,8 +127,7 @@
                             </Border>
                         </DataTemplate>
                     </DataGrid.RowDetailsTemplate>
-                </DataGrid>
-                <ContentPresenter  Grid.Column="1" Grid.Row="2" DataContext="{Binding Path=SelectedValue.Value, ElementName=propGrid}"></ContentPresenter>
+                </DataGrid>-->
             </Grid>
 
         </TabItem>

@@ -149,7 +149,7 @@ namespace EdataFileManager.NdfBin
                 var buffer = new byte[4];
                 while (ms.Position < ms.Length)
                 {
-                    var nclass = new NdfbinClass { Offset = ms.Position, Id = i };
+                    var nclass = new NdfbinClass(this) { Offset = ms.Position, Id = i };
 
                     ms.Read(buffer, 0, buffer.Length);
                     var strLen = BitConverter.ToInt32(buffer, 0);

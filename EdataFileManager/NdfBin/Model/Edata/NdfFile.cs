@@ -19,6 +19,7 @@ namespace EdataFileManager.NdfBin.Model.Edata
     /// </summary>
     public class NdfFile : NdfEntity
     {
+        private uint _id;
         private string _path;
         private long _offset;
         private long _size;
@@ -54,6 +55,12 @@ namespace EdataFileManager.NdfBin.Model.Edata
         {
             get { return _content; }
             set { _content = value; OnPropertyChanged(() => Content); }
+        }
+
+        public uint Id
+        {
+            get { return _id; }
+            set { _id = value; OnPropertyChanged(() => Id); }
         }
 
         public override string ToString()

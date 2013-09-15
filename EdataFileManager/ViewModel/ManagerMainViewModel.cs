@@ -10,6 +10,7 @@ using EdataFileManager.NdfBin;
 using EdataFileManager.NdfBin.Model.Edata;
 using EdataFileManager.Settings;
 using EdataFileManager.View;
+using EdataFileManager.View.Ndfbin;
 using EdataFileManager.ViewModel.Base;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
@@ -126,7 +127,7 @@ namespace EdataFileManager.ViewModel
 
             var detailsVm = new NdfDetailsViewModel(ndf, vm.EdataManager);
 
-            var view = new NdfDetailView { DataContext = detailsVm };
+            var view = new NdfbinView { DataContext = detailsVm };
 
             view.Show();
         }
