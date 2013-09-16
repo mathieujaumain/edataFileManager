@@ -1,12 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using EdataFileManager.BL;
+using EdataFileManager.Model.Ndfbin.Types.AllTypes;
+using EdataFileManager.NdfBin;
+using EdataFileManager.NdfBin.Model.Ndfbin.Types;
 using EdataFileManager.Util;
 
-namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
+namespace EdataFileManager.Model.Ndfbin.Types
 {
     public static class NdfTypeManager
     {
@@ -23,7 +26,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
             return NdfType.Unknown;
         }
 
-        public static object GetValue(byte[] data, NdfType type, NdfbinManager mgr)
+        public static object GetValue(byte[] data, NdfType type, NdfbinManager mgr, long pos)
         {
             //if (data.Length != SizeofType(type))
             //    return null;
@@ -32,23 +35,21 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
             {
                 case NdfType.Boolean:
                 case NdfType.Boolean2:
-                    return BitConverter.ToBoolean(data, 0);
+                    return new NdfBoolean(BitConverter.ToBoolean(data, 0), pos);
                 case NdfType.Int32:
-                    return BitConverter.ToInt32(data, 0);
+                    return new NdfInt32(BitConverter.ToInt32(data, 0), pos);
                 case NdfType.UInt32:
-                    return BitConverter.ToUInt32(data, 0);
+                    return new NdfUInt32(BitConverter.ToUInt32(data, 0), pos);
                 case NdfType.Float32:
-                    return BitConverter.ToSingle(data, 0);
+                    return new NdfSingle(BitConverter.ToSingle(data, 0), pos);
                 case NdfType.Float64:
-                    return BitConverter.ToDouble(data, 0);
+                    return new NdfDouble(BitConverter.ToDouble(data, 0), pos);
                 case NdfType.TableStringFile:
                     var id = BitConverter.ToInt32(data, 0);
                     return mgr.Strings[id];
-                    //return mgr.Strings.Single(x => x.Id == id);
                 case NdfType.TableString:
                     var id2 = BitConverter.ToInt32(data, 0);
                     return mgr.Strings[id2];
-                    //return mgr.Strings.Single(x => x.Id == id2);
                 case NdfType.Color32:
                     return Color.FromArgb(data[0], data[1], data[2], data[3]);
                 case NdfType.Vector:
@@ -121,5 +122,44 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
                     return 0;
             }
         }
+
+        public static byte[] GetBytes(object value, NdfType type, out bool valid)
+        {
+            valid = true;
+
+            try
+            {
+                switch (type)
+                {
+                    case NdfType.Boolean2:
+                    case NdfType.Boolean:
+                        return BitConverter.GetBytes(Convert.ToBoolean(value));
+                        break;
+                    case NdfType.Int32:
+                        return BitConverter.GetBytes(Convert.ToInt32(value));
+                        break;
+                    case NdfType.UInt32:
+                        return BitConverter.GetBytes(Convert.ToUInt32(value));
+                        break;
+                    case NdfType.Float32:
+                        return BitConverter.GetBytes(Convert.ToSingle(value));
+                        break;
+                    case NdfType.Float64:
+                        return BitConverter.GetBytes(Convert.ToDouble(value));
+                        break;
+                    default:
+                        valid = false;
+                        return new byte[0];
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                valid = false;
+                return new byte[0];
+            }
+
+        }
+
     }
 }

@@ -4,14 +4,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using EdataFileManager.Compressing;
+using EdataFileManager.Model.Ndfbin;
+using EdataFileManager.Model.Ndfbin.Types;
 using EdataFileManager.NdfBin.Model.Ndfbin;
 using EdataFileManager.NdfBin.Model.Ndfbin.Types;
-using EdataFileManager.Util;
 
-namespace EdataFileManager.NdfBin
+namespace EdataFileManager.BL
 {
     public class NdfbinManager
     {
@@ -21,13 +20,15 @@ namespace EdataFileManager.NdfBin
         public ObservableCollection<NdfbinString> Strings { get; set; }
         public ObservableCollection<NdfbinTran> Trans { get; set; }
 
-        protected List<byte[]> _unknownTypes = new List<byte[]>();
-        protected List<int> _unknownTypesCount = new List<int>();
+        //protected List<byte[]> _unknownTypes = new List<byte[]>();
+        //protected List<int> _unknownTypesCount = new List<int>();
 
         public NdfbinManager(byte[] data)
         {
             Data = data;
         }
+
+        public bool HasChanges { get; set; }
 
         public void ParseData()
         {
@@ -189,11 +190,16 @@ namespace EdataFileManager.NdfBin
                     else
                         size = instanceOffsets[i + 1] - instanceOffsets[i] - 4;
 
+                    var objOffset = ms.Position;
+
                     buffer = new byte[size];
                     ms.Read(buffer, 0, buffer.Length);
                     ms.Seek(4, SeekOrigin.Current);
 
-                    objects.Add(ParseObject(buffer, i));
+                    var obj = ParseObject(buffer, i);
+                    obj.Offset = objOffset;
+
+                    objects.Add(obj);
                 }
             }
 
@@ -271,15 +277,15 @@ namespace EdataFileManager.NdfBin
 
             if (type == NdfType.Unknown)
             {
-                var t = _unknownTypes.SingleOrDefault(x => Utils.ByteArrayCompare(x, buffer));
+                //var t = _unknownTypes.SingleOrDefault(x => Utils.ByteArrayCompare(x, buffer));
 
-                if (t == default(byte[]))
-                {
-                    _unknownTypes.Add(buffer);
-                    _unknownTypesCount.Add(1);
-                }
-                else
-                    _unknownTypesCount[_unknownTypes.IndexOf(t)]++;
+                //if (t == default(byte[]))
+                //{
+                //    _unknownTypes.Add(buffer);
+                //    _unknownTypesCount.Add(1);
+                //}
+                //else
+                //    _unknownTypesCount[_unknownTypes.IndexOf(t)]++;
 
                 triggerBreak = true;
                 return new KeyValuePair<NdfType, object>(type, null);
@@ -329,7 +335,7 @@ namespace EdataFileManager.NdfBin
                 if (prop != null)
                     prop.ValueData = contBuffer;
 
-                value = NdfTypeManager.GetValue(contBuffer, type, this);
+                value = NdfTypeManager.GetValue(contBuffer, type, this, ms.Position-contBuffer.Length);
             }
 
             return new KeyValuePair<NdfType, object>(type, value);

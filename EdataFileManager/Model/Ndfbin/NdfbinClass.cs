@@ -4,16 +4,16 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using EdataFileManager.BL;
 using EdataFileManager.NdfBin.Model.Ndfbin.Types;
 using EdataFileManager.View.Ndfbin;
 using EdataFileManager.ViewModel.Base;
 using EdataFileManager.ViewModel.Filter;
 
-namespace EdataFileManager.NdfBin.Model.Ndfbin
+namespace EdataFileManager.Model.Ndfbin
 {
     public class NdfbinClass : ViewModelBase
     {

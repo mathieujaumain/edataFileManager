@@ -66,31 +66,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="NdfBin\Model\Edata\NdfDir.cs" />
-    <Compile Include="NdfBin\Model\Edata\NdfEntity.cs" />
-    <Compile Include="NdfBin\Model\Edata\NdfFile.cs" />
-    <Compile Include="NdfBin\Model\Edata\NdfFileContent.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\NdfbinClass.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\NdfbinFooter.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\NdfbinFooterEntry.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\NdfbinObject.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\NdfbinProperty.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\NdfbinPropertyValue.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\NdfbinString.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\NdfbinTran.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\Types\AllTypes\NdfBoolean.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\Types\AllTypes\NdfDouble.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\Types\AllTypes\NdfInt32.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\Types\AllTypes\NdfString.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\Types\AllTypes\NdfUInt32.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\Types\AllTypes\NdfSingle.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\Types\NdfStringValueWrapper.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\Types\NdfType.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\Types\NdfTypeManager.cs" />
-    <Compile Include="NdfBin\Model\Ndfbin\Types\NdfFlatTypeValueWrapper.cs" />
-    <Compile Include="NdfBin\Model\Trad\TradEntry.cs" />
-    <Compile Include="NdfBin\TradManager.cs" />
-    <Compile Include="NdfBin\NdfbinManager.cs" />
+    <Compile Include="Model\Edata\NdfDir.cs" />
+    <Compile Include="Model\Edata\NdfEntity.cs" />
+    <Compile Include="Model\Edata\NdfFile.cs" />
+    <Compile Include="Model\Edata\NdfFileContent.cs" />
+    <Compile Include="Model\Ndfbin\NdfbinClass.cs" />
+    <Compile Include="Model\Ndfbin\NdfbinFooter.cs" />
+    <Compile Include="Model\Ndfbin\NdfbinFooterEntry.cs" />
+    <Compile Include="Model\Ndfbin\NdfbinObject.cs" />
+    <Compile Include="Model\Ndfbin\NdfbinProperty.cs" />
+    <Compile Include="Model\Ndfbin\NdfbinPropertyValue.cs" />
+    <Compile Include="Model\Ndfbin\NdfbinString.cs" />
+    <Compile Include="Model\Ndfbin\NdfbinTran.cs" />
+    <Compile Include="Model\Ndfbin\Types\AllTypes\NdfBoolean.cs" />
+    <Compile Include="Model\Ndfbin\Types\AllTypes\NdfDouble.cs" />
+    <Compile Include="Model\Ndfbin\Types\AllTypes\NdfInt32.cs" />
+    <Compile Include="Model\Ndfbin\Types\AllTypes\NdfString.cs" />
+    <Compile Include="Model\Ndfbin\Types\AllTypes\NdfUInt32.cs" />
+    <Compile Include="Model\Ndfbin\Types\AllTypes\NdfSingle.cs" />
+    <Compile Include="Model\Ndfbin\Types\NdfStringValueWrapper.cs" />
+    <Compile Include="Model\Ndfbin\Types\NdfType.cs" />
+    <Compile Include="Model\Ndfbin\Types\NdfTypeManager.cs" />
+    <Compile Include="Model\Ndfbin\Types\NdfFlatTypeValueWrapper.cs" />
+    <Compile Include="Model\Trad\TradEntry.cs" />
+    <Compile Include="BL\TradManager.cs" />
+    <Compile Include="BL\NdfbinManager.cs" />
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Util\Utils.cs" />
@@ -160,8 +160,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NdfBin\Model\Edata\EdataHeader.cs" />
-    <Compile Include="NdfBin\EdataManager.cs" />
+    <Compile Include="Model\Edata\EdataHeader.cs" />
+    <Compile Include="BL\EdataManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -180,7 +180,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="ClassDiagram1.cd" />
-    <None Include="NdfBin\Model\ClassDiagram1.cd" />
+    <None Include="Model\ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

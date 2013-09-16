@@ -4,6 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Windows.Data;
 using System.Windows.Input;
+using EdataFileManager.BL;
+using EdataFileManager.Model.Ndfbin;
 using EdataFileManager.NdfBin;
 using EdataFileManager.NdfBin.Model.Edata;
 using EdataFileManager.NdfBin.Model.Ndfbin;

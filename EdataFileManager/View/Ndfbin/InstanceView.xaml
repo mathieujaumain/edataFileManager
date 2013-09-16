@@ -25,7 +25,7 @@
                 <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" IsReadOnly="True" Width="*" />
                 <DataGridTextColumn Binding="{Binding Path=ValueType}" Header="Type" IsReadOnly="True" Width="150" />
                 <DataGridTextColumn Binding="{Binding Path=ValueData}" Header="Biniary Value" IsReadOnly="True" Width="150" />
-                <DataGridTextColumn Binding="{Binding Path=Value}" Header="Value" IsReadOnly="True" Width="150" />
+                <DataGridTextColumn Binding="{Binding Path=Value}" Header="Value" IsReadOnly="False" Width="150" />
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>

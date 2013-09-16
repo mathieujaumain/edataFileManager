@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EdataFileManager.Model.Ndfbin;
 using EdataFileManager.NdfBin.Model.Ndfbin.Types;
 using EdataFileManager.ViewModel.Base;
 

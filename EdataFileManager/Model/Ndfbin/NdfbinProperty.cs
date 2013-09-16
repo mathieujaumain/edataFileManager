@@ -1,12 +1,13 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Windows.Data;
+using EdataFileManager.Model.Ndfbin.Types;
+using EdataFileManager.NdfBin.Model.Ndfbin;
 using EdataFileManager.NdfBin.Model.Ndfbin.Types;
 using EdataFileManager.Util;
 using EdataFileManager.ViewModel.Base;
 
-namespace EdataFileManager.NdfBin.Model.Ndfbin
+namespace EdataFileManager.Model.Ndfbin
 {
     public class NdfbinProperty : ViewModelBase
     {
@@ -75,6 +76,30 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
                     return value.Value;
 
                 return null;
+            }
+            set
+            {
+                var val = Value as NdfFlatTypeValueWrapper;
+                if (val == null)
+                    return;
+
+                var instance = Class.InstancesCollectionView.CurrentItem as NdfbinObject;
+
+                bool valid;
+
+                var buffer = NdfTypeManager.GetBytes(value, val.Type, out valid);
+
+                if (!valid)
+                    return;
+
+                using (var ms = new MemoryStream(Class.Manager.Data))
+                {
+                    ms.Seek(val.OffSet + instance.Offset, SeekOrigin.Begin);
+                    ms.Write(buffer,0,buffer.Length);
+                }
+
+                Class.Manager.HasChanges = true;
+                val.Value = value;
             }
         }
 

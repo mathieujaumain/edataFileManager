@@ -24,17 +24,17 @@ namespace EdataFileManager.ViewModel.Base
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
-        public void BeginEdit()
+        public virtual void BeginEdit()
         {
             //throw new NotImplementedException();
         }
 
-        public void CancelEdit()
+        public virtual void CancelEdit()
         {
             //throw new NotImplementedException();
         }
 
-        public void EndEdit()
+        public virtual void EndEdit()
         {
             //throw new NotImplementedException();
         }

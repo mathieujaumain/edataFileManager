@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EdataFileManager.NdfBin.Model.Ndfbin;
+using EdataFileManager.NdfBin.Model.Ndfbin.Types;
 using EdataFileManager.ViewModel.Base;
 
-namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
+namespace EdataFileManager.Model.Ndfbin.Types
 {
     public class NdfStringValueWrapper<T> : ViewModelBase
         where T : NdfbinString
@@ -32,7 +29,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin.Types
         public NdfType Type
         {
             get { return _type; }
-            protected set { _type = value; OnPropertyChanged(() => Type); }
+            protected set { _type = value; OnPropertyChanged("Type"); }
         }
     }
 }
