@@ -6,7 +6,6 @@ using System.Windows.Media.Media3D;
 using EdataFileManager.BL;
 using EdataFileManager.Model.Ndfbin.Types.AllTypes;
 using EdataFileManager.NdfBin;
-using EdataFileManager.NdfBin.Model.Ndfbin.Types;
 using EdataFileManager.Util;
 
 namespace EdataFileManager.Model.Ndfbin.Types
@@ -26,7 +25,7 @@ namespace EdataFileManager.Model.Ndfbin.Types
             return NdfType.Unknown;
         }
 
-        public static object GetValue(byte[] data, NdfType type, NdfbinManager mgr, long pos)
+        public static NdfValueWrapper GetValue(byte[] data, NdfType type, NdfbinManager mgr, long pos)
         {
             //if (data.Length != SizeofType(type))
             //    return null;
@@ -46,37 +45,38 @@ namespace EdataFileManager.Model.Ndfbin.Types
                     return new NdfDouble(BitConverter.ToDouble(data, 0), pos);
                 case NdfType.TableStringFile:
                     var id = BitConverter.ToInt32(data, 0);
-                    return mgr.Strings[id];
+                    return new NdfString(mgr.Strings[id], pos);
                 case NdfType.TableString:
                     var id2 = BitConverter.ToInt32(data, 0);
-                    return mgr.Strings[id2];
+                    return new NdfString(mgr.Strings[id2], pos);
                 case NdfType.Color32:
-                    return Color.FromArgb(data[0], data[1], data[2], data[3]);
+                    return new NdfColor(Color.FromArgb(data[0], data[1], data[2], data[3]), pos);
                 case NdfType.Vector:
                     var px = data.Take(4).ToArray();
                     var py = data.Skip(4).Take(4).ToArray();
                     var pz = data.Skip(8).ToArray();
-                    return new Point3D(BitConverter.ToSingle(px, 0),
+                    return new NdfVector(new Point3D(BitConverter.ToSingle(px, 0),
                                        BitConverter.ToSingle(py, 0),
-                                       BitConverter.ToSingle(pz, 0));
+                                       BitConverter.ToSingle(pz, 0)), pos);
+
                 case NdfType.ObjectReference:
-                    string s = string.Format("{1} : {0}", BitConverter.ToUInt32(data.Take(4).ToArray(), 0), BitConverter.ToUInt32(data.Skip(4).ToArray(), 0));
-                    //var cls = mgr.Classes.SingleOrDefault(x => x.Id == BitConverter.ToUInt32(data, 0));
-                    // TODO: object
-                    return s;
+                    var instId = BitConverter.ToUInt32(data.Take(4).ToArray(), 0);
+                    var clsId = BitConverter.ToUInt32(data.Skip(4).ToArray(), 0);
+                    var cls = mgr.Classes.SingleOrDefault(x => x.Id == clsId); // mgr.Classes[(int)clsId]; due to deadrefs...
+                    return new NdfObjectReference(cls, instId, pos);
 
                 case NdfType.Guid:
-                    return new Guid(data);
+                    return new NdfGuid(new Guid(data), pos);
 
                 case NdfType.WideString:
-                    return Encoding.Unicode.GetString(data);
+                    return new NdfWideString(Encoding.Unicode.GetString(data), 0);
 
                 case NdfType.TransTableReference:
-                    return mgr.Trans.Single(x => x.Id == BitConverter.ToInt32(data, 0));
+                    var id3 = BitConverter.ToInt32(data, 0);
+                    return new NdfTrans(mgr.Trans[id3], pos);
 
                 case NdfType.LocalisationHash:
-                    return Utils.ByteArrayToBigEndianHeyByteString(data);
-
+                    return new NdfLocalisationHash(data, 0);
 
                 default:
                     return null;

@@ -5,116 +5,123 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using EdataFileManager.NdfBin.Model.Edata;
+using EdataFileManager.Model.Edata;
 using EdataFileManager.Util;
 
-namespace EdataFileManager.NdfBin
+namespace EdataFileManager.BL
 {
     /// <summary>
-    /// Thanks to Giovanni Condello. He created the "WargameEE DAT unpacker" which inspired me to make this software.
+    /// Thanks to Giovanni Condello. He created the "WargameEE DAT unpacker" which is the base for my EdataManager.
+    /// TODO: implement virtual packages.
     /// </summary>
     public class EdataManager
     {
+        /// <summary>
+        /// The current packages path on the hdd.
+        /// </summary>
+        public string FilePath
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// Header information of the current package.
+        /// </summary>
+        public EdataHeader Header
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// The Files the current package holds.
+        /// </summary>
+        public ObservableCollection<EdataContentFile> Files
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// Creates a new Instance of a EdataManager.
+        /// </summary>
+        /// <param name="filePath">The package file which is to be managed.</param>
         public EdataManager(string filePath)
         {
             FilePath = filePath;
         }
 
-        public string FilePath { get; protected set; }
-
-        public EdataHeader Header { get; set; }
-
-        public ObservableCollection<NdfFile> Files { get; set; }
-
-        public void ParseEdataFile()
+        /// <summary>
+        /// Reads the raw data of a file inside the current package.
+        /// </summary>
+        /// <param name="ofFile">A EdataFile of the current manager</param>
+        /// <returns>The data of the desired EdataFile.</returns>
+        public byte[] GetRawData(EdataContentFile ofFile)
         {
-            Header = ReadEdatHeader();
-            Files = ReadEdatDictionary();
-        }
+            if (ofFile.Manager != this)
+                throw new ArgumentException("oFile must be created by this instance of EdataManager");
 
-        public NdfFileContent GetNdfContent(NdfFile f)
-        {
             byte[] buffer;
 
-            using (FileStream fs = File.Open(FilePath, FileMode.Open))
+            using (var fs = File.Open(FilePath, FileMode.Open))
             {
-                long offset = Header.FileOffset + f.Offset;
-
-                buffer = new byte[f.Size];
-
+                long offset = Header.FileOffset + ofFile.Offset;
                 fs.Seek(offset, SeekOrigin.Begin);
 
-                fs.Read(buffer, 0, buffer.Length);
-            }
-
-            return ParseNdfbinContent(buffer, f);
-        }
-
-        public byte[] GetRawData(NdfFile f)
-        {
-            byte[] buffer;
-
-            using (FileStream fs = File.Open(FilePath, FileMode.Open))
-            {
-                long offset = Header.FileOffset + f.Offset;
-                fs.Seek(offset, SeekOrigin.Begin);
-
-                buffer = new byte[f.Size];
+                buffer = new byte[ofFile.Size];
                 fs.Read(buffer, 0, buffer.Length);
             }
 
             return buffer;
         }
 
-        protected NdfFileContent ParseNdfbinContent(byte[] content, NdfFile f)
+        /// <summary>
+        /// Initiates the parsing of the current Edata file.
+        /// </summary>
+        public void ParseEdataFile()
         {
-            var fileContent = new NdfFileContent();
+            Header = ReadEdataHeader();
+            Files = ReadEdatDictionary();
+        }
 
-            using (var ms = new MemoryStream(content))
+        /// <summary>
+        /// Reads the header of the current package.
+        /// </summary>
+        /// <returns>A instance of the current header.</returns>
+        protected EdataHeader ReadEdataHeader()
+        {
+            var header = new EdataHeader(this);
+
+            using (FileStream fileStream = File.Open(FilePath, FileMode.Open))
             {
-                ms.Seek(12, SeekOrigin.Begin);
                 var buffer = new byte[4];
 
-                ms.Read(buffer, 0, buffer.Length);
-                fileContent.IsCompressedBody = BitConverter.ToInt32(buffer, 0) == 128;
+                fileStream.Seek(0x19, SeekOrigin.Begin);
+                fileStream.Read(buffer, 0, 4);
+                header.DirOffset = BitConverter.ToInt32(buffer, 0);
 
-                ms.Read(buffer, 0, 4);
-                fileContent.BlockSize = BitConverter.ToInt32(buffer, 0);
+                fileStream.Read(buffer, 0, 4);
+                header.DirLengh = BitConverter.ToInt32(buffer, 0);
 
-                ms.Seek(12, SeekOrigin.Current);
+                fileStream.Read(buffer, 0, 4);
+                header.FileOffset = BitConverter.ToInt32(buffer, 0);
 
-                ms.Read(buffer, 0, 4);
-                fileContent.BlockSizeE0 = BitConverter.ToInt32(buffer, 0);
-
-                ms.Seek(4, SeekOrigin.Current);
-
-                if (fileContent.IsCompressedBody)
-                {
-                    ms.Read(buffer, 0, 4);
-                    fileContent.BlockSizeWithoutHeader = BitConverter.ToInt32(buffer, 0);
-                }
-
-                buffer = new byte[f.Size - ms.Position];
-
-                ms.Read(buffer, 0, buffer.Length);
-
-                if (fileContent.IsCompressedBody)
-                    fileContent.Body = Compressing.Compressor.Decomp(buffer);
-                else
-                    fileContent.Body = buffer;
+                fileStream.Read(buffer, 0, 4);
+                header.FileLengh = BitConverter.ToInt32(buffer, 0);
             }
 
-            return fileContent;
+            return header;
         }
 
         /// <summary>
         /// The only tricky part about that algorythm is that you have to skip one byte if the length of the File/Dir name PLUS nullbyte is an odd number.
         /// </summary>
-        /// <returns></returns>
-        protected ObservableCollection<NdfFile> ReadEdatDictionary()
+        /// <returns>A Collection of the Files found in the Dictionary</returns>
+        protected ObservableCollection<EdataContentFile> ReadEdatDictionary()
         {
-            var files = new ObservableCollection<NdfFile>();
-            var dirs = new List<NdfDir>();
+            var files = new ObservableCollection<EdataContentFile>();
+            var dirs = new List<EdataDir>();
             var endings = new List<long>();
 
             using (FileStream fileStream = File.Open(FilePath, FileMode.Open))
@@ -132,7 +139,7 @@ namespace EdataFileManager.NdfBin
 
                     if (fileGroupId == 0)
                     {
-                        var file = new NdfFile();
+                        var file = new EdataContentFile(this);
                         fileStream.Read(buffer, 0, 4);
                         file.FileEntrySize = BitConverter.ToInt32(buffer, 0);
 
@@ -166,7 +173,7 @@ namespace EdataFileManager.NdfBin
                     }
                     else if (fileGroupId > 0)
                     {
-                        var dir = new NdfDir();
+                        var dir = new EdataDir(this);
 
                         fileStream.Read(buffer, 0, 4);
                         dir.FileEntrySize = BitConverter.ToInt32(buffer, 0);
@@ -188,48 +195,33 @@ namespace EdataFileManager.NdfBin
             return files;
         }
 
-        protected string MergePath(IEnumerable<NdfDir> dirs, string p)
+        /// <summary>
+        /// Merges a filename in its dictionary tree.
+        /// </summary>
+        /// <param name="dirs"></param>
+        /// <param name="fileName"></param>
+        /// <returns>The valid Path inside the package.</returns>
+        protected string MergePath(IEnumerable<EdataDir> dirs, string fileName)
         {
             var b = new StringBuilder();
 
-            foreach (NdfDir dir in dirs)
+            foreach (EdataDir dir in dirs)
                 b.Append(dir.Name);
 
-            b.Append(p);
+            b.Append(fileName);
 
             return b.ToString();
         }
 
-        protected EdataHeader ReadEdatHeader()
-        {
-            var header = new EdataHeader();
-
-            using (FileStream fileStream = File.Open(FilePath, FileMode.Open))
-            {
-                var buffer = new byte[4];
-
-                fileStream.Seek(0x19, SeekOrigin.Begin);
-                fileStream.Read(buffer, 0, 4);
-                header.DirOffset = BitConverter.ToInt32(buffer, 0);
-
-                fileStream.Read(buffer, 0, 4);
-                header.DirLengh = BitConverter.ToInt32(buffer, 0);
-
-                fileStream.Read(buffer, 0, 4);
-                header.FileOffset = BitConverter.ToInt32(buffer, 0);
-
-                fileStream.Read(buffer, 0, 4);
-                header.FileLengh = BitConverter.ToInt32(buffer, 0);
-            }
-
-            return header;
-        }
-
-        public byte[] ReplaceRebuild(NdfFile oldFile, byte[] newContent)
+        /// <summary>
+        /// Replaces a file and rebuilds the Edata File with
+        /// </summary>
+        /// <param name="oldFile">The EdataFile object which is to be replaced.</param>
+        /// <param name="newContent">The data of the new File including Header and content.</param>
+        /// <returns>The data of the completly rebuilt EdataFile. This has to be saved back to the file.</returns>
+        public byte[] ReplaceRebuild(EdataContentFile oldFile, byte[] newContent)
         {
             var reserveBuffer = new byte[200];
-
-            //var filesToAlter = Files.Where(x => x.Offset >= oldFile.Offset).ToList();
 
             using (var fs = new FileStream(FilePath, FileMode.Open))
             {
@@ -332,15 +324,17 @@ namespace EdataFileManager.NdfBin
             }
         }
 
-        public void ReplaceFile(NdfFile oldFile, byte[] newContent)
+        /// <summary>
+        /// Replaces a file in the current Edata package and saves the changes back.
+        /// </summary>
+        /// <param name="oldFile">The EdataFile object which is to be replaced.</param>
+        /// <param name="newContent">The data of the new File including Header and content.</param>
+        public void ReplaceFile(EdataContentFile oldFile, byte[] newContent)
         {
             var newCont = ReplaceRebuild(oldFile, newContent);
 
             if (!File.Exists(FilePath))
-            {
-                // TODO: Loggin
-                return;
-            }
+                throw new InvalidOperationException("The Edata file does not exist anymore.");
 
             using (var fs = new FileStream(FilePath, FileMode.Truncate))
             {

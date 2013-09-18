@@ -2,16 +2,16 @@
 using System.IO;
 using System.Linq;
 using EdataFileManager.Model.Ndfbin.Types;
-using EdataFileManager.NdfBin.Model.Ndfbin;
-using EdataFileManager.NdfBin.Model.Ndfbin.Types;
+using EdataFileManager.Model.Ndfbin.Types.AllTypes;
 using EdataFileManager.Util;
 using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.Model.Ndfbin
 {
-    public class NdfbinProperty : ViewModelBase
+    // TODO: biggest crap of a class ever.
+    public class NdfProperty : ViewModelBase
     {
-        private NdfbinClass _class;
+        private NdfClass _class;
         private int _id;
         private string _name;
         private long _offset;
@@ -31,7 +31,7 @@ namespace EdataFileManager.Model.Ndfbin
             get { return Utils.Int32ToBigEndianHexByteString(Id); }
         }
 
-        public NdfbinClass Class
+        public NdfClass Class
         {
             get { return _class; }
             set
@@ -61,11 +61,11 @@ namespace EdataFileManager.Model.Ndfbin
             }
         }
 
-        public object Value
+        public NdfValueWrapper Value
         {
             get
             {
-                var currentInstance = Class.InstancesCollectionView.CurrentItem as NdfbinObject;
+                var currentInstance = Class.InstancesCollectionView.CurrentItem as NdfObject;
 
                 if (currentInstance == null)
                     return null;
@@ -79,11 +79,11 @@ namespace EdataFileManager.Model.Ndfbin
             }
             set
             {
-                var val = Value as NdfFlatTypeValueWrapper;
+                var val = Value as NdfFlatValueWrapper;
                 if (val == null)
                     return;
 
-                var instance = Class.InstancesCollectionView.CurrentItem as NdfbinObject;
+                var instance = Class.InstancesCollectionView.CurrentItem as NdfObject;
 
                 bool valid;
 
@@ -92,7 +92,7 @@ namespace EdataFileManager.Model.Ndfbin
                 if (!valid)
                     return;
 
-                using (var ms = new MemoryStream(Class.Manager.Data))
+                using (var ms = new MemoryStream(Class.Manager.ContentData))
                 {
                     ms.Seek(val.OffSet + instance.Offset, SeekOrigin.Begin);
                     ms.Write(buffer,0,buffer.Length);
@@ -107,18 +107,17 @@ namespace EdataFileManager.Model.Ndfbin
         {
             get
             {
-                var currentInstance = Class.InstancesCollectionView.CurrentItem as NdfbinObject;
+                var currentInstance = Class.InstancesCollectionView.CurrentItem as NdfObject;
 
                 if (currentInstance == null)
-                    return NdfType.Unknown;
+                    return NdfType.Unset;
 
                 var value = currentInstance.PropertyValues.SingleOrDefault(x => x.Property == this);
 
                 if (value == null)
-                    return NdfType.Unknown;
+                    return NdfType.Unset;
 
-                return value.Type;
-
+                return value.Value.Type;
             }
         }
 
@@ -126,7 +125,7 @@ namespace EdataFileManager.Model.Ndfbin
         {
             get
             {
-                var currentInstance = Class.InstancesCollectionView.CurrentItem as NdfbinObject;
+                var currentInstance = Class.InstancesCollectionView.CurrentItem as NdfObject;
 
                 if (currentInstance == null)
                     return null;

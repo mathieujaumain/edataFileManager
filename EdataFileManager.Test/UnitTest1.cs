@@ -35,7 +35,7 @@ namespace EdataFileManager.Test
 
             var m = new NdfbinManager(data);
 
-            m.ParseData();
+            m.Initialize();
         }
 
         [TestMethod]

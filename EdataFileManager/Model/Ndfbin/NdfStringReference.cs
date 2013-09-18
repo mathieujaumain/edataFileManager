@@ -1,9 +1,9 @@
 ﻿using System.Globalization;
 using EdataFileManager.ViewModel.Base;
 
-namespace EdataFileManager.NdfBin.Model.Ndfbin
+namespace EdataFileManager.Model.Ndfbin
 {
-    public class NdfbinString : ViewModelBase
+    public class NdfStringReference : ViewModelBase
     {
         private int _id;
         private long _offset;

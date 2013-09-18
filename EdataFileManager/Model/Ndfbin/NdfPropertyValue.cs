@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using EdataFileManager.Model.Ndfbin;
-using EdataFileManager.NdfBin.Model.Ndfbin.Types;
+﻿using EdataFileManager.Model.Ndfbin.Types;
+using EdataFileManager.Model.Ndfbin.Types.AllTypes;
 using EdataFileManager.ViewModel.Base;
 
-namespace EdataFileManager.NdfBin.Model.Ndfbin
+namespace EdataFileManager.Model.Ndfbin
 {
-    public class NdfbinPropertyValue : ViewModelBase
+    public class NdfPropertyValue : ViewModelBase
     {
-        private NdfbinProperty _property;
-        private object _value;
+        private NdfProperty _property;
+        private NdfValueWrapper _value;
         private NdfType _type;
-        private byte[] _typeData;
         private byte[] _valueData;
 
         public NdfType Type
@@ -28,13 +23,13 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
             set { _valueData = value;  OnPropertyChanged("ValueData");}
         }
 
-        public object Value
+        public NdfValueWrapper Value
         {
             get { return _value; }
             set { _value = value; OnPropertyChanged("Value"); }
         }
 
-        public NdfbinProperty Property
+        public NdfProperty Property
         {
             get { return _property; }
             set { _property = value; OnPropertyChanged("Property"); }

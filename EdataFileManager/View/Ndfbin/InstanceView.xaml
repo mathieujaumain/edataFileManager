@@ -30,7 +30,7 @@
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <Border BorderThickness="0" Background="BlanchedAlmond" Padding="10">
-                        <ListBox ItemsSource="{Binding Path=Value}" />
+                        <DataGrid MaxHeight="400" ItemsSource="{Binding Path=Value}" />
                     </Border>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>

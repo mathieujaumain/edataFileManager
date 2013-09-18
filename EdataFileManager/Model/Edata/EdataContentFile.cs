@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
+using EdataFileManager.BL;
 
-namespace EdataFileManager.NdfBin.Model.Edata
+namespace EdataFileManager.Model.Edata
 {
     /// <summary>
     /// The reversed struct from Hex Workshop - much love to Hob_gadling for his hard work and help.
@@ -17,7 +18,7 @@ namespace EdataFileManager.NdfBin.Model.Edata
     ///     zstring name;
     /// };
     /// </summary>
-    public class NdfFile : NdfEntity
+    public class EdataContentFile : EdataEntity
     {
         private uint _id;
         private string _path;
@@ -25,7 +26,11 @@ namespace EdataFileManager.NdfBin.Model.Edata
         private long _size;
         private byte[] _checkSum = new byte[16];
 
-        private NdfFileContent _content;
+        private EdataFileType _fileType;
+
+        public EdataContentFile(EdataManager mgr) : base(mgr)
+        {
+        }
 
         public string Path
         {
@@ -51,16 +56,16 @@ namespace EdataFileManager.NdfBin.Model.Edata
             set { _checkSum = value; OnPropertyChanged(() => Checksum); }
         }
 
-        public NdfFileContent Content
-        {
-            get { return _content; }
-            set { _content = value; OnPropertyChanged(() => Content); }
-        }
-
         public uint Id
         {
             get { return _id; }
             set { _id = value; OnPropertyChanged(() => Id); }
+        }
+
+        public EdataFileType FileType
+        {
+            get { return _fileType; }
+            set { _fileType = value; OnPropertyChanged(() => FileType); }
         }
 
         public override string ToString()

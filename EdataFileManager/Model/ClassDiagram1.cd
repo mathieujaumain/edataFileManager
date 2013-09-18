@@ -1,123 +1,90 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="EdataFileManager.NdfBin.Model.Ndfbin.NdfbinClass">
-    <Position X="3.75" Y="0.5" Width="2.5" />
+  <Class Name="EdataFileManager.Model.Ndfbin.NdfPropertyValue">
+    <Position X="7.75" Y="3.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAACIAAAAAAAEAAEIABACAQQAAAAABAAQAEAAAACgAA=</HashCode>
-      <FileName>NdfBin\Model\Ndfbin\NdfbinClass.cs</FileName>
+      <HashCode>EBAAAAAAAAAAAAQAAAQAAAAAAQAAAAAAAQAgAQAAAAA=</HashCode>
+      <FileName>Model\Ndfbin\NdfPropertyValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EdataFileManager.Model.Ndfbin.NdfClass">
+    <Position X="1" Y="0.5" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACIAAAAAAAEIAEIAJACAQQgAAABBAAQgEAgAACgAI=</HashCode>
+      <FileName>Model\Ndfbin\NdfClass.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
+      <Property Name="Instances" />
       <Property Name="Properties" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="EdataFileManager.NdfBin.Model.Ndfbin.NdfbinFooter">
-    <Position X="12.5" Y="5.5" Width="1.5" />
+  <Class Name="EdataFileManager.Model.Ndfbin.NdfFooter">
+    <Position X="12.75" Y="1.25" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
       <HashCode>BAAAAAAAAAAAAGEAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>NdfBin\Model\Ndfbin\NdfbinFooter.cs</FileName>
+      <FileName>Model\Ndfbin\NdfFooter.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="Entries" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="EdataFileManager.NdfBin.Model.Ndfbin.NdfbinFooterEntry">
-    <Position X="10" Y="6.5" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Fields" Collapsed="true" />
-    </Compartments>
+  <Class Name="EdataFileManager.Model.Ndfbin.NdfFooterEntry">
+    <Position X="12.75" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAIAAAAAAAgAAAIAAAAAQAAAAAAAAAAAAAAAIAgAA=</HashCode>
-      <FileName>NdfBin\Model\Ndfbin\NdfbinFooterEntry.cs</FileName>
+      <FileName>Model\Ndfbin\NdfFooterEntry.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="EdataFileManager.NdfBin.Model.Ndfbin.NdfbinObject">
-    <Position X="4.25" Y="4.25" Width="1.5" />
+  <Class Name="EdataFileManager.Model.Ndfbin.NdfObject">
+    <Position X="4.75" Y="0.75" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAACIAAADAAAAAAAAAJAAAQAAACAABAAAAAAAAAAABA=</HashCode>
-      <FileName>NdfBin\Model\Ndfbin\NdfbinObject.cs</FileName>
+      <HashCode>AAACAAAADAAAAAAAAAJAAAAAAACAABAAAAAAAAAAgBA=</HashCode>
+      <FileName>Model\Ndfbin\NdfObject.cs</FileName>
     </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Class" />
-    </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="PropertyValues" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="EdataFileManager.NdfBin.Model.Ndfbin.NdfbinProperty">
-    <Position X="0.5" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAACIAAAAAAAAAAAIAJAAAQAAAAAAAAAAAAgAAAAgBA=</HashCode>
-      <FileName>NdfBin\Model\Ndfbin\NdfbinProperty.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="EdataFileManager.NdfBin.Model.Ndfbin.NdfbinPropertyValue">
-    <Position X="0.5" Y="5" Width="2.5" />
+  <Class Name="EdataFileManager.Model.Ndfbin.NdfProperty">
+    <Position X="4.75" Y="3.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>EBAAAAAAICAAAAQAAAQAAAAAAQAAAAAAAQAgAQAAAAA=</HashCode>
-      <FileName>NdfBin\Model\Ndfbin\NdfbinPropertyValue.cs</FileName>
+      <HashCode>AAACIAAAAAAAAEAEIAJAAAQAAQAAAAAAAAAgAAAAkBA=</HashCode>
+      <FileName>Model\Ndfbin\NdfProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="EdataFileManager.NdfBin.Model.Ndfbin.NdfbinString">
-    <Position X="9.5" Y="2.5" Width="1.5" />
+  <Class Name="EdataFileManager.Model.Ndfbin.NdfStringReference">
+    <Position X="10.5" Y="1" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
       <HashCode>ABACAAAAAAAAAAAEIABAAAAAAAAAAAAAAAAgAAAAgAA=</HashCode>
-      <FileName>NdfBin\Model\Ndfbin\NdfbinString.cs</FileName>
+      <FileName>Model\Ndfbin\NdfStringReference.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="EdataFileManager.NdfBin.Model.Ndfbin.Types.NdfTypeManager">
-    <Position X="7.5" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAEAEAAAAAAAAAA=</HashCode>
-      <FileName>NdfBin\Model\Ndfbin\Types\NdfTypeManager.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="EdataFileManager.NdfBin.Model.Ndfbin.NdfbinTran">
-    <Position X="9.5" Y="5" Width="1.5" />
+  <Class Name="EdataFileManager.Model.Ndfbin.NdfTranReference" Collapsed="true">
+    <Position X="10.5" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>NdfBin\Model\Ndfbin\NdfbinTran.cs</FileName>
+      <FileName>Model\Ndfbin\NdfTran.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="EdataFileManager.NdfBin.NdfbinManager">
-    <Position X="12.25" Y="0.5" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Fields" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>BAAAAAAgAEEAAAEAQCQAAgAAEAQAABABAFAAAAAAgAA=</HashCode>
-      <FileName>NdfBin\NdfbinManager.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Footer" />
-    </ShowAsAssociation>
-    <ShowAsCollectionAssociation>
-      <Property Name="Classes" />
-      <Property Name="Trans" />
-      <Property Name="Strings" />
-    </ShowAsCollectionAssociation>
-  </Class>
-  <Enum Name="EdataFileManager.NdfBin.Model.Ndfbin.Types.NdfType">
-    <Position X="7.5" Y="2.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AgAAAEAIAQAAAAAAAAAAAAAAAAAAAACAEGAAAAAAABA=</HashCode>
-      <FileName>NdfBin\Model\Ndfbin\Types\NdfType.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

@@ -1,4 +1,6 @@
-﻿namespace EdataFileManager.NdfBin.Model.Edata
+﻿using EdataFileManager.BL;
+
+namespace EdataFileManager.Model.Edata
 {
     /// <summary>
     /// Thanks to Wargame:EE DAT Unpacker by Giovanni Condello
@@ -12,8 +14,12 @@
     ///	    DWORD fileLength;
     /// };
     /// </summary>
-    public class EdataHeader
+    public class EdataHeader : EdataEntity
     {
+        public EdataHeader(EdataManager mgr) : base(mgr)
+        {
+        }
+
         public int DirOffset { get; set; }
         public int DirLengh { get; set; }
         public int FileOffset { get; set; }

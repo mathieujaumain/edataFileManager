@@ -1,13 +1,25 @@
 ﻿using System.Globalization;
+using EdataFileManager.BL;
 using EdataFileManager.ViewModel.Base;
 
-namespace EdataFileManager.NdfBin.Model.Edata
+namespace EdataFileManager.Model.Edata
 {
-    public class NdfEntity: ViewModelBase
+    public class EdataEntity : ViewModelBase
     {
         private int _groupId;
         private string _name;
         private int _fileEntrySize;
+
+        public EdataEntity(EdataManager mgr)
+        {
+            Manager = mgr;
+        }
+
+        public EdataManager Manager
+        {
+            get;
+            protected set;
+        }
 
         public int GroupId
         {

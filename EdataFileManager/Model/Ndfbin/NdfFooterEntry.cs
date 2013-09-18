@@ -1,8 +1,8 @@
 ﻿using EdataFileManager.ViewModel.Base;
 
-namespace EdataFileManager.NdfBin.Model.Ndfbin
+namespace EdataFileManager.Model.Ndfbin
 {
-    public class NdfbinFooterEntry : ViewModelBase
+    public class NdfFooterEntry : ViewModelBase
     {
         private string _name;
         private long _offset;

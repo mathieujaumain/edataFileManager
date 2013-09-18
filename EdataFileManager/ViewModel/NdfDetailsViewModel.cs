@@ -5,10 +5,9 @@ using System.IO;
 using System.Windows.Data;
 using System.Windows.Input;
 using EdataFileManager.BL;
+using EdataFileManager.Model.Edata;
 using EdataFileManager.Model.Ndfbin;
 using EdataFileManager.NdfBin;
-using EdataFileManager.NdfBin.Model.Edata;
-using EdataFileManager.NdfBin.Model.Ndfbin;
 using EdataFileManager.ViewModel.Base;
 using EdataFileManager.ViewModel.Filter;
 
@@ -16,29 +15,27 @@ namespace EdataFileManager.ViewModel
 {
     public class NdfDetailsViewModel : ViewModelBase
     {
-        private ObservableCollection<NdfbinClass> _classes;
+        private ObservableCollection<NdfClass> _classes;
         private ICollectionView _classesCollectionView;
         private string _classesFilterExpression = string.Empty;
 
-        private ObservableCollection<NdfbinString> _strings;
+        private ObservableCollection<NdfStringReference> _strings;
         private ICollectionView _stringCollectionView;
         private string _stringFilterExpression = string.Empty;
 
-        private ObservableCollection<NdfbinTran> _trans;
+        private ObservableCollection<NdfTranReference> _trans;
         private ICollectionView _transCollectionView;
         private string _transFilterExpression = string.Empty;
 
-        public NdfDetailsViewModel(NdfFile file, EdataFileViewModel ownerVm)
+        public NdfDetailsViewModel(EdataContentFile contentFile, EdataFileViewModel ownerVm)
         {
-            OwnerFile = file;
+            OwnerFile = contentFile;
             EdataFileViewModel = ownerVm;
 
-            NdfFileContent content = EdataFileViewModel.EdataManager.GetNdfContent(file);
-
-            var ndfbinManager = new NdfbinManager(content.Body);
+            var ndfbinManager = new NdfbinManager(ownerVm.EdataManager.GetRawData(contentFile));
             NdfbinManager = ndfbinManager;
 
-            ndfbinManager.ParseData();
+            ndfbinManager.Initialize();
 
             Classes = ndfbinManager.Classes;
             Strings = ndfbinManager.Strings;
@@ -47,35 +44,29 @@ namespace EdataFileManager.ViewModel
             SaveNdfbinCommand = new ActionCommand(SaveNdfbinExecute);
         }
 
+        public NdfDetailsViewModel(EdataContentFile contentFile)
+        {
+            
+        }
+
         private void SaveNdfbinExecute(object obj)
         {
             var newFile = NdfbinManager.BuildNdfFile(true);
-
+            
             EdataFileViewModel.EdataManager.ReplaceFile(OwnerFile, newFile);
 
             EdataFileViewModel.LoadFile(EdataFileViewModel.LoadedFile);
-
-            //string p = Path.Combine(Settings.SettingsManager.Load().SavePath, "test.ndfbin");
-
-            //if (!File.Exists(p))
-            //    File.Create(p).Dispose();
-
-            //using (var fs = new FileStream(p, FileMode.Truncate))
-            //{
-            //    fs.Write(newFile, 0, newFile.Length);
-            //    fs.Flush();
-            //}
         }
 
         public NdfbinManager NdfbinManager { get; set; }
 
         public EdataFileViewModel EdataFileViewModel { get; set; }
 
-        protected NdfFile OwnerFile { get; set; }
+        protected EdataContentFile OwnerFile { get; set; }
 
         public ICommand SaveNdfbinCommand { get; set; }
 
-        public ObservableCollection<NdfbinClass> Classes
+        public ObservableCollection<NdfClass> Classes
         {
             get { return _classes; }
             set
@@ -85,7 +76,7 @@ namespace EdataFileManager.ViewModel
             }
         }
 
-        public ObservableCollection<NdfbinString> Strings
+        public ObservableCollection<NdfStringReference> Strings
         {
             get { return _strings; }
             set
@@ -95,7 +86,7 @@ namespace EdataFileManager.ViewModel
             }
         }
 
-        public ObservableCollection<NdfbinTran> Trans
+        public ObservableCollection<NdfTranReference> Trans
         {
             get { return _trans; }
             set
@@ -209,7 +200,7 @@ namespace EdataFileManager.ViewModel
 
         public bool FilterClasses(object o)
         {
-            var clas = o as NdfbinClass;
+            var clas = o as NdfClass;
 
             if (clas == null || ClassesFilterExpression == string.Empty)
                 return true;
@@ -220,7 +211,7 @@ namespace EdataFileManager.ViewModel
 
         public bool FilterStrings(object o)
         {
-            var str = o as NdfbinString;
+            var str = o as NdfStringReference;
 
             if (str == null || StringFilterExpression == string.Empty)
                 return true;
@@ -231,7 +222,7 @@ namespace EdataFileManager.ViewModel
 
         public bool FilterTrans(object o)
         {
-            var tran = o as NdfbinTran;
+            var tran = o as NdfTranReference;
 
             if (tran == null || TransFilterExpression == string.Empty)
                 return true;

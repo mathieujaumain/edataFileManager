@@ -5,8 +5,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Data;
+using EdataFileManager.BL;
+using EdataFileManager.Model.Edata;
 using EdataFileManager.NdfBin;
-using EdataFileManager.NdfBin.Model.Edata;
 using EdataFileManager.NdfBin.Model.Trad;
 using EdataFileManager.ViewModel.Base;
 
@@ -19,12 +20,12 @@ namespace EdataFileManager.ViewModel
         private ObservableCollection<TradEntry> _entries;
         private ICollectionView _entriesCollectionView;
 
-        public TradFileViewModel(byte[] data, NdfFile file)
+        public TradFileViewModel(byte[] data, EdataContentFile contentFile)
         {
             var mgr = new TradManager(data);
             Entries = mgr.Entries;
 
-            TitleText = string.Format("Dictionary Viewer [{0}]", file.Path);
+            TitleText = string.Format("Dictionary Viewer [{0}]", contentFile.Path);
         }
 
         public ObservableCollection<TradEntry> Entries

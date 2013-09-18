@@ -1,17 +1,16 @@
 ﻿using System.Collections.ObjectModel;
-using EdataFileManager.NdfBin.Model.Ndfbin;
 using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.Model.Ndfbin
 {
-    public class NdfbinObject : ViewModelBase
+    public class NdfObject : ViewModelBase
     {
-        private readonly ObservableCollection<NdfbinPropertyValue> _propertyValues = new ObservableCollection<NdfbinPropertyValue>();
-        private NdfbinClass _class;
+        private readonly ObservableCollection<NdfPropertyValue> _propertyValues = new ObservableCollection<NdfPropertyValue>();
+        private NdfClass _class;
         private byte[] _data;
         private int _id;
 
-        public NdfbinClass Class
+        public NdfClass Class
         {
             get { return _class; }
             set { _class = value; OnPropertyChanged(() => Class); }
@@ -23,7 +22,7 @@ namespace EdataFileManager.Model.Ndfbin
             set { _data = value; OnPropertyChanged(() => Data); }
         }
 
-        public ObservableCollection<NdfbinPropertyValue> PropertyValues
+        public ObservableCollection<NdfPropertyValue> PropertyValues
         {
             get { return _propertyValues; }
         }

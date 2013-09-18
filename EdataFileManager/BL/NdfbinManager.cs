@@ -7,32 +7,36 @@ using System.Text;
 using EdataFileManager.Compressing;
 using EdataFileManager.Model.Ndfbin;
 using EdataFileManager.Model.Ndfbin.Types;
-using EdataFileManager.NdfBin.Model.Ndfbin;
-using EdataFileManager.NdfBin.Model.Ndfbin.Types;
+using EdataFileManager.Model.Ndfbin.Types.AllTypes;
+using NdfString = EdataFileManager.Model.Ndfbin.NdfStringReference;
 
 namespace EdataFileManager.BL
 {
     public class NdfbinManager
     {
-        public byte[] Data { get; set; }
-        public NdfbinFooter Footer { get; protected set; }
-        public ObservableCollection<NdfbinClass> Classes { get; set; }
-        public ObservableCollection<NdfbinString> Strings { get; set; }
-        public ObservableCollection<NdfbinTran> Trans { get; set; }
+        public byte[] FileData { get; protected set; }
+        public byte[] ContentData { get; protected set; }
+        public NdfFooter Footer { get; protected set; }
+        public NdfHeader Header { get; protected set; }
+        public ObservableCollection<NdfClass> Classes { get; protected set; }
+        public ObservableCollection<NdfString> Strings { get; protected set; }
+        public ObservableCollection<NdfTranReference> Trans { get; protected set; }
+
+        public bool HasChanges { get; set; }
+
 
         //protected List<byte[]> _unknownTypes = new List<byte[]>();
         //protected List<int> _unknownTypesCount = new List<int>();
 
-        public NdfbinManager(byte[] data)
+        public NdfbinManager(byte[] fileData)
         {
-            Data = data;
+            FileData = fileData;
         }
 
-        public bool HasChanges { get; set; }
-
-        public void ParseData()
+        public void Initialize()
         {
-            ReadFooter();
+            Header = ReadHeader();
+            Footer = ReadFooter();
             ReadClasses();
             ReadProperties();
 
@@ -42,20 +46,20 @@ namespace EdataFileManager.BL
             ReadObjects();
         }
 
-        protected void ReadTrans()
+        protected void ReadClasses()
         {
-            var trans = new ObservableCollection<NdfbinTran>();
+            var classes = new ObservableCollection<NdfClass>();
 
-            var stringEntry = Footer.Entries.Single(x => x.Name == "TRAN");
+            var classEntry = Footer.Entries.Single(x => x.Name == "CLAS");
 
             //TODO: int cast is a bit too hacky here, solution needed
-            using (var ms = new MemoryStream(Data, (int)stringEntry.Offset - 40, (int)stringEntry.Size))
+            using (var ms = new MemoryStream(ContentData, (int)classEntry.Offset - 40, (int)classEntry.Size))
             {
                 int i = 0;
                 var buffer = new byte[4];
                 while (ms.Position < ms.Length)
                 {
-                    var ntran = new NdfbinTran { Offset = ms.Position, Id = i };
+                    var nclass = new NdfClass(this) { Offset = ms.Position, Id = i };
 
                     ms.Read(buffer, 0, buffer.Length);
                     var strLen = BitConverter.ToInt32(buffer, 0);
@@ -63,45 +67,14 @@ namespace EdataFileManager.BL
                     var strBuffer = new byte[strLen];
                     ms.Read(strBuffer, 0, strBuffer.Length);
 
-                    ntran.Value = Encoding.GetEncoding("ISO-8859-1").GetString(strBuffer);
+                    nclass.Name = Encoding.GetEncoding("ISO-8859-1").GetString(strBuffer);
 
                     i++;
-                    trans.Add(ntran);
+                    classes.Add(nclass);
                 }
             }
 
-            Trans = trans;
-        }
-
-        protected void ReadStrings()
-        {
-            var strings = new ObservableCollection<NdfbinString>();
-
-            var stringEntry = Footer.Entries.Single(x => x.Name == "STRG");
-
-            //TODO: int cast is a bit too hacky here, solution needed
-            using (var ms = new MemoryStream(Data, (int)stringEntry.Offset - 40, (int)stringEntry.Size))
-            {
-                int i = 0;
-                var buffer = new byte[4];
-                while (ms.Position < ms.Length)
-                {
-                    var nstring = new NdfbinString { Offset = ms.Position, Id = i };
-
-                    ms.Read(buffer, 0, buffer.Length);
-                    var strLen = BitConverter.ToInt32(buffer, 0);
-
-                    var strBuffer = new byte[strLen];
-                    ms.Read(strBuffer, 0, strBuffer.Length);
-
-                    nstring.Value = Encoding.GetEncoding("ISO-8859-1").GetString(strBuffer);
-
-                    i++;
-                    strings.Add(nstring);
-                }
-            }
-
-            Strings = strings;
+            Classes = classes;
         }
 
         protected void ReadProperties()
@@ -109,13 +82,13 @@ namespace EdataFileManager.BL
             var propEntry = Footer.Entries.Single(x => x.Name == "PROP");
 
             //TODO: int cast is a bit too hacky here, solution needed
-            using (var ms = new MemoryStream(Data, (int)propEntry.Offset - 40, (int)propEntry.Size))
+            using (var ms = new MemoryStream(ContentData, (int)propEntry.Offset - 40, (int)propEntry.Size))
             {
                 int i = 0;
                 var buffer = new byte[4];
                 while (ms.Position < ms.Length)
                 {
-                    var property = new NdfbinProperty { Offset = ms.Position, Id = i };
+                    var property = new NdfProperty { Offset = ms.Position, Id = i };
 
                     ms.Read(buffer, 0, buffer.Length);
                     var strLen = BitConverter.ToInt32(buffer, 0);
@@ -138,20 +111,20 @@ namespace EdataFileManager.BL
             }
         }
 
-        protected void ReadClasses()
+        protected void ReadStrings()
         {
-            var classes = new ObservableCollection<NdfbinClass>();
+            var strings = new ObservableCollection<NdfString>();
 
-            var classEntry = Footer.Entries.Single(x => x.Name == "CLAS");
+            var stringEntry = Footer.Entries.Single(x => x.Name == "STRG");
 
             //TODO: int cast is a bit too hacky here, solution needed
-            using (var ms = new MemoryStream(Data, (int)classEntry.Offset - 40, (int)classEntry.Size))
+            using (var ms = new MemoryStream(ContentData, (int)stringEntry.Offset - 40, (int)stringEntry.Size))
             {
                 int i = 0;
                 var buffer = new byte[4];
                 while (ms.Position < ms.Length)
                 {
-                    var nclass = new NdfbinClass(this) { Offset = ms.Position, Id = i };
+                    var nstring = new NdfString { Offset = ms.Position, Id = i };
 
                     ms.Read(buffer, 0, buffer.Length);
                     var strLen = BitConverter.ToInt32(buffer, 0);
@@ -159,24 +132,55 @@ namespace EdataFileManager.BL
                     var strBuffer = new byte[strLen];
                     ms.Read(strBuffer, 0, strBuffer.Length);
 
-                    nclass.Name = Encoding.GetEncoding("ISO-8859-1").GetString(strBuffer);
+                    nstring.Value = Encoding.GetEncoding("ISO-8859-1").GetString(strBuffer);
 
                     i++;
-                    classes.Add(nclass);
+                    strings.Add(nstring);
                 }
             }
 
-            Classes = classes;
+            Strings = strings;
         }
 
-        protected ObservableCollection<NdfbinObject> ReadObjects()
+        protected void ReadTrans()
         {
-            var objects = new ObservableCollection<NdfbinObject>();
+            var trans = new ObservableCollection<NdfTranReference>();
+
+            var stringEntry = Footer.Entries.Single(x => x.Name == "TRAN");
+
+            //TODO: int cast is a bit too hacky here, solution needed
+            using (var ms = new MemoryStream(ContentData, (int)stringEntry.Offset - 40, (int)stringEntry.Size))
+            {
+                int i = 0;
+                var buffer = new byte[4];
+                while (ms.Position < ms.Length)
+                {
+                    var ntran = new NdfTranReference { Offset = ms.Position, Id = i };
+
+                    ms.Read(buffer, 0, buffer.Length);
+                    var strLen = BitConverter.ToInt32(buffer, 0);
+
+                    var strBuffer = new byte[strLen];
+                    ms.Read(strBuffer, 0, strBuffer.Length);
+
+                    ntran.Value = Encoding.GetEncoding("ISO-8859-1").GetString(strBuffer);
+
+                    i++;
+                    trans.Add(ntran);
+                }
+            }
+
+            Trans = trans;
+        }
+
+        protected ObservableCollection<NdfObject> ReadObjects()
+        {
+            var objects = new ObservableCollection<NdfObject>();
 
             var objEntry = Footer.Entries.Single(x => x.Name == "OBJE");
 
             //TODO: int cast is a bit too hacky here, solution needed
-            using (var ms = new MemoryStream(Data, (int)objEntry.Offset - 40, (int)objEntry.Size))
+            using (var ms = new MemoryStream(ContentData, (int)objEntry.Offset - 40, (int)objEntry.Size))
             {
                 var instanceOffsets = GetInstanceOffsets(ms).ToArray();
 
@@ -206,9 +210,9 @@ namespace EdataFileManager.BL
             return objects;
         }
 
-        private NdfbinObject ParseObject(byte[] data, int index)
+        protected NdfObject ParseObject(byte[] data, int index)
         {
-            var instance = new NdfbinObject { Id = index, Data = data };
+            var instance = new NdfObject { Id = index, Data = data };
 
             using (var ms = new MemoryStream(data))
             {
@@ -219,25 +223,27 @@ namespace EdataFileManager.BL
 
                 var cls = instance.Class = Classes.SingleOrDefault(x => x.Id == classId);
 
-                if (cls != null)
-                    cls.Instances.Add(instance);
+                if (cls == null)
+                    throw new InvalidDataException("Object without class found.");
 
-                NdfbinPropertyValue prop;
+                cls.Instances.Add(instance);
+
+                NdfPropertyValue prop;
                 bool triggerBreak;
 
                 // Read properties
                 while (ms.Position < ms.Length)
                 {
-                    prop = new NdfbinPropertyValue();
+                    prop = new NdfPropertyValue();
                     instance.PropertyValues.Add(prop);
 
                     ms.Read(buffer, 0, buffer.Length);
                     prop.Property = cls.Properties.Single(x => x.Id == BitConverter.ToInt32(buffer, 0));
 
-                    var res = ReadTypeValuePair(ms, out triggerBreak, prop);
+                    var res = ReadValue(ms, out triggerBreak, prop);
 
-                    prop.Type = res.Key;
-                    prop.Value = res.Value;
+                    //prop.Type = res.Key;
+                    prop.Value = res;
 
                     if (triggerBreak)
                         break;
@@ -246,11 +252,11 @@ namespace EdataFileManager.BL
             return instance;
         }
 
-        protected KeyValuePair<NdfType, object> ReadTypeValuePair(MemoryStream ms, out bool triggerBreak, NdfbinPropertyValue prop = null)
+        protected NdfValueWrapper ReadValue(MemoryStream ms, out bool triggerBreak, NdfPropertyValue prop = null)
         {
             var buffer = new byte[4];
             uint contBufferlen;
-            object value;
+            NdfValueWrapper value;
             triggerBreak = false;
 
             ms.Read(buffer, 0, buffer.Length);
@@ -288,44 +294,33 @@ namespace EdataFileManager.BL
                 //    _unknownTypesCount[_unknownTypes.IndexOf(t)]++;
 
                 triggerBreak = true;
-                return new KeyValuePair<NdfType, object>(type, null);
+                return new NdfUnkown(buffer, ms.Position);
             }
 
-            if (type == NdfType.List)
+            if (type == NdfType.List || type == NdfType.MapList)
             {
-                var lstValue = new List<object>();
+                var lstValue = new NdfCollection(ms.Position);
+
+                NdfValueWrapper res;
 
                 for (int i = 0; i < contBufferlen; i++)
                 {
-                    var res = ReadTypeValuePair(ms, out triggerBreak);
+                    if (type == NdfType.List)
+                        res = ReadValue(ms, out triggerBreak);
+                    else
+                        res = new NdfMap(ReadValue(ms, out triggerBreak), ReadValue(ms, out triggerBreak), ms.Position);
+
+                    lstValue.Add(res);
 
                     if (triggerBreak)
                         break;
-
-                    lstValue.Add(res.Value);
-                }
-
-                value = lstValue;
-            }
-            else if (type == NdfType.MapList)
-            {
-                var lstValue = new List<object>();
-
-                for (int i = 0; i < contBufferlen; i++)
-                {
-                    var res = new KeyValuePair<object, object>(ReadTypeValuePair(ms, out triggerBreak).Value, ReadTypeValuePair(ms, out triggerBreak).Value);
-
-                    if (triggerBreak)
-                        break;
-
-                    lstValue.Add(res.Value);
                 }
 
                 value = lstValue;
             }
             else if (type == NdfType.Map)
             {
-                value = new KeyValuePair<object, object>(ReadTypeValuePair(ms, out triggerBreak).Value, ReadTypeValuePair(ms, out triggerBreak).Value);
+                value = new NdfMap(ReadValue(ms, out triggerBreak), ReadValue(ms, out triggerBreak), ms.Position);
             }
             else
             {
@@ -335,13 +330,18 @@ namespace EdataFileManager.BL
                 if (prop != null)
                     prop.ValueData = contBuffer;
 
-                value = NdfTypeManager.GetValue(contBuffer, type, this, ms.Position-contBuffer.Length);
+                value = NdfTypeManager.GetValue(contBuffer, type, this, ms.Position - contBuffer.Length);
             }
 
-            return new KeyValuePair<NdfType, object>(type, value);
+            return value;
         }
 
-        private List<long> GetInstanceOffsets(MemoryStream ms)
+        /// <summary>
+        /// Gets the offset of every single instance.
+        /// </summary>
+        /// <param name="ms"></param>
+        /// <returns>A collection with the offset for every object instance in the Ndfbin file.</returns>
+        private IEnumerable<long> GetInstanceOffsets(MemoryStream ms)
         {
             const byte ab = 0xAB;
 
@@ -373,13 +373,62 @@ namespace EdataFileManager.BL
             return offsets;
         }
 
-        protected void ReadFooter()
+        /// <summary>
+        /// Reads the header data and sets the ContentData Property to the correct content.
+        /// </summary>
+        /// <returns>A valid instance of the Headerfile.</returns>
+        protected NdfHeader ReadHeader()
+        {
+            var header = new NdfHeader();
+
+            using (var ms = new MemoryStream(FileData))
+            {
+                ms.Seek(12, SeekOrigin.Begin);
+                var buffer = new byte[4];
+
+                ms.Read(buffer, 0, buffer.Length);
+                header.IsCompressedBody = BitConverter.ToInt32(buffer, 0) == 128;
+
+                ms.Read(buffer, 0, 4);
+                header.FileSizeUncompressedMinusE0 = BitConverter.ToInt32(buffer, 0);
+
+                ms.Seek(12, SeekOrigin.Current);
+
+                ms.Read(buffer, 0, 4);
+                header.FileSizeUncompressed = BitConverter.ToInt32(buffer, 0);
+
+                ms.Seek(4, SeekOrigin.Current);
+
+                if (header.IsCompressedBody)
+                {
+                    ms.Read(buffer, 0, 4);
+                    header.UncompressedContentSize = BitConverter.ToInt32(buffer, 0);
+                }
+
+                buffer = new byte[FileData.Length - ms.Position];
+
+                ms.Read(buffer, 0, buffer.Length);
+
+                if (header.IsCompressedBody)
+                    ContentData = Compressor.Decomp(buffer);
+                else
+                    ContentData = buffer;
+            }
+
+            return header;
+        }
+
+        /// <summary>
+        /// Reads the footer data which is the Ndfbin Dictionary.
+        /// </summary>
+        /// <returns></returns>
+        protected NdfFooter ReadFooter()
         {
             // Footer is 224 bytes
             const int footerLength = 224;
-            var footer = new NdfbinFooter();
+            var footer = new NdfFooter();
 
-            using (var ms = new MemoryStream(Data, Data.Length - footerLength, footerLength))
+            using (var ms = new MemoryStream(ContentData, ContentData.Length - footerLength, footerLength))
             {
                 var qwdbuffer = new byte[8];
                 var dwdbufer = new byte[4];
@@ -389,7 +438,7 @@ namespace EdataFileManager.BL
 
                 while (ms.Position < ms.Length)
                 {
-                    var entry = new NdfbinFooterEntry();
+                    var entry = new NdfFooterEntry();
 
                     ms.Read(dwdbufer, 0, dwdbufer.Length);
                     entry.Name = Encoding.ASCII.GetString(dwdbufer);
@@ -406,20 +455,25 @@ namespace EdataFileManager.BL
                 }
             }
 
-            Footer = footer;
+            return footer;
         }
 
+        /// <summary>
+        /// Build a valid NdfbinFile with the current ContentData.
+        /// </summary>
+        /// <param name="compress"></param>
+        /// <returns></returns>
         public byte[] BuildNdfFile(bool compress)
         {
             var header = new byte[] { 0x45, 0x55, 0x47, 0x30, 0x00, 0x00, 0x00, 0x00, 0x43, 0x4E, 0x44, 0x46 };
             var compressed = compress ? new byte[] { 0x80, 0x00, 0x00, 0x00 } : new byte[4];
 
-            var blockSize = BitConverter.GetBytes((long)Data.Length + 40 - 0xE0);
-            var blockSizeE0 = BitConverter.GetBytes((long)(Data.Length + 40));
+            var blockSize = BitConverter.GetBytes((long)ContentData.Length + 40 - 0xE0);
+            var blockSizeE0 = BitConverter.GetBytes((long)(ContentData.Length + 40));
 
-            var blockSize3 = BitConverter.GetBytes((Data.Length));
+            var blockSize3 = BitConverter.GetBytes((ContentData.Length));
 
-            var contBuffer = Data;
+            var contBuffer = ContentData;
 
             using (var ms = new MemoryStream())
             {
@@ -434,7 +488,7 @@ namespace EdataFileManager.BL
                 {
                     ms.Write(blockSize3, 0, blockSize3.Length);
 
-                    contBuffer = Compressor.Comp(Data);
+                    contBuffer = Compressor.Comp(ContentData);
                 }
 
                 ms.Write(contBuffer, 0, contBuffer.Length);

@@ -3,8 +3,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
 using EdataFileManager.NdfBin;
-using EdataFileManager.NdfBin.Model.Edata;
-using EdataFileManager.NdfBin.Model.Ndfbin;
 using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.ViewModel

@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using EdataFileManager.ViewModel.Base;
 
-namespace EdataFileManager.NdfBin.Model.Ndfbin
+namespace EdataFileManager.Model.Ndfbin
 {
     /// <summary>
     /// typedef struct ndfbinFooterPart {
@@ -18,9 +18,9 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
     ///    footerPart entries[9];
     /// };
     /// </summary>
-    public class NdfbinFooter : ViewModelBase
+    public class NdfFooter : ViewModelBase
     {
-        private readonly ObservableCollection<NdfbinFooterEntry> _entries =new ObservableCollection<NdfbinFooterEntry>();
+        private readonly ObservableCollection<NdfFooterEntry> _entries =new ObservableCollection<NdfFooterEntry>();
 
         private string _header;
 
@@ -34,7 +34,7 @@ namespace EdataFileManager.NdfBin.Model.Ndfbin
             }
         }
 
-        public ObservableCollection<NdfbinFooterEntry> Entries
+        public ObservableCollection<NdfFooterEntry> Entries
         {
             get { return _entries; }
         }

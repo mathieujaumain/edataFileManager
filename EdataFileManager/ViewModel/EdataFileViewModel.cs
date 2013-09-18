@@ -6,15 +6,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Data;
+using EdataFileManager.BL;
+using EdataFileManager.Model.Edata;
 using EdataFileManager.NdfBin;
-using EdataFileManager.NdfBin.Model.Edata;
 using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.ViewModel
 {
     public class EdataFileViewModel : ViewModelBase
     {
-        private ObservableCollection<NdfFile> _files;
+        private ObservableCollection<EdataContentFile> _files;
         private ICollectionView _filesCollectionView;
         private string _filterExpression = string.Empty;
         private string _loadedFile = string.Empty;
@@ -42,7 +43,7 @@ namespace EdataFileManager.ViewModel
             }
         }
 
-        public ObservableCollection<NdfFile> Files
+        public ObservableCollection<EdataContentFile> Files
         {
             get { return _files; }
             set
@@ -78,7 +79,7 @@ namespace EdataFileManager.ViewModel
 
         public bool FilterPath(object item)
         {
-            var file = item as NdfFile;
+            var file = item as EdataContentFile;
 
             if (file == null || FilterExpression == string.Empty || FilterExpression.Length < 3)
             {

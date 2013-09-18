@@ -1,6 +1,6 @@
 ﻿using EdataFileManager.ViewModel.Base;
 
-namespace EdataFileManager.NdfBin.Model.Edata
+namespace EdataFileManager.Model.Ndfbin
 {
     /// <summary>
     /// struct cndfHeader {
@@ -12,40 +12,36 @@ namespace EdataFileManager.NdfBin.Model.Edata
     ///	DWORD chunk2;
     ///	DWORD blockSizePlusE0;
     ///	DWORD chunk3;
+    /// only if compressed
     ///	DWORD blockSizePlusE0MinusLen4;
     ///};
     /// </summary>
-    public class NdfFileContent : ViewModelBase
+    public class NdfHeader : ViewModelBase
     {
         private bool _isCompressedBody;
         private int _blockSize;
         private int _blockSizeE0;
+
+        // Only if compressed = true;
+
         private int _blockSizeWithoutHeader;
 
-        private byte[] _body;
-
-        public int BlockSize
+        public int FileSizeUncompressed
         {
             get { return _blockSize; }
-            set { _blockSize = value; OnPropertyChanged(() => BlockSize); }
+            set { _blockSize = value; OnPropertyChanged(() => FileSizeUncompressed); }
         }
 
-        public int BlockSizeE0
+        public int FileSizeUncompressedMinusE0
         {
             get { return _blockSizeE0; }
-            set { _blockSizeE0 = value; OnPropertyChanged(() => BlockSizeE0); }
+            set { _blockSizeE0 = value; OnPropertyChanged(() => FileSizeUncompressedMinusE0); }
         }
 
-        public int BlockSizeWithoutHeader
+        public int UncompressedContentSize
         {
             get { return _blockSizeWithoutHeader; }
-            set { _blockSizeWithoutHeader = value; OnPropertyChanged(() => BlockSizeWithoutHeader); }
-        }
-
-        public byte[] Body
-        {
-            get { return _body; }
-            set { _body = value; OnPropertyChanged(() => Body); }
+            set { _blockSizeWithoutHeader = value; OnPropertyChanged(() => UncompressedContentSize); }
         }
 
         public bool IsCompressedBody

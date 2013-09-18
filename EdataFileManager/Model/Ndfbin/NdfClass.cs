@@ -8,26 +8,27 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using EdataFileManager.BL;
-using EdataFileManager.NdfBin.Model.Ndfbin.Types;
+using EdataFileManager.Model.Ndfbin.Types;
+using EdataFileManager.Model.Ndfbin.Types.AllTypes;
 using EdataFileManager.View.Ndfbin;
 using EdataFileManager.ViewModel.Base;
 using EdataFileManager.ViewModel.Filter;
 
 namespace EdataFileManager.Model.Ndfbin
 {
-    public class NdfbinClass : ViewModelBase
+    public class NdfClass : ViewModelBase
     {
         private int _id;
         private long _offset;
         private string _name;
-        private readonly ObservableCollection<NdfbinProperty> _properties = new ObservableCollection<NdfbinProperty>();
-        private readonly ObservableCollection<NdfbinObject> _instances = new ObservableCollection<NdfbinObject>();
+        private readonly ObservableCollection<NdfProperty> _properties = new ObservableCollection<NdfProperty>();
+        private readonly ObservableCollection<NdfObject> _instances = new ObservableCollection<NdfObject>();
         private ICollectionView _instancesCollectionView;
         private readonly ObservableCollection<PropertyFilterExpression> _propertyFilterExpressions = new ObservableCollection<PropertyFilterExpression>();
 
         public NdfbinManager Manager { get; protected set; }
 
-        public NdfbinClass(NdfbinManager mgr)
+        public NdfClass(NdfbinManager mgr)
         {
             Manager = mgr;
             ApplyPropertyFilter = new ActionCommand(ApplyPropertyFilterExecute);
@@ -38,27 +39,24 @@ namespace EdataFileManager.Model.Ndfbin
         {
             var item = obj as IEnumerable<DataGridCellInfo>;
 
-            var prop = item.First().Item as NdfbinProperty;
+            if (item == null)
+                return;
+
+            var prop = item.First().Item as NdfProperty;
 
             if (prop == null || prop.ValueType != NdfType.ObjectReference)
                 return;
 
-            var tVal = prop.Value.ToString().Split(new string[] { " : " }, StringSplitOptions.None);
+            var refe = prop.Value as NdfObjectReference;
 
-            var cls = Manager.Classes.SingleOrDefault(x => x.Id == Int32.Parse(tVal[0]));
-
-            if (cls == null)
-                return;
-
-            var inst = cls.Instances.SingleOrDefault(x => x.Id == Int32.Parse(tVal[1]));
+            var inst = refe.NdfClass.Instances.SingleOrDefault(x => x.Id == refe.InstanceId);
 
             if (inst == null)
                 return;
 
-            cls.InstancesCollectionView.MoveCurrentTo(inst);
+            refe.NdfClass.InstancesCollectionView.MoveCurrentTo(inst);
 
-            var view = new InstanceWindowView();
-            view.DataContext = cls;
+            var view = new InstanceWindowView { DataContext = refe.NdfClass };
 
             view.Show();
         }
@@ -91,12 +89,12 @@ namespace EdataFileManager.Model.Ndfbin
             set { _name = value; OnPropertyChanged(() => Name); }
         }
 
-        public ObservableCollection<NdfbinProperty> Properties
+        public ObservableCollection<NdfProperty> Properties
         {
             get { return _properties; }
         }
 
-        public ObservableCollection<NdfbinObject> Instances
+        public ObservableCollection<NdfObject> Instances
         {
             get { return _instances; }
         }
@@ -123,7 +121,7 @@ namespace EdataFileManager.Model.Ndfbin
 
         public bool FilterInstances(object o)
         {
-            var obj = o as NdfbinObject;
+            var obj = o as NdfObject;
 
             if (obj == null)
                 return false;
@@ -164,8 +162,10 @@ namespace EdataFileManager.Model.Ndfbin
         {
             foreach (var property in Properties)
             {
-                property.OnPropertyChanged(() => property.Value, () => property.ValueData, () => property.ValueType);
-                property.OnPropertyChanged(() => property.ValueType);
+                property.OnPropertyChanged("Value");
+                property.OnPropertyChanged("ValueData");
+                property.OnPropertyChanged("ValueType");
+
             }
         }
 

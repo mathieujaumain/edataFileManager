@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using EdataFileManager.NdfBin.Model.Trad;
 
-namespace EdataFileManager.NdfBin
+namespace EdataFileManager.BL
 {
     public class TradManager
     {
