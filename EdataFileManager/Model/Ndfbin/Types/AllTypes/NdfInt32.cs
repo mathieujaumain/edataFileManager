@@ -16,7 +16,7 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
             try
             {
-                return BitConverter.GetBytes((Int32)Value);
+                return BitConverter.GetBytes(Convert.ToInt32(Value));
             }
             catch (Exception e)
             {

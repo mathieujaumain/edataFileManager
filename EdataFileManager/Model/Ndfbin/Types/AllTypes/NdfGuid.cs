@@ -18,7 +18,7 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
         {
             valid = true;
 
-            return ((Guid)Value).ToByteArray();
+            return Guid.Parse(Value.ToString()).ToByteArray();
         }
     }
 }

@@ -521,5 +521,31 @@ namespace EdataFileManager.BL
             }
 
         }
+
+        public void CommitChanges()
+        {
+            using (var ms = new MemoryStream(ContentData))
+            {
+                bool valid;
+
+                foreach (var change in ChangeManager.Changes)
+                {
+
+                    var value = change.ChangedValue.Value.GetBytes(out valid);
+
+                    if (!valid)
+                        continue;
+
+                    long offset = change.ChangedValue.Instance.Offset + change.ChangedValue.Value.OffSet;
+
+                    ms.Seek(offset, SeekOrigin.Begin);
+
+                    ms.Write(value,0,value.Length);
+                }
+            }
+
+            ChangeManager.Changes.Clear();
+
+        }
     }
 }

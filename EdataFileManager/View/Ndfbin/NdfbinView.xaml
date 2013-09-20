@@ -6,6 +6,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <ToolBar>
             <Button ToolTip="Save changes back" Command="{Binding Path=SaveNdfbinCommand}">
@@ -21,7 +22,8 @@
                                PlacementTarget="{Binding ElementName=changesButton}"
                                PopupAnimation="Slide" 
                                Placement="Bottom" 
-                               AllowsTransparency="True">
+                                
+                               AllowsTransparency="True" StaysOpen="False">
             <DataGrid ItemsSource="{Binding Path=NdfbinManager.ChangeManager.Changes}"
                       CanUserResizeRows="False"
                       CanUserAddRows="False"  
@@ -237,6 +239,8 @@
                 </Grid>
             </TabItem>
         </TabControl>
-
+        <StatusBar Grid.Row="2" >
+            <TextBlock Text="{Binding Path=StatusText }" />
+        </StatusBar>
     </Grid>
 </Window>

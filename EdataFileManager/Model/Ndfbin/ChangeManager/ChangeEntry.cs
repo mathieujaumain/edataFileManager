@@ -23,7 +23,13 @@ namespace EdataFileManager.Model.Ndfbin.ChangeManager
 
         public object OldValueDisplay
         {
-            get { return NdfTypeManager.GetValue(OldValue, ChangedValue.Value.Type, null, 0); }
+            get
+            {
+                if (ChangedValue == null)
+                    return null;
+
+                return NdfTypeManager.GetValue(OldValue, ChangedValue.Value.Type, ChangedValue.Property.Class.Manager, 0);
+            }
         }
 
 

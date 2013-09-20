@@ -57,7 +57,15 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         public override byte[] GetBytes(out bool valid)
         {
-            throw new NotImplementedException();
+            valid = true;
+
+            var refereceData = new List<byte>();
+
+            refereceData.AddRange(BitConverter.GetBytes(InstanceId));
+
+            refereceData.AddRange(BitConverter.GetBytes(Class.Id));
+
+            return refereceData.ToArray();
         }
     }
 }

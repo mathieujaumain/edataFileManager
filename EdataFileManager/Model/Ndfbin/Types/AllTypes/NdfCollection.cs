@@ -104,7 +104,9 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         public override byte[] GetBytes(out bool valid)
         {
-            throw new System.NotImplementedException();
+            valid = false;
+
+            return new byte[0];
         }
     }
 }

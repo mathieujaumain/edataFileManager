@@ -16,7 +16,7 @@ namespace EdataFileManager.Model.Ndfbin
 
         public NdfPropertyValue(NdfObject instance)
         {
-
+            _instance = instance;
         }
 
         public NdfType Type
@@ -67,7 +67,7 @@ namespace EdataFileManager.Model.Ndfbin
             }
         }
 
-        private byte[] _oldVal;
+        private byte[] _oldVal = new byte[0];
 
         public override void BeginEdit()
         {
@@ -84,7 +84,17 @@ namespace EdataFileManager.Model.Ndfbin
             var newValue = Value.GetBytes(out valid);
 
             if (valid && !Utils.ByteArrayCompare(newValue, _oldVal))
-                Property.Class.Manager.ChangeManager.Changes.Add(new ChangeEntry() { ChangedValue = this, NewValue = newValue, OldValue = _oldVal });
+            {
+                Property.Class.Manager.ChangeManager.Changes.Add(new ChangeEntry()
+                                                                     {
+                                                                         ChangedValue = this,
+                                                                         NewValue = newValue,
+                                                                         OldValue = _oldVal
+                                                                     });
+
+                _oldVal = newValue;
+
+            }
 
             base.EndEdit();
         }

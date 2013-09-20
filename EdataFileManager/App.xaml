@@ -20,6 +20,9 @@
         <BitmapImage UriSource="\View\Images\View_Details-26.png" x:Key="ViewChanges" />
 
 
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+
         <Extension:EditingControlDataTemplateSelector x:Key="editingControlTemplateSelector"/>
 
         <DataTemplate x:Key="FloatEditingTemplate">

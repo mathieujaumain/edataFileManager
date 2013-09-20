@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
@@ -25,6 +26,8 @@ namespace EdataFileManager.ViewModel.Ndf
         private ICollectionView _transCollectionView;
         private string _transFilterExpression = string.Empty;
 
+        private string _statusText = string.Empty;
+
         public NdfDetailsViewModel(EdataContentFile contentFile, EdataFileViewModel ownerVm)
         {
             OwnerFile = contentFile;
@@ -41,7 +44,7 @@ namespace EdataFileManager.ViewModel.Ndf
             Strings = ndfbinManager.Strings;
             Trans = ndfbinManager.Trans;
 
-            SaveNdfbinCommand = new ActionCommand(SaveNdfbinExecute, () => NdfbinManager.HasChanges);
+            SaveNdfbinCommand = new ActionCommand(SaveNdfbinExecute, () => NdfbinManager.ChangeManager.HasChanges);
         }
 
         public NdfbinManager NdfbinManager { get; protected set; }
@@ -50,10 +53,15 @@ namespace EdataFileManager.ViewModel.Ndf
 
         public ICommand SaveNdfbinCommand { get; set; }
 
-
         public string Title
         {
             get { return string.Format("Ndf Content Viewer [{0}]", OwnerFile.Path); }
+        }
+
+        public string StatusText
+        {
+            get { return _statusText; }
+            set { _statusText = value; OnPropertyChanged(() => StatusText); }
         }
 
         public string ClassesFilterExpression
@@ -154,7 +162,6 @@ namespace EdataFileManager.ViewModel.Ndf
             }
         }
 
-
         private void BuildClassesCollectionView()
         {
             _classesCollectionView = CollectionViewSource.GetDefaultView(Classes);
@@ -214,11 +221,24 @@ namespace EdataFileManager.ViewModel.Ndf
 
         private void SaveNdfbinExecute(object obj)
         {
-            var newFile = NdfbinManager.BuildNdfFile(true);
+            StatusText = string.Format("Saving back {0} changes into {1}", NdfbinManager.ChangeManager.Changes.Count, EdataFileViewModel.EdataManager.FilePath);
 
-            EdataFileViewModel.EdataManager.ReplaceFile(OwnerFile, newFile);
+            try
+            {
+                NdfbinManager.CommitChanges();
 
-            EdataFileViewModel.LoadFile(EdataFileViewModel.LoadedFile);
+                var newFile = NdfbinManager.BuildNdfFile(NdfbinManager.Header.IsCompressedBody);
+
+                EdataFileViewModel.EdataManager.ReplaceFile(OwnerFile, newFile);
+
+                EdataFileViewModel.LoadFile(EdataFileViewModel.LoadedFile);
+
+                StatusText = string.Format("Saving of {0} changes finished! {1}", NdfbinManager.ChangeManager.Changes.Count, EdataFileViewModel.EdataManager.FilePath);
+            }
+            catch (Exception e)
+            {
+                StatusText = string.Format("Saving interrupted - Did you start Wargame before I was ready?");
+            }
         }
     }
 }
