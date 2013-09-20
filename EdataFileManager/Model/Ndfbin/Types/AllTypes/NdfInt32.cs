@@ -10,13 +10,13 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         }
 
-        public override byte[] GetBytes(object value, NdfType type, out bool valid)
+        public override byte[] GetBytes(out bool valid)
         {
             valid = true;
 
             try
             {
-                return BitConverter.GetBytes(Convert.ToInt32(value));
+                return BitConverter.GetBytes((Int32)Value);
             }
             catch (Exception e)
             {

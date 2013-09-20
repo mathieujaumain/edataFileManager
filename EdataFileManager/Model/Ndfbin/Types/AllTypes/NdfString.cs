@@ -7,7 +7,7 @@
         {
         }
 
-        public override byte[] GetBytes(object value, NdfType type, out bool valid)
+        public override byte[] GetBytes(out bool valid)
         {
             throw new System.NotImplementedException();
         }

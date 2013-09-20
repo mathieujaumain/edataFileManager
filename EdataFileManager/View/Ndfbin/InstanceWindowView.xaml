@@ -12,6 +12,6 @@
             <TextBlock Text=" : " />
             <TextBlock Text="{Binding InstancesCollectionView.CurrentItem.Id}" />
         </StackPanel>
-        <Ndfbin:InstanceView Grid.Row="1" />
+        <Ndfbin:InstanceView DataContext="{Binding Path=InstancesCollectionView.CurrentItem}" Grid.Row="1" />
     </Grid>
 </Window>

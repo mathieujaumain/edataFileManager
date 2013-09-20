@@ -13,11 +13,11 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
         public NdfObjectReference(NdfClass cls, uint instance, long offset)
             : base(NdfType.ObjectReference, offset)
         {
-            NdfClass = cls;
+            Class = cls;
             InstanceId = instance;
         }
 
-        public NdfClass NdfClass
+        public NdfClass Class
         {
             get;
             protected set;
@@ -33,13 +33,31 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
             }
         }
 
+        public NdfObject Instance
+        {
+            get { return Class.Instances.Single(x => x.Id == InstanceId); }
+            set
+            {
+                if (!Class.Instances.Contains(value))
+                    throw new ArgumentException("instance");
+                InstanceId = value.Id;
+                OnPropertyChanged("Instance");
+                OnPropertyChanged("InstanceId");
+            }
+        }
+
         public override string ToString()
         {
-            if (NdfClass == null)
+            if (Class == null)
                 return string.Format("Class does not exist : {0}", InstanceId);
 
-            return string.Format("{0} : {1} - {2}", NdfClass.Id, InstanceId, NdfClass.Name);
+            return string.Format("{0} : {1} - {2}", Class.Id, InstanceId, Class.Name);
 
+        }
+
+        public override byte[] GetBytes(out bool valid)
+        {
+            throw new NotImplementedException();
         }
     }
 }

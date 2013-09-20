@@ -8,18 +8,18 @@ namespace EdataFileManager.Model.Ndfbin
         private readonly ObservableCollection<NdfPropertyValue> _propertyValues = new ObservableCollection<NdfPropertyValue>();
         private NdfClass _class;
         private byte[] _data;
-        private int _id;
+        private uint _id;
 
         public NdfClass Class
         {
             get { return _class; }
-            set { _class = value; OnPropertyChanged(() => Class); }
+            set { _class = value; OnPropertyChanged("Class"); }
         }
 
         public byte[] Data
         {
             get { return _data; }
-            set { _data = value; OnPropertyChanged(() => Data); }
+            set { _data = value; OnPropertyChanged("Data"); }
         }
 
         public ObservableCollection<NdfPropertyValue> PropertyValues
@@ -27,10 +27,10 @@ namespace EdataFileManager.Model.Ndfbin
             get { return _propertyValues; }
         }
 
-        public int Id
+        public uint Id
         {
             get { return _id; }
-            set { _id = value; OnPropertyChanged(() => Id); }
+            set { _id = value; OnPropertyChanged("Id"); }
         }
 
         public long Offset { get; set; }

@@ -3,10 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <DataGrid x:Name="propGrid"  ItemsSource="{Binding Properties}"
+              mc:Ignorable="d" d:DesignHeight="365" d:DesignWidth="820">
+    <Grid Margin="0">
+        <DataGrid x:Name="propGrid"  ItemsSource="{Binding PropertyValues}"
                       IsSynchronizedWithCurrentItem="True"
                       CanUserResizeRows="False"
                       CanUserAddRows="False"  
@@ -20,12 +19,18 @@
                 <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DetailsCommand}" CommandParameter="{Binding ElementName=propGrid, Path=SelectedCells}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Path=BinId}" Header="BinId" IsReadOnly="True" Width="70" />
-                <DataGridTextColumn Binding="{Binding Path=Id}" Header="Id" IsReadOnly="True" Width="50" />
-                <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" IsReadOnly="True" Width="*" />
-                <DataGridTextColumn Binding="{Binding Path=ValueType}" Header="Type" IsReadOnly="True" Width="150" />
-                <DataGridTextColumn Binding="{Binding Path=ValueData}" Header="Biniary Value" IsReadOnly="True" Width="150" />
-                <DataGridTextColumn Binding="{Binding Path=Value}" Header="Value" IsReadOnly="False" Width="150" />
+                <DataGridTextColumn Binding="{Binding Path=Property.BinId}" Header="BinId" IsReadOnly="True" Width="70" />
+                <DataGridTextColumn Binding="{Binding Path=Property.Id}" Header="Id" IsReadOnly="True" Width="50" />
+                <DataGridTextColumn Binding="{Binding Path=Property.Name}" Header="Name" IsReadOnly="True" Width="*" />
+                <DataGridTextColumn Binding="{Binding Path=Value.Type}" Header="Type" IsReadOnly="True" Width="150" />
+                <DataGridTextColumn Binding="{Binding Path=BinValue}" Header="Biniary Value" IsReadOnly="True" Width="150" />
+                <DataGridTemplateColumn Header="Value" IsReadOnly="False" Width="*" CellEditingTemplateSelector="{StaticResource editingControlTemplateSelector}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=Value}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>

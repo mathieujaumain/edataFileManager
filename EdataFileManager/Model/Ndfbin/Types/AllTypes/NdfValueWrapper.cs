@@ -23,5 +23,8 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
             get;
             set;
         }
+
+        public abstract byte[] GetBytes(out bool valid);
+
     }
 }

@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
+using EdataFileManager.BL;
 using EdataFileManager.Model.Edata;
-using EdataFileManager.NdfBin;
 using EdataFileManager.Settings;
 using EdataFileManager.View;
 using EdataFileManager.View.Ndfbin;
 using EdataFileManager.ViewModel.Base;
+using EdataFileManager.ViewModel.Ndf;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
-namespace EdataFileManager.ViewModel
+namespace EdataFileManager.ViewModel.Edata
 {
     public class ManagerMainViewModel : ViewModelBase
     {
@@ -134,27 +133,27 @@ namespace EdataFileManager.ViewModel
 
         protected void ExportNdfExecute(object obj)
         {
-            //var vm = CollectionViewSource.GetDefaultView(OpenFiles).CurrentItem as EdataFileViewModel;
+            var vm = CollectionViewSource.GetDefaultView(OpenFiles).CurrentItem as EdataFileViewModel;
 
-            //if (vm == null)
-            //    return;
+            if (vm == null)
+                return;
 
-            //var ndf = vm.FilesCollectionView.CurrentItem as EdataContentFile;
+            var ndf = vm.FilesCollectionView.CurrentItem as EdataContentFile;
 
-            //if (ndf == null)
-            //    return;
+            if (ndf == null)
+                return;
 
-            //Settings.Settings settings = SettingsManager.Load();
+            Settings.Settings settings = SettingsManager.Load();
 
-            //NdfFileContent content = vm.EdataManager.GetNdfContent(ndf);
+            var content = new NdfbinManager(ndf.Manager.GetRawData(ndf)).GetContent();
 
-            //var f = new FileInfo(ndf.Path);
+            var f = new FileInfo(ndf.Path);
 
-            //using (var fs = new FileStream(Path.Combine(settings.SavePath, f.Name), FileMode.OpenOrCreate))
-            //{
-            //    fs.Write(content.Body, 0, content.Body.Length);
-            //    fs.Flush();
-            //}
+            using (var fs = new FileStream(Path.Combine(settings.SavePath, f.Name), FileMode.OpenOrCreate))
+            {
+                fs.Write(content, 0, content.Length);
+                fs.Flush();
+            }
         }
 
         protected void ExportRawExecute(object obj)

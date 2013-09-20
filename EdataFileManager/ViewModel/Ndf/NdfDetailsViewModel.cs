@@ -1,21 +1,19 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
 using System.Windows.Data;
 using System.Windows.Input;
 using EdataFileManager.BL;
 using EdataFileManager.Model.Edata;
 using EdataFileManager.Model.Ndfbin;
-using EdataFileManager.NdfBin;
 using EdataFileManager.ViewModel.Base;
-using EdataFileManager.ViewModel.Filter;
+using EdataFileManager.ViewModel.Edata;
 
-namespace EdataFileManager.ViewModel
+namespace EdataFileManager.ViewModel.Ndf
 {
     public class NdfDetailsViewModel : ViewModelBase
     {
-        private ObservableCollection<NdfClass> _classes;
+        private readonly ObservableCollection<NdfClassViewModel> _classes = new ObservableCollection<NdfClassViewModel>();
         private ICollectionView _classesCollectionView;
         private string _classesFilterExpression = string.Empty;
 
@@ -37,68 +35,59 @@ namespace EdataFileManager.ViewModel
 
             ndfbinManager.Initialize();
 
-            Classes = ndfbinManager.Classes;
+            foreach (var cls in ndfbinManager.Classes)
+                Classes.Add(new NdfClassViewModel(cls));
+
             Strings = ndfbinManager.Strings;
             Trans = ndfbinManager.Trans;
 
-            SaveNdfbinCommand = new ActionCommand(SaveNdfbinExecute);
+            SaveNdfbinCommand = new ActionCommand(SaveNdfbinExecute, () => NdfbinManager.HasChanges);
         }
 
-        public NdfDetailsViewModel(EdataContentFile contentFile)
-        {
-            
-        }
-
-        private void SaveNdfbinExecute(object obj)
-        {
-            var newFile = NdfbinManager.BuildNdfFile(true);
-            
-            EdataFileViewModel.EdataManager.ReplaceFile(OwnerFile, newFile);
-
-            EdataFileViewModel.LoadFile(EdataFileViewModel.LoadedFile);
-        }
-
-        public NdfbinManager NdfbinManager { get; set; }
-
-        public EdataFileViewModel EdataFileViewModel { get; set; }
-
+        public NdfbinManager NdfbinManager { get; protected set; }
+        protected EdataFileViewModel EdataFileViewModel { get; set; }
         protected EdataContentFile OwnerFile { get; set; }
 
         public ICommand SaveNdfbinCommand { get; set; }
 
-        public ObservableCollection<NdfClass> Classes
-        {
-            get { return _classes; }
-            set
-            {
-                _classes = value;
-                OnPropertyChanged(() => Classes);
-            }
-        }
-
-        public ObservableCollection<NdfStringReference> Strings
-        {
-            get { return _strings; }
-            set
-            {
-                _strings = value;
-                OnPropertyChanged(() => Strings);
-            }
-        }
-
-        public ObservableCollection<NdfTranReference> Trans
-        {
-            get { return _trans; }
-            set
-            {
-                _trans = value;
-                OnPropertyChanged(() => Trans);
-            }
-        }
 
         public string Title
         {
             get { return string.Format("Ndf Content Viewer [{0}]", OwnerFile.Path); }
+        }
+
+        public string ClassesFilterExpression
+        {
+            get { return _classesFilterExpression; }
+            set
+            {
+                _classesFilterExpression = value;
+                OnPropertyChanged(() => ClassesFilterExpression);
+
+                ClassesCollectionView.Refresh();
+            }
+        }
+
+        public string StringFilterExpression
+        {
+            get { return _stringFilterExpression; }
+            set
+            {
+                _stringFilterExpression = value;
+                OnPropertyChanged(() => StringFilterExpression);
+                StringCollectionView.Refresh();
+            }
+        }
+
+        public string TransFilterExpression
+        {
+            get { return _transFilterExpression; }
+            set
+            {
+                _transFilterExpression = value;
+                OnPropertyChanged(() => TransFilterExpression);
+                TransCollectionView.Refresh();
+            }
         }
 
         public ICollectionView ClassesCollectionView
@@ -140,39 +129,31 @@ namespace EdataFileManager.ViewModel
             }
         }
 
-        public string ClassesFilterExpression
+        public ObservableCollection<NdfClassViewModel> Classes
         {
-            get { return _classesFilterExpression; }
+            get { return _classes; }
+        }
+
+        public ObservableCollection<NdfStringReference> Strings
+        {
+            get { return _strings; }
             set
             {
-                _classesFilterExpression = value;
-                OnPropertyChanged(() => ClassesFilterExpression);
-
-                ClassesCollectionView.Refresh();
+                _strings = value;
+                OnPropertyChanged(() => Strings);
             }
         }
 
-        public string StringFilterExpression
+        public ObservableCollection<NdfTranReference> Trans
         {
-            get { return _stringFilterExpression; }
+            get { return _trans; }
             set
             {
-                _stringFilterExpression = value;
-                OnPropertyChanged(() => StringFilterExpression);
-                StringCollectionView.Refresh();
+                _trans = value;
+                OnPropertyChanged(() => Trans);
             }
         }
 
-        public string TransFilterExpression
-        {
-            get { return _transFilterExpression; }
-            set
-            {
-                _transFilterExpression = value;
-                OnPropertyChanged(() => TransFilterExpression);
-                TransCollectionView.Refresh();
-            }
-        }
 
         private void BuildClassesCollectionView()
         {
@@ -200,7 +181,7 @@ namespace EdataFileManager.ViewModel
 
         public bool FilterClasses(object o)
         {
-            var clas = o as NdfClass;
+            var clas = o as NdfClassViewModel;
 
             if (clas == null || ClassesFilterExpression == string.Empty)
                 return true;
@@ -231,5 +212,13 @@ namespace EdataFileManager.ViewModel
                    tran.Id.ToString(CultureInfo.CurrentCulture).Contains(TransFilterExpression);
         }
 
+        private void SaveNdfbinExecute(object obj)
+        {
+            var newFile = NdfbinManager.BuildNdfFile(true);
+
+            EdataFileViewModel.EdataManager.ReplaceFile(OwnerFile, newFile);
+
+            EdataFileViewModel.LoadFile(EdataFileViewModel.LoadedFile);
+        }
     }
 }

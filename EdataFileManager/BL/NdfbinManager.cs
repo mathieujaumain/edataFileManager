@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using EdataFileManager.Compressing;
 using EdataFileManager.Model.Ndfbin;
+using EdataFileManager.Model.Ndfbin.ChangeManager;
 using EdataFileManager.Model.Ndfbin.Types;
 using EdataFileManager.Model.Ndfbin.Types.AllTypes;
 using NdfString = EdataFileManager.Model.Ndfbin.NdfStringReference;
@@ -15,15 +16,21 @@ namespace EdataFileManager.BL
     public class NdfbinManager
     {
         public byte[] FileData { get; protected set; }
-        public byte[] ContentData { get; protected set; }
         public NdfFooter Footer { get; protected set; }
         public NdfHeader Header { get; protected set; }
         public ObservableCollection<NdfClass> Classes { get; protected set; }
         public ObservableCollection<NdfString> Strings { get; protected set; }
         public ObservableCollection<NdfTranReference> Trans { get; protected set; }
 
-        public bool HasChanges { get; set; }
+        public ChangeManager ChangeManager
+        {
+            get;
+            protected set;
+        }
 
+        protected byte[] ContentData { get; set; }
+
+        public bool HasChanges { get; set; }
 
         //protected List<byte[]> _unknownTypes = new List<byte[]>();
         //protected List<int> _unknownTypesCount = new List<int>();
@@ -33,8 +40,18 @@ namespace EdataFileManager.BL
             FileData = fileData;
         }
 
+        public byte[] GetContent()
+        {
+            if (Header == null)
+                Header = ReadHeader();
+
+            return ContentData;
+        }
+
         public void Initialize()
         {
+            ChangeManager = new ChangeManager();
+
             Header = ReadHeader();
             Footer = ReadFooter();
             ReadClasses();
@@ -187,7 +204,7 @@ namespace EdataFileManager.BL
                 byte[] buffer;
                 long size;
 
-                for (int i = 0; i < instanceOffsets.Length; i++)
+                for (uint i = 0; i < instanceOffsets.Length; i++)
                 {
                     if (i == instanceOffsets.Length - 1)
                         size = ms.Length - instanceOffsets[i];
@@ -210,7 +227,7 @@ namespace EdataFileManager.BL
             return objects;
         }
 
-        protected NdfObject ParseObject(byte[] data, int index)
+        protected NdfObject ParseObject(byte[] data, uint index)
         {
             var instance = new NdfObject { Id = index, Data = data };
 
@@ -234,7 +251,7 @@ namespace EdataFileManager.BL
                 // Read properties
                 while (ms.Position < ms.Length)
                 {
-                    prop = new NdfPropertyValue();
+                    prop = new NdfPropertyValue(instance);
                     instance.PropertyValues.Add(prop);
 
                     ms.Read(buffer, 0, buffer.Length);
@@ -252,6 +269,13 @@ namespace EdataFileManager.BL
             return instance;
         }
 
+        /// <summary>
+        /// Reads the value of a Property inside a object instance.
+        /// </summary>
+        /// <param name="ms"></param>
+        /// <param name="triggerBreak"></param>
+        /// <param name="prop"></param>
+        /// <returns>A NdfValueWrapper Instance.</returns>
         protected NdfValueWrapper ReadValue(MemoryStream ms, out bool triggerBreak, NdfPropertyValue prop = null)
         {
             var buffer = new byte[4];

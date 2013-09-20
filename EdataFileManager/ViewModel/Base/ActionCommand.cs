@@ -7,9 +7,9 @@ namespace EdataFileManager.ViewModel.Base
     public class ActionCommand : ICommand
     {
         private readonly Action<object> _executeHandler;
-        private readonly Predicate<object> _canExecuteHandler;
+        private readonly Func<bool> _canExecuteHandler;
 
-        public ActionCommand(Action<object> execute, Predicate<object> canExecute = null)
+        public ActionCommand(Action<object> execute, Func<bool> canExecute = null)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");
@@ -30,7 +30,7 @@ namespace EdataFileManager.ViewModel.Base
         [DebuggerStepThrough]
         public bool CanExecute(object parameter)
         {
-            return _canExecuteHandler == null || _canExecuteHandler(parameter);
+            return _canExecuteHandler == null || _canExecuteHandler();
 
         }
     }

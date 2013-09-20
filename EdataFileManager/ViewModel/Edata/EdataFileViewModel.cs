@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Data;
 using EdataFileManager.BL;
 using EdataFileManager.Model.Edata;
-using EdataFileManager.NdfBin;
 using EdataFileManager.ViewModel.Base;
 
-namespace EdataFileManager.ViewModel
+namespace EdataFileManager.ViewModel.Edata
 {
     public class EdataFileViewModel : ViewModelBase
     {

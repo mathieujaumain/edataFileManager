@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="EdataFileManager.ViewModel.Base.ObjectWrapperViewModel&lt;T&gt;" HideInheritanceLine="true">
+    <Position X="12" Y="1" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\Base\ObjectWrapperViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EdataFileManager.ViewModel.Ndf.NdfClassViewModel" HideInheritanceLine="true">
+    <Position X="4.25" Y="0.75" Width="2" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAIACAQQgAAAABAAQAEAgAACAAI=</HashCode>
+      <FileName>ViewModel\Ndf\NdfClassViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Instances" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="EdataFileManager.ViewModel.NdfDetailsViewModel" HideInheritanceLine="true">
+    <Position X="0.5" Y="0.5" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>BIxAGAooAMEFAGBAkQAABgAAABAIAAAAAAAAQgAEAAA=</HashCode>
+      <FileName>ViewModel\NdfDetailsViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Classes" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="EdataFileManager.Model.Ndfbin.NdfClass" HideInheritanceLine="true">
+    <Position X="6.5" Y="0.75" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACIAAAAAAAEAAEIABACAQAAAAABAAAQAAAAAACgAA=</HashCode>
+      <FileName>Model\Ndfbin\NdfClass.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Instances" />
+      <Property Name="Properties" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="EdataFileManager.Model.Ndfbin.NdfObject" HideInheritanceLine="true">
+    <Position X="6.75" Y="5.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACAAAADAAAAAAAAAJAAAAAAACAABAAAAAAAAAAgBA=</HashCode>
+      <FileName>Model\Ndfbin\NdfObject.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="PropertyValues" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="EdataFileManager.Model.Ndfbin.NdfProperty">
+    <Position X="9.75" Y="0.75" Width="2" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAACIAAAAAAAAEAEIAJAAAQAAAAAAAAAAAAAAAAAgBA=</HashCode>
+      <FileName>Model\Ndfbin\NdfProperty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EdataFileManager.Model.Ndfbin.NdfPropertyValue">
+    <Position X="9.75" Y="5.25" Width="2" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>EBAAAAAAAAAAAAAAAAQAAAAAAQAAAAAAAQAgAQAAAAA=</HashCode>
+      <FileName>Model\Ndfbin\NdfPropertyValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EdataFileManager.ViewModel.Ndf.NdfObjectViewModel">
+    <Position X="12.25" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAACAAAAIAAAAAAAAAAAACAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\Ndf\NdfObjectViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

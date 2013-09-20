@@ -16,7 +16,6 @@
             set { _value = value; OnPropertyChanged("Value"); }
         }
 
-        public abstract byte[] GetBytes(object value, NdfType type, out bool valid);
 
         public override string ToString()
         {

@@ -1,9 +1,11 @@
 ﻿<Application x:Class="EdataFileManager.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:Extension="clr-namespace:EdataFileManager.View.Extension"
+             xmlns:ValueEditing="clr-namespace:EdataFileManager.View.Ndfbin.ValueEditing"
              StartupUri="View/ManagerMainView.xaml">
     <Application.Resources>
-        <BitmapImage UriSource="\View\Images\about-26.png" x:Key="AboutIcon" />
+        <BitmapImage UriSource="View\Images\about-26.png" x:Key="AboutIcon" />
         <BitmapImage UriSource="\View\Images\reuse-26.png" x:Key="ExtractRawIcon" />
         <BitmapImage UriSource="\View\Images\zip-26.png" x:Key="ExtractZipedPartIcon" />
         <BitmapImage UriSource="\View\Images\open_in_browser-26.png" x:Key="OpenDetailsIcon" />
@@ -11,6 +13,35 @@
         <BitmapImage UriSource="\View\Images\text-26.png" x:Key="OpenDictionayIcon" />
 
         <BitmapImage UriSource="\View\Images\save-26.png" x:Key="SaveIcon" />
+
+        <BitmapImage UriSource="\View\Images\empty_filter-26.png" x:Key="EmptyFilter" />
+        <BitmapImage UriSource="\View\Images\filled_filter-26.png" x:Key="FilledFilter" />
+
+        <BitmapImage UriSource="\View\Images\View_Details-26.png" x:Key="ViewChanges" />
+
+
+        <Extension:EditingControlDataTemplateSelector x:Key="editingControlTemplateSelector"/>
+
+        <DataTemplate x:Key="FloatEditingTemplate">
+            <ValueEditing:FloatEditingTemplate />
+        </DataTemplate>
+        <DataTemplate x:Key="UInt32EditingTemplate">
+            <ValueEditing:UInt32EditingTemaplte />
+        </DataTemplate>
+        <DataTemplate x:Key="Int32EditingTemplate">
+            <ValueEditing:Int32EditingTemplate />
+        </DataTemplate>
+        <DataTemplate x:Key="GuidEditingTemplate">
+            <ValueEditing:GuidEditingTemplate />
+        </DataTemplate>
+        <DataTemplate x:Key="BooleanEditingTemplate">
+            <ValueEditing:BooleanEditingTemplate />
+        </DataTemplate>
+
+        <DataTemplate x:Key="ObjectReferenceEditingTemplate">
+            <ValueEditing:ObjectReferenceEditingTemplate />
+        </DataTemplate>
+
 
     </Application.Resources>
 </Application>

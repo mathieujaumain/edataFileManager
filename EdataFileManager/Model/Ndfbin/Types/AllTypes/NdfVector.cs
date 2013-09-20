@@ -15,11 +15,11 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         }
 
-        public override byte[] GetBytes(object value, NdfType type, out bool valid)
+        public override byte[] GetBytes(out bool valid)
         {
             valid = true;
 
-            var pt = Point3D.Parse((string) value);
+            var pt = (Point3D)Value;
 
             var vector = new List<byte>();
 

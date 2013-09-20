@@ -70,6 +70,8 @@
     <Compile Include="Model\Edata\EdataEntity.cs" />
     <Compile Include="Model\Edata\EdataContentFile.cs" />
     <Compile Include="Model\Edata\EdataFileType.cs" />
+    <Compile Include="Model\Ndfbin\ChangeManager\ChangeEntry.cs" />
+    <Compile Include="Model\Ndfbin\ChangeManager\ChangeManager.cs" />
     <Compile Include="Model\Ndfbin\NdfHeader.cs" />
     <Compile Include="Model\Ndfbin\NdfClass.cs" />
     <Compile Include="Model\Ndfbin\NdfFooter.cs" />
@@ -87,6 +89,7 @@
     <Compile Include="Model\Ndfbin\Types\AllTypes\NdfInt32.cs" />
     <Compile Include="Model\Ndfbin\Types\AllTypes\NdfLocalisationHash.cs" />
     <Compile Include="Model\Ndfbin\Types\AllTypes\NdfMap.cs" />
+    <Compile Include="Model\Ndfbin\Types\AllTypes\NdfNull.cs" />
     <Compile Include="Model\Ndfbin\Types\AllTypes\NdfObjectReference.cs" />
     <Compile Include="Model\Ndfbin\Types\AllTypes\NdfString.cs" />
     <Compile Include="Model\Ndfbin\Types\AllTypes\NdfTrans.cs" />
@@ -105,18 +108,23 @@
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Util\Utils.cs" />
+    <Compile Include="ViewModel\Base\ObjectWrapperViewModel.cs" />
     <Compile Include="ViewModel\Filter\FilterDiscriminator.cs" />
     <Compile Include="ViewModel\Filter\PropertyFilterExpression.cs" />
     <Compile Include="ViewModel\MoviePlaybackViewModel.cs" />
-    <Compile Include="ViewModel\EdataFileViewModel.cs" />
-    <Compile Include="ViewModel\ManagerMainViewModel.cs" />
+    <Compile Include="ViewModel\Edata\EdataFileViewModel.cs" />
+    <Compile Include="ViewModel\Edata\ManagerMainViewModel.cs" />
     <Compile Include="ViewModel\Base\ActionCommand.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
-    <Compile Include="ViewModel\NdfDetailsViewModel.cs" />
+    <Compile Include="ViewModel\Ndf\NdfDetailsViewModel.cs" />
+    <Compile Include="ViewModel\Ndf\NdfClassViewModel.cs" />
+    <Compile Include="ViewModel\Ndf\NdfObjectViewModel.cs" />
     <Compile Include="ViewModel\TradFileViewModel.cs" />
     <Compile Include="View\EdataFileView.xaml.cs">
       <DependentUpon>EdataFileView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Extension\EditingControlDataTemplateSelector.cs" />
+    <Compile Include="View\Extension\Masking.cs" />
     <Compile Include="View\MoviePlaybackView.xaml.cs">
       <DependentUpon>MoviePlaybackView.xaml</DependentUpon>
     </Compile>
@@ -128,6 +136,24 @@
     </Compile>
     <Compile Include="View\Ndfbin\NdfbinView.xaml.cs">
       <DependentUpon>NdfbinView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ndfbin\ValueEditing\BooleanEditingTemplate.xaml.cs">
+      <DependentUpon>BooleanEditingTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ndfbin\ValueEditing\FloatEditingTemplate.xaml.cs">
+      <DependentUpon>FloatEditingTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ndfbin\ValueEditing\GuidEditingTemplate.xaml.cs">
+      <DependentUpon>GuidEditingTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ndfbin\ValueEditing\Int32EditingTemplate.xaml.cs">
+      <DependentUpon>Int32EditingTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ndfbin\ValueEditing\ObjectReferenceEditingTemplate.xaml.cs">
+      <DependentUpon>ObjectReferenceEditingTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ndfbin\ValueEditing\UInt32EditingTemaplte.xaml.cs">
+      <DependentUpon>UInt32EditingTemaplte.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TradFileView.xaml.cs">
       <DependentUpon>TradFileView.xaml</DependentUpon>
@@ -165,6 +191,30 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Ndfbin\ValueEditing\BooleanEditingTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ndfbin\ValueEditing\FloatEditingTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ndfbin\ValueEditing\GuidEditingTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ndfbin\ValueEditing\Int32EditingTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ndfbin\ValueEditing\ObjectReferenceEditingTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ndfbin\ValueEditing\UInt32EditingTemaplte.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\TradFileView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -197,6 +247,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="ViewModel\ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -226,6 +277,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="View\Images\save-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\empty_filter-26.png" />
+    <Resource Include="View\Images\filled_filter-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\View_Details-26.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

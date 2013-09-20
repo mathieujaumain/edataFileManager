@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace EdataFileManager.Util
@@ -28,13 +29,13 @@ namespace EdataFileManager.Util
             return s.Split('\0')[0].TrimEnd();
         }
 
-        public static bool ByteArrayCompare(byte[] a1, byte[] a2)
-        {
-            if (a1.Length != a2.Length)
-                return false;
+        //public static bool ByteArrayCompare(byte[] a1, byte[] a2)
+        //{
+        //    if (a1.Length != a2.Length)
+        //        return false;
 
-            return !a1.Where((t, i) => t != a2[i]).Any();
-        }
+        //    return !a1.Where((t, i) => t != a2[i]).Any();
+        //}
 
         public static string Int32ToBigEndianHexByteString(Int32 i)
         {
@@ -84,6 +85,17 @@ namespace EdataFileManager.Util
             //return val - (val < 58 ? 48 : 87);
             //Or the two combined, but a bit slower:
             return val - (val < 58 ? 48 : (val < 97 ? 55 : 87));
+        }
+
+
+        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int memcmp(byte[] b1, byte[] b2, long count);
+
+        public static bool ByteArrayCompare(byte[] b1, byte[] b2)
+        {
+            // Validate buffers are the same length.
+            // This also ensures that the count does not exceed the length of either buffer.  
+            return b1.Length == b2.Length && memcmp(b1, b2, b1.Length) == 0;
         }
     }
 }

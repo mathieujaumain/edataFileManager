@@ -101,5 +101,10 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
         }
 
         #endregion
+
+        public override byte[] GetBytes(out bool valid)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
             set { _key = value; OnPropertyChanged("Key"); }
         }
 
-        public override byte[] GetBytes(object value, NdfType type, out bool valid)
+        public override byte[] GetBytes(out bool valid)
         {
             throw new NotImplementedException();
         }

@@ -15,19 +15,11 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         }
 
-        public override byte[] GetBytes(object value, NdfType type, out bool valid)
+        public override byte[] GetBytes(out bool valid)
         {
             valid = true;
 
-            var colObj = ColorConverter.ConvertFromString(value.ToString());
-
-            if (colObj == null)
-            {
-                valid = false;
-                return new byte[0];
-            }
-
-            var col = (Color)colObj;
+            var col = (Color)Value;
 
             var colorArray = new byte[] { col.A, col.R, col.G, col.B };
 

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using EdataFileManager.ViewModel;
+using EdataFileManager.ViewModel.Edata;
 
 namespace EdataFileManager.View
 {

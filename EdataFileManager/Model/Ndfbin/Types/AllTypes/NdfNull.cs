@@ -6,19 +6,21 @@ using System.Threading.Tasks;
 
 namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 {
-    public class NdfGuid : NdfFlatValueWrapper
+    public class NdfNull : NdfValueWrapper
     {
-        public NdfGuid(Guid value, long offset)
-            : base(NdfType.Guid, value, offset)
+        public NdfNull(long offset)
+            : base(NdfType.Unset, offset)
         {
+        }
 
+        public override string ToString()
+        {
+            return "null";
         }
 
         public override byte[] GetBytes(out bool valid)
         {
-            valid = true;
-
-            return ((Guid)Value).ToByteArray();
+            throw new NotImplementedException();
         }
     }
 }
