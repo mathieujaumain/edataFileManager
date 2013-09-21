@@ -217,8 +217,7 @@ namespace EdataFileManager.BL
                     ms.Read(buffer, 0, buffer.Length);
                     ms.Seek(4, SeekOrigin.Current);
 
-                    var obj = ParseObject(buffer, i);
-                    obj.Offset = objOffset;
+                    var obj = ParseObject(buffer, i, objOffset);
 
                     objects.Add(obj);
                 }
@@ -227,9 +226,9 @@ namespace EdataFileManager.BL
             return objects;
         }
 
-        protected NdfObject ParseObject(byte[] data, uint index)
+        protected NdfObject ParseObject(byte[] data, uint index, long objOffset)
         {
-            var instance = new NdfObject { Id = index, Data = data };
+            var instance = new NdfObject { Id = index, Data = data, Offset = objOffset};
 
             using (var ms = new MemoryStream(data))
             {
@@ -276,7 +275,7 @@ namespace EdataFileManager.BL
         /// <param name="triggerBreak"></param>
         /// <param name="prop"></param>
         /// <returns>A NdfValueWrapper Instance.</returns>
-        protected NdfValueWrapper ReadValue(MemoryStream ms, out bool triggerBreak, NdfPropertyValue prop = null)
+        protected NdfValueWrapper ReadValue(MemoryStream ms, out bool triggerBreak, NdfPropertyValue prop)
         {
             var buffer = new byte[4];
             uint contBufferlen;
@@ -325,14 +324,14 @@ namespace EdataFileManager.BL
             {
                 var lstValue = new NdfCollection(ms.Position);
 
-                NdfValueWrapper res;
+                CollectionItemValueHolder res;
 
                 for (int i = 0; i < contBufferlen; i++)
                 {
                     if (type == NdfType.List)
-                        res = ReadValue(ms, out triggerBreak);
+                        res = new CollectionItemValueHolder(ReadValue(ms, out triggerBreak, prop), this, prop.InstanceOffset);
                     else
-                        res = new NdfMap(ReadValue(ms, out triggerBreak), ReadValue(ms, out triggerBreak), ms.Position);
+                        res = new CollectionItemValueHolder(new NdfMap(ReadValue(ms, out triggerBreak, prop), ReadValue(ms, out triggerBreak, prop), ms.Position), this, prop.InstanceOffset);
 
                     lstValue.Add(res);
 
@@ -344,7 +343,7 @@ namespace EdataFileManager.BL
             }
             else if (type == NdfType.Map)
             {
-                value = new NdfMap(ReadValue(ms, out triggerBreak), ReadValue(ms, out triggerBreak), ms.Position);
+                value = new NdfMap(ReadValue(ms, out triggerBreak, prop), ReadValue(ms, out triggerBreak, prop), ms.Position);
             }
             else
             {
@@ -536,11 +535,11 @@ namespace EdataFileManager.BL
                     if (!valid)
                         continue;
 
-                    long offset = change.ChangedValue.Instance.Offset + change.ChangedValue.Value.OffSet;
+                    long offset = change.ChangedValue.InstanceOffset + change.ChangedValue.Value.OffSet;
 
                     ms.Seek(offset, SeekOrigin.Begin);
 
-                    ms.Write(value,0,value.Length);
+                    ms.Write(value, 0, value.Length);
                 }
             }
 

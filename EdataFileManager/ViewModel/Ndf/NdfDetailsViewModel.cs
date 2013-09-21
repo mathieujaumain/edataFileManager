@@ -225,6 +225,8 @@ namespace EdataFileManager.ViewModel.Ndf
 
             try
             {
+                var changesCount = NdfbinManager.ChangeManager.Changes.Count;
+
                 NdfbinManager.CommitChanges();
 
                 var newFile = NdfbinManager.BuildNdfFile(NdfbinManager.Header.IsCompressedBody);
@@ -233,7 +235,7 @@ namespace EdataFileManager.ViewModel.Ndf
 
                 EdataFileViewModel.LoadFile(EdataFileViewModel.LoadedFile);
 
-                StatusText = string.Format("Saving of {0} changes finished! {1}", NdfbinManager.ChangeManager.Changes.Count, EdataFileViewModel.EdataManager.FilePath);
+                StatusText = string.Format("Saving of {0} changes finished! {1}", changesCount, EdataFileViewModel.EdataManager.FilePath);
             }
             catch (Exception e)
             {

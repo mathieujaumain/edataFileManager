@@ -103,7 +103,7 @@
                         </DataGrid>
                     </Grid>
 
-                    <GridSplitter ResizeDirection="Columns" Width="5" Grid.RowSpan="2" />
+                    <GridSplitter ResizeDirection="Columns" Width="5" Grid.RowSpan="3" />
 
                     <Grid Grid.Column="1">
                         <Grid.ColumnDefinitions>

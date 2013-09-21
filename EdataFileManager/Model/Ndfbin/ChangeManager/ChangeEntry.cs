@@ -13,7 +13,7 @@ namespace EdataFileManager.Model.Ndfbin.ChangeManager
         private bool _triggersOffsetreordering;
         private byte[] _oldValue;
         private byte[] _newValue;
-        private NdfPropertyValue _changedValue;
+        private IValueHolder _changedValue;
 
         public bool TriggersOffsetreordering
         {
@@ -28,10 +28,9 @@ namespace EdataFileManager.Model.Ndfbin.ChangeManager
                 if (ChangedValue == null)
                     return null;
 
-                return NdfTypeManager.GetValue(OldValue, ChangedValue.Value.Type, ChangedValue.Property.Class.Manager, 0);
+                return NdfTypeManager.GetValue(OldValue, ChangedValue.Value.Type, ChangedValue.Manager, 0);
             }
         }
-
 
         public byte[] OldValue
         {
@@ -45,7 +44,7 @@ namespace EdataFileManager.Model.Ndfbin.ChangeManager
             set { _newValue = value; OnPropertyChanged(() => NewValue); }
         }
 
-        public NdfPropertyValue ChangedValue
+        public IValueHolder ChangedValue
         {
             get { return _changedValue; }
             set { _changedValue = value; OnPropertyChanged(() => ChangedValue); }

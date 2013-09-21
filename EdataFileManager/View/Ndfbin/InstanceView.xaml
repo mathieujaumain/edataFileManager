@@ -5,6 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
               mc:Ignorable="d" d:DesignHeight="365" d:DesignWidth="820">
     <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
         <DataGrid x:Name="propGrid"  ItemsSource="{Binding PropertyValues}"
                       IsSynchronizedWithCurrentItem="True"
                       CanUserResizeRows="False"
@@ -12,9 +17,8 @@
                       CanUserDeleteRows="False" 
                       AutoGenerateColumns="False"
                       SelectionMode="Single"
-                      SelectionUnit="CellOrRowHeader"
-                      RowDetailsVisibilityMode="VisibleWhenSelected"
-                  >
+                      SelectionUnit="FullRow"
+                      RowDetailsVisibilityMode="VisibleWhenSelected">
             <DataGrid.InputBindings>
                 <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DetailsCommand}" CommandParameter="{Binding ElementName=propGrid, Path=SelectedCells}" />
             </DataGrid.InputBindings>
@@ -24,7 +28,7 @@
                 <DataGridTextColumn Binding="{Binding Path=Property.Name}" Header="Name" IsReadOnly="True" Width="*" />
                 <DataGridTextColumn Binding="{Binding Path=Value.Type}" Header="Type" IsReadOnly="True" Width="150" />
                 <DataGridTextColumn Binding="{Binding Path=BinValue}" Header="Biniary Value" IsReadOnly="True" Width="150" />
-                <DataGridTemplateColumn Header="Value" IsReadOnly="False" Width="*" CellEditingTemplateSelector="{StaticResource editingControlTemplateSelector}">
+                <DataGridTemplateColumn Header="Value" IsReadOnly="False" Width="*" CellEditingTemplateSelector="{DynamicResource editingControlTemplateSelector}" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=Value}" />
@@ -32,13 +36,53 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-            <DataGrid.RowDetailsTemplate>
+            <!--<DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <Border BorderThickness="0" Background="BlanchedAlmond" Padding="10">
-                        <DataGrid MaxHeight="400" ItemsSource="{Binding Path=Value}" />
+                        <DataGrid MaxHeight="400" ItemsSource="{Binding Path=Value}" 
+                      IsSynchronizedWithCurrentItem="True"
+                      CanUserResizeRows="False"
+                      CanUserAddRows="False"  
+                      CanUserDeleteRows="False" 
+                      AutoGenerateColumns="False"
+                      SelectionMode="Single"
+                      SelectionUnit="CellOrRowHeader">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding Path=Type}" Header="Type" IsReadOnly="True" Width="200" />
+                                <DataGridTextColumn Binding="{Binding Path=BinValue}" Header="Biniary Value" IsReadOnly="True" Width="150" />
+                                <DataGridTemplateColumn Header="Value" IsReadOnly="False" Width="*" CellEditingTemplateSelector="{StaticResource editingControlTemplateSelector}" >
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </Border>
                 </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
+            </DataGrid.RowDetailsTemplate>-->
+        </DataGrid>
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" />
+        <DataGrid Grid.Row="2" MaxHeight="400" ItemsSource="{Binding Path=SelectedItem.Value, ElementName=propGrid}" 
+                      IsSynchronizedWithCurrentItem="True"
+                      CanUserResizeRows="False"
+                      CanUserAddRows="False"  
+                      CanUserDeleteRows="False" 
+                      AutoGenerateColumns="False"
+                      SelectionMode="Single"
+                      SelectionUnit="CellOrRowHeader" IsReadOnly="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=Value.Type}" Header="Type" IsReadOnly="True" Width="*" />
+                <!--<DataGridTextColumn Binding="{Binding}" Header="Biniary Value" IsReadOnly="False" Width="*" />-->
+                <DataGridTemplateColumn Header="Value" IsReadOnly="False" Width="*" CellEditingTemplateSelector="{DynamicResource editingControlTemplateSelector}" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Value}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </UserControl>

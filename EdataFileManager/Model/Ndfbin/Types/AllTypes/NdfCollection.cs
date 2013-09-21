@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 {
-    public class NdfCollection : NdfValueWrapper, IList<NdfValueWrapper>
+    public class NdfCollection : NdfValueWrapper, IList<CollectionItemValueHolder>, INotifyCollectionChanged, IList
     {
-        private readonly ObservableCollection<NdfValueWrapper> _innerList = new ObservableCollection<NdfValueWrapper>();
+        private readonly ObservableCollection<CollectionItemValueHolder> _innerList = new ObservableCollection<CollectionItemValueHolder>();
 
         public NdfCollection(long offset)
             : base(NdfType.List, offset)
@@ -14,15 +15,15 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         }
 
-        public NdfCollection(IEnumerable<NdfValueWrapper> list, long offset)
+        public NdfCollection(IEnumerable<CollectionItemValueHolder> list, long offset)
             : this(offset)
         {
             if (list != null)
-                foreach (NdfValueWrapper wrapper in list)
+                foreach (CollectionItemValueHolder wrapper in list)
                     InnerList.Add(wrapper);
         }
 
-        protected ObservableCollection<NdfValueWrapper> InnerList
+        public ObservableCollection<CollectionItemValueHolder> InnerList
         {
             get { return _innerList; }
         }
@@ -34,43 +35,52 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         #region IList<NdfValueWrapper> Members
 
-        public int IndexOf(NdfValueWrapper item)
+        public int IndexOf(CollectionItemValueHolder item)
         {
             return InnerList.IndexOf(item);
         }
 
-        public void Insert(int index, NdfValueWrapper item)
+        public void Insert(int index, CollectionItemValueHolder item)
         {
             InnerList.Insert(index, item);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public void RemoveAt(int index)
         {
+            var el = InnerList[index];
+
             InnerList.RemoveAt(index);
+
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        public NdfValueWrapper this[int index]
+        public CollectionItemValueHolder this[int index]
         {
             get { return InnerList[index]; }
             set { InnerList[index] = value; }
         }
 
-        public void Add(NdfValueWrapper item)
+        public void Add(CollectionItemValueHolder item)
         {
             InnerList.Add(item);
+
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public void Clear()
         {
             InnerList.Clear();
+
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        public bool Contains(NdfValueWrapper item)
+        public bool Contains(CollectionItemValueHolder item)
         {
             return InnerList.Contains(item);
         }
 
-        public void CopyTo(NdfValueWrapper[] array, int arrayIndex)
+        public void CopyTo(CollectionItemValueHolder[] array, int arrayIndex)
         {
             InnerList.CopyTo(array, arrayIndex);
         }
@@ -85,12 +95,17 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
             get { return false; }
         }
 
-        public bool Remove(NdfValueWrapper item)
+        public bool Remove(CollectionItemValueHolder item)
         {
-            return InnerList.Remove(item);
+            var res = InnerList.Remove(item);
+
+            if (res)
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+
+            return res;
         }
 
-        public IEnumerator<NdfValueWrapper> GetEnumerator()
+        public IEnumerator<CollectionItemValueHolder> GetEnumerator()
         {
             return InnerList.GetEnumerator();
         }
@@ -107,6 +122,81 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
             valid = false;
 
             return new byte[0];
+        }
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (CollectionChanged != null)
+                CollectionChanged(this, e);
+        }
+
+        public int Add(object value)
+        {
+            var val = value as CollectionItemValueHolder;
+            if (val == null)
+                return -1;
+
+            Add(val);
+
+            return IndexOf(value);
+        }
+
+        public bool Contains(object value)
+        {
+            var val = value as CollectionItemValueHolder;
+            if (val == null)
+                return false;
+
+            return InnerList.Contains(value as CollectionItemValueHolder);
+        }
+
+        public int IndexOf(object value)
+        {
+            return IndexOf(value as CollectionItemValueHolder);
+        }
+
+        public void Insert(int index, object value)
+        {
+            Insert(index, value as CollectionItemValueHolder);
+        }
+
+        public bool IsFixedSize
+        {
+            get { return false; }
+        }
+
+        public void Remove(object value)
+        {
+            Remove(value as CollectionItemValueHolder);
+        }
+
+        object IList.this[int index]
+        {
+            get
+            {
+                return this[index];
+            }
+            set
+            {
+                this[index] = value as CollectionItemValueHolder;
+            }
+        }
+
+        public void CopyTo(System.Array array, int index)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool IsSynchronized
+        {
+            get { return false; }
+        }
+
+        public object SyncRoot
+        {
+            get { return this; }
         }
     }
 }

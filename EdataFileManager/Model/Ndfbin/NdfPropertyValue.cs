@@ -1,4 +1,5 @@
 ﻿using System;
+using EdataFileManager.BL;
 using EdataFileManager.Model.Ndfbin.ChangeManager;
 using EdataFileManager.Model.Ndfbin.Types;
 using EdataFileManager.Model.Ndfbin.Types.AllTypes;
@@ -7,7 +8,7 @@ using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.Model.Ndfbin
 {
-    public class NdfPropertyValue : ViewModelBase
+    public class NdfPropertyValue : ViewModelBase, IValueHolder
     {
         private NdfObject _instance;
         private NdfProperty _property;
@@ -49,6 +50,19 @@ namespace EdataFileManager.Model.Ndfbin
         {
             get { return _value; }
             set { _value = value; OnPropertyChanged("Value"); }
+        }
+
+        public NdfbinManager Manager
+        {
+            get { return Property.Class.Manager; }
+        }
+
+        public long InstanceOffset
+        {
+            get
+            {
+                return Instance.Offset;
+            }
         }
 
         public NdfProperty Property

@@ -17,10 +17,10 @@ namespace EdataFileManager.View.Extension
         {
             var element = container as FrameworkElement;
 
-            if (!(item is NdfPropertyValue) || element == null)
+            if (!(item is IValueHolder) || element == null)
                 return null;
 
-            var propVal = item as NdfPropertyValue;
+            var propVal = item as IValueHolder;
 
             var wrap = propVal.Value;
 

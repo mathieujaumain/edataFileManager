@@ -16,7 +16,9 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         public override byte[] GetBytes(out bool valid)
         {
-            throw new NotImplementedException();
+            valid = false;
+
+            return new byte[0];
         }
 
         public override string ToString()

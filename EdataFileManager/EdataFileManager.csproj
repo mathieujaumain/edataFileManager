@@ -72,6 +72,8 @@
     <Compile Include="Model\Edata\EdataFileType.cs" />
     <Compile Include="Model\Ndfbin\ChangeManager\ChangeEntry.cs" />
     <Compile Include="Model\Ndfbin\ChangeManager\ChangeManager.cs" />
+    <Compile Include="Model\Ndfbin\CollectionItemValueHolder.cs" />
+    <Compile Include="Model\Ndfbin\IValueHolder.cs" />
     <Compile Include="Model\Ndfbin\NdfHeader.cs" />
     <Compile Include="Model\Ndfbin\NdfClass.cs" />
     <Compile Include="Model\Ndfbin\NdfFooter.cs" />
