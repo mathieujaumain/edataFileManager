@@ -26,7 +26,7 @@ namespace EdataFileManager.Model.Edata
         private long _size;
         private byte[] _checkSum = new byte[16];
 
-        private EdataFileType _fileType;
+        private EdataFileType _fileType = EdataFileType.Unknown;
 
         public EdataContentFile(EdataManager mgr) : base(mgr)
         {

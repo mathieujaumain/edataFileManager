@@ -55,9 +55,9 @@ namespace EdataFileManager.ViewModel.Ndf
             if (item == null)
                 return;
 
-            var prop = item.First().Item as NdfPropertyValue;
+            var prop = item.First().Item as IValueHolder;
 
-            if (prop == null || prop.Type != NdfType.ObjectReference)
+            if (prop == null || prop.Value.Type != NdfType.ObjectReference)
                 return;
 
             var refe = prop.Value as NdfObjectReference;

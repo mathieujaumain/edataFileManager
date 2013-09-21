@@ -6,6 +6,9 @@ namespace EdataFileManager.Model.Edata
         Ndfbin,
         Dictionary,
         Video,
-        Package
+        Image,
+        Package,
+
+        Unknown
     }
 }

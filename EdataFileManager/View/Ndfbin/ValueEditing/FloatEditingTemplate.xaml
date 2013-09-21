@@ -6,6 +6,6 @@
              xmlns:Extension="clr-namespace:EdataFileManager.View.Extension" mc:Ignorable="d" 
              d:DesignHeight="22" d:DesignWidth="200">
     <Grid>
-        <TextBox Extension:Masking.Mask="([\-0-9][0-9]*[\.,]?[0-9]*)" Text="{Binding Path=Value.Value}" />
+        <TextBox Extension:Masking.Mask="([\-0-9][0-9]*\.?[0-9]*)" Text="{Binding Path=Value.Value}" />
     </Grid>
 </UserControl>

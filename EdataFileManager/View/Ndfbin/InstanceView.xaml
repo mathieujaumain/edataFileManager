@@ -64,7 +64,7 @@
             </DataGrid.RowDetailsTemplate>-->
         </DataGrid>
         <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" />
-        <DataGrid Grid.Row="2" MaxHeight="400" ItemsSource="{Binding Path=SelectedItem.Value, ElementName=propGrid}" 
+        <DataGrid x:Name="listGrid" Grid.Row="2" MaxHeight="400" ItemsSource="{Binding Path=SelectedItem.Value, ElementName=propGrid}" 
                       IsSynchronizedWithCurrentItem="True"
                       CanUserResizeRows="False"
                       CanUserAddRows="False"  
@@ -72,6 +72,9 @@
                       AutoGenerateColumns="False"
                       SelectionMode="Single"
                       SelectionUnit="CellOrRowHeader" IsReadOnly="False">
+            <DataGrid.InputBindings>
+                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DetailsCommand}" CommandParameter="{Binding ElementName=listGrid, Path=SelectedCells}" />
+            </DataGrid.InputBindings>
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=Value.Type}" Header="Type" IsReadOnly="True" Width="*" />
                 <!--<DataGridTextColumn Binding="{Binding}" Header="Biniary Value" IsReadOnly="False" Width="*" />-->

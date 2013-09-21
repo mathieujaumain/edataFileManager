@@ -20,6 +20,13 @@
                       SelectionUnit="FullRow"
                       >
             <DataGrid.Columns>
+                <DataGridTemplateColumn Header="" Width="20" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Width="16" Height="16" Source="{Binding FileType, Converter={StaticResource EdataFileTypeToImageConverter}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Binding="{Binding Path=Path}" Header="Path" IsReadOnly="True" Width="*" />
                 <DataGridTextColumn Binding="{Binding Path=Offset}" Header="Offset" IsReadOnly="True" />
                 <DataGridTextColumn Binding="{Binding Path=Size}" Header="Size" IsReadOnly="True" />

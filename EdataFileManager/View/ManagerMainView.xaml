@@ -48,8 +48,6 @@
             <Button ToolTip="About" Command="{Binding AboutUsCommand}" >
                 <Image Source="{StaticResource AboutIcon}" />
             </Button>
-
-
         </ToolBar>
 
         <TabControl Grid.Row="2" ItemsSource="{Binding Path=OpenFiles}" IsSynchronizedWithCurrentItem="True">

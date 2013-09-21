@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 {
@@ -8,6 +9,12 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
             : base(NdfType.Float32, value, offset)
         {
 
+        }
+
+        public new float Value
+        {
+            get { return (float)base.Value; }
+            set { base.Value = value; OnPropertyChanged("Value"); }
         }
 
         public override byte[] GetBytes(out bool valid)
@@ -23,6 +30,11 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
                 valid = false;
                 return new byte[0];
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0:0.####################}", Value);
         }
     }
 }

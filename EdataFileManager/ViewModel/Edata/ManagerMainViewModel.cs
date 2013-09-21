@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Data;
@@ -80,17 +81,38 @@ namespace EdataFileManager.ViewModel.Edata
 
         protected void InitializeCommands()
         {
-            ExportNdfCommand = new ActionCommand(ExportNdfExecute);
-            ExportRawCommand = new ActionCommand(ExportRawExecute);
             OpenFileCommand = new ActionCommand(OpenFileExecute);
-            ViewTradFileCommand = new ActionCommand(ViewTradFileExecute);
             CloseFileCommand = new ActionCommand(CloseFileExecute);
+
+
+            ChangeExportPathCommand = new ActionCommand(ChangeExportPathExecute);
+
+
+            ExportNdfCommand = new ActionCommand(ExportNdfExecute, () => IsOfType(EdataFileType.Ndfbin));
+            ExportRawCommand = new ActionCommand(ExportRawExecute);
             PlayMovieCommand = new ActionCommand(PlayMovieExecute);
 
             AboutUsCommand = new ActionCommand(AboutUsExecute);
 
-            ChangeExportPathCommand = new ActionCommand(ChangeExportPathExecute);
-            ViewContentCommand = new ActionCommand(ViewContentExecute);
+
+            ViewTradFileCommand = new ActionCommand(ViewTradFileExecute, () => IsOfType(EdataFileType.Dictionary));
+
+            ViewContentCommand = new ActionCommand(ViewContentExecute, () => IsOfType(EdataFileType.Ndfbin));
+        }
+
+        private bool IsOfType(EdataFileType type)
+        {
+            var vm = CollectionViewSource.GetDefaultView(OpenFiles).CurrentItem as EdataFileViewModel;
+
+            if (vm == null)
+                return false;
+
+            var ndf = vm.FilesCollectionView.CurrentItem as EdataContentFile;
+
+            if (ndf == null)
+                return false;
+
+            return ndf.FileType == type;
         }
 
         private void ViewTradFileExecute(object obj)

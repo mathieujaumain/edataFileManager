@@ -42,6 +42,9 @@
   <PropertyGroup>
     <StartupObject>EdataFileManager.App</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zlib">
       <HintPath>..\References\Ionic.Zlib.dll</HintPath>
@@ -125,6 +128,7 @@
     <Compile Include="View\EdataFileView.xaml.cs">
       <DependentUpon>EdataFileView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Extension\EdataFileTypeToImageConverter.cs" />
     <Compile Include="View\Extension\EditingControlDataTemplateSelector.cs" />
     <Compile Include="View\Extension\Masking.cs" />
     <Compile Include="View\MoviePlaybackView.xaml.cs">
@@ -286,6 +290,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="View\Images\View_Details-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\google_code-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\picture-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\question-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\package-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

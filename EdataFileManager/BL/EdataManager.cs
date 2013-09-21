@@ -83,6 +83,51 @@ namespace EdataFileManager.BL
         {
             Header = ReadEdataHeader();
             Files = ReadEdatDictionary();
+
+            //ResolveFileTypes();
+        }
+
+        protected void ResolveFileType(FileStream fs, EdataContentFile file)
+        {
+            // save original offset
+            var origOffset = fs.Position;
+
+            fs.Seek(file.Offset + Header.FileOffset, SeekOrigin.Begin);
+
+            var headerBuffer = new byte[12];
+            fs.Read(headerBuffer, 0, headerBuffer.Length);
+
+            file.FileType = GetFileTypeFromHeaderData(headerBuffer);
+
+            // set offset back to original
+            fs.Seek(origOffset, SeekOrigin.Begin);
+        }
+
+        protected EdataFileType GetFileTypeFromHeaderData(byte[] headerData)
+        {
+            // TODO get headers from managers;
+
+            var knownHeaders = new List<KeyValuePair<EdataFileType, byte[]>>();
+
+            byte[] ndfbinheader = { 0x45, 0x55, 0x47, 0x30, 0x00, 0x00, 0x00, 0x00, 0x43, 0x4E, 0x44, 0x46 };
+            byte[] edataHeader = { 0x65, 0x64, 0x61, 0x74, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+            byte[] tradHeader = { 0x54, 0x52, 0x41, 0x44 };
+
+            knownHeaders.Add(new KeyValuePair<EdataFileType, byte[]>(EdataFileType.Ndfbin, ndfbinheader));
+            knownHeaders.Add(new KeyValuePair<EdataFileType, byte[]>(EdataFileType.Package, edataHeader));
+            knownHeaders.Add(new KeyValuePair<EdataFileType, byte[]>(EdataFileType.Dictionary, tradHeader));
+
+
+            foreach (var knownHeader in knownHeaders)
+            {
+                if (knownHeader.Value.Length < headerData.Length)
+                    headerData = headerData.Take(knownHeader.Value.Length).ToArray();
+
+                if (Utils.ByteArrayCompare(headerData, knownHeader.Value))
+                    return knownHeader.Key;
+            }
+
+            return EdataFileType.Unknown;
         }
 
         /// <summary>
@@ -162,6 +207,8 @@ namespace EdataFileManager.BL
 
                         file.Id = id;
                         id++;
+
+                        ResolveFileType(fileStream, file);
 
                         files.Add(file);
 
