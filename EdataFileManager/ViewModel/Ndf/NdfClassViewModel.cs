@@ -81,42 +81,41 @@ namespace EdataFileManager.ViewModel.Ndf
 
         public bool FilterInstances(object o)
         {
-            return true;
-            //var obj = o as NdfObject;
+            var obj = o as NdfObjectViewModel;
 
-            //if (obj == null)
-            //    return false;
+            if (obj == null)
+                return false;
 
-            //bool ret = true;
+            bool ret = true;
 
-            //foreach (var expr in PropertyFilterExpressions)
-            //{
-            //    if (expr.PropertyName == null)
-            //        continue;
+            foreach (var expr in PropertyFilterExpressions)
+            {
+                if (expr.PropertyName == null)
+                    continue;
 
-            //    var propVal = obj.PropertyValues.SingleOrDefault(x => x.Property.Name == expr.PropertyName);
+                var propVal = obj.PropertyValues.SingleOrDefault(x => x.Property.Name == expr.PropertyName);
 
-            //    if (propVal == null)
-            //    {
-            //        ret = false;
-            //        continue;
-            //    }
+                if (propVal == null)
+                {
+                    ret = false;
+                    continue;
+                }
 
-            //    if (propVal.Value == null)
-            //    {
-            //        if (expr.Value.Length > 0)
-            //            ret = false;
+                if (propVal.Value == null)
+                {
+                    if (expr.Value.Length > 0)
+                        ret = false;
 
-            //        continue;
-            //    }
+                    continue;
+                }
 
-            //    if (propVal.Value.ToString().Contains(expr.Value) || propVal.Property.ValueData.ToLower().Contains(expr.Value))
-            //        continue;
+                if (propVal.Value.ToString().Contains(expr.Value) || propVal.BinValue.ToLower().Contains(expr.Value))
+                    continue;
 
-            //    return false;
-            //}
+                return false;
+            }
 
-            //return ret;
+            return ret;
         }
 
         protected void InstancesCollectionViewCurrentChanged(object sender, EventArgs e)

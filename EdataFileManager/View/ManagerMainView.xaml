@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ViewModel="clr-namespace:EdataFileManager.ViewModel" xmlns:View="clr-namespace:EdataFileManager.View"
         x:Class="EdataFileManager.View.MainWindow"
-        Height="468" Width="902" Title="Edata File Manager">
+        Height="468" Width="902" Title="Edata File Manager" Icon="{StaticResource PackageFileIcon}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
