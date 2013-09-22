@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
 using EdataFileManager.BL;
@@ -47,6 +48,29 @@ namespace EdataFileManager.ViewModel.Ndf
             SaveNdfbinCommand = new ActionCommand(SaveNdfbinExecute, () => NdfbinManager.ChangeManager.HasChanges);
         }
 
+        /// <summary>
+        /// Virtual call
+        /// </summary>
+        /// <param name="content"></param>
+        public NdfDetailsViewModel(byte[] content)
+        {
+            OwnerFile = null;
+            EdataFileViewModel = null;
+
+            var ndfbinManager = new NdfbinManager(content);
+            NdfbinManager = ndfbinManager;
+
+            ndfbinManager.Initialize();
+
+            foreach (var cls in ndfbinManager.Classes)
+                Classes.Add(new NdfClassViewModel(cls));
+
+            Strings = ndfbinManager.Strings;
+            Trans = ndfbinManager.Trans;
+
+            SaveNdfbinCommand = new ActionCommand(SaveNdfbinExecute, () => NdfbinManager.ChangeManager.HasChanges);
+        }
+
         public NdfbinManager NdfbinManager { get; protected set; }
         protected EdataFileViewModel EdataFileViewModel { get; set; }
         protected EdataContentFile OwnerFile { get; set; }
@@ -55,7 +79,15 @@ namespace EdataFileManager.ViewModel.Ndf
 
         public string Title
         {
-            get { return string.Format("Ndf Content Viewer [{0}]", OwnerFile.Path); }
+            get
+            {
+                string path = "Virtual";
+
+                if (OwnerFile != null)
+                    path = OwnerFile.Path;
+
+                return string.Format("Ndf Content Viewer [{0}]", path);
+            }
         }
 
         public string StatusText
@@ -234,6 +266,9 @@ namespace EdataFileManager.ViewModel.Ndf
                 EdataFileViewModel.EdataManager.ReplaceFile(OwnerFile, newFile);
 
                 EdataFileViewModel.LoadFile(EdataFileViewModel.LoadedFile);
+
+                var newOwen = EdataFileViewModel.EdataManager.Files.Single(x => x.Path == OwnerFile.Path);
+                OwnerFile = newOwen;
 
                 StatusText = string.Format("Saving of {0} changes finished! {1}", changesCount, EdataFileViewModel.EdataManager.FilePath);
             }

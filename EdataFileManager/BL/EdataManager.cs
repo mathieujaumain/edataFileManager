@@ -103,7 +103,7 @@ namespace EdataFileManager.BL
             fs.Seek(origOffset, SeekOrigin.Begin);
         }
 
-        protected EdataFileType GetFileTypeFromHeaderData(byte[] headerData)
+        public static EdataFileType GetFileTypeFromHeaderData(byte[] headerData)
         {
             // TODO get headers from managers;
 
@@ -386,7 +386,6 @@ namespace EdataFileManager.BL
             using (var fs = new FileStream(FilePath, FileMode.Truncate))
             {
                 fs.Write(newCont, 0, newCont.Length);
-                fs.Flush();
             }
 
         }

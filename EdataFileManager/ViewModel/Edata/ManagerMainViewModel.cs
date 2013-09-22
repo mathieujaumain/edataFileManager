@@ -65,6 +65,7 @@ namespace EdataFileManager.ViewModel.Edata
         public void AddFile(string path)
         {
             var vm = new EdataFileViewModel();
+
             vm.LoadFile(path);
 
             OpenFiles.Add(vm);
@@ -129,7 +130,7 @@ namespace EdataFileManager.ViewModel.Edata
 
             var tradVm = new TradFileViewModel(vm.EdataManager.GetRawData(ndf), ndf);
 
-            var view = new TradFileView() {DataContext = tradVm};
+            var view = new TradFileView() { DataContext = tradVm };
 
             view.Show();
         }
@@ -263,8 +264,37 @@ namespace EdataFileManager.ViewModel.Edata
                 SettingsManager.Save(settings);
                 foreach (var fileName in openfDlg.FileNames)
                 {
-                    AddFile(fileName);
+                    HandleNewFile(fileName);
                 }
+            }
+        }
+
+        private void HandleNewFile(string fileName)
+        {
+            byte[] headerBuffer;
+
+            using (var fs = new FileStream(fileName, FileMode.Open))
+            {
+                headerBuffer = new byte[12];
+                fs.Read(headerBuffer, 0, headerBuffer.Length);
+
+                var type = EdataManager.GetFileTypeFromHeaderData(headerBuffer);
+
+                if (type == EdataFileType.Ndfbin)
+                {
+                    var buffer = new byte[fs.Length];
+
+                    fs.Seek(0, SeekOrigin.Begin);
+                    fs.Read(buffer, 0, buffer.Length);
+
+                    var detailsVm = new NdfDetailsViewModel(buffer);
+
+                    var view = new NdfbinView { DataContext = detailsVm };
+
+                    view.Show();
+                }
+                else if (type == EdataFileType.Package)
+                    AddFile(fileName);
             }
         }
 

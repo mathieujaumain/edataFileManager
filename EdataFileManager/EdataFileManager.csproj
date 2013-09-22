@@ -146,6 +146,9 @@
     <Compile Include="View\Ndfbin\ValueEditing\BooleanEditingTemplate.xaml.cs">
       <DependentUpon>BooleanEditingTemplate.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Ndfbin\ValueEditing\ColorPickerEditingTemplate.xaml.cs">
+      <DependentUpon>ColorPickerEditingTemplate.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Ndfbin\ValueEditing\FloatEditingTemplate.xaml.cs">
       <DependentUpon>FloatEditingTemplate.xaml</DependentUpon>
     </Compile>
@@ -198,6 +201,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Ndfbin\ValueEditing\BooleanEditingTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ndfbin\ValueEditing\ColorPickerEditingTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -15,6 +15,8 @@ namespace EdataFileManager.BL
 {
     public class NdfbinManager
     {
+        private long _id;
+
         public byte[] FileData { get; protected set; }
         public NdfFooter Footer { get; protected set; }
         public NdfHeader Header { get; protected set; }
@@ -38,6 +40,8 @@ namespace EdataFileManager.BL
         public NdfbinManager(byte[] fileData)
         {
             FileData = fileData;
+
+            _id = DateTime.Now.Ticks;
         }
 
         public byte[] GetContent()
