@@ -1,4 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Windows;
 
 namespace EdataFileManager
 {
@@ -10,6 +15,13 @@ namespace EdataFileManager
         public App()
         {
             DispatcherUnhandledException += App_DispatcherUnhandledException;
+
+            var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
+            var file = Path.Combine(path, string.Format("logging_{0}.dat", DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ff")));
+
+            Trace.Listeners.Add(new TextWriterTraceListener(file));
+            Trace.AutoFlush = true;
         }
 
         void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
@@ -17,8 +29,8 @@ namespace EdataFileManager
             e.Handled = true;
 
             //MessageBox.Show(e.Exception.ToString());
+            Trace.TraceError("Unhandeled exception occoured: {0}", e.Exception.ToString());
 
-            //TODO Logging;
         }
     }
 }
