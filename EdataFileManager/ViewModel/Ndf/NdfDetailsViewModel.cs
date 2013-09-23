@@ -225,7 +225,7 @@ namespace EdataFileManager.ViewModel.Ndf
             if (clas == null || ClassesFilterExpression == string.Empty)
                 return true;
 
-            return clas.Name.ToLower().Contains(ClassesFilterExpression) ||
+            return clas.Name.ToLower().Contains(ClassesFilterExpression.ToLower()) ||
                    clas.Id.ToString(CultureInfo.CurrentCulture).Contains(ClassesFilterExpression);
         }
 
@@ -236,7 +236,7 @@ namespace EdataFileManager.ViewModel.Ndf
             if (str == null || StringFilterExpression == string.Empty)
                 return true;
 
-            return str.Value.ToLower().Contains(StringFilterExpression) ||
+            return str.Value.ToLower().Contains(StringFilterExpression.ToLower()) ||
                    str.Id.ToString(CultureInfo.CurrentCulture).Contains(StringFilterExpression);
         }
 
@@ -247,7 +247,7 @@ namespace EdataFileManager.ViewModel.Ndf
             if (tran == null || TransFilterExpression == string.Empty)
                 return true;
 
-            return tran.Value.ToLower().Contains(TransFilterExpression) ||
+            return tran.Value.ToLower().Contains(TransFilterExpression.ToLower()) ||
                    tran.Id.ToString(CultureInfo.CurrentCulture).Contains(TransFilterExpression);
         }
 
