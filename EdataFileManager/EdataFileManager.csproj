@@ -77,6 +77,7 @@
     <Compile Include="Model\Ndfbin\ChangeManager\ChangeManager.cs" />
     <Compile Include="Model\Ndfbin\CollectionItemValueHolder.cs" />
     <Compile Include="Model\Ndfbin\IValueHolder.cs" />
+    <Compile Include="Model\Ndfbin\MapValueHolder.cs" />
     <Compile Include="Model\Ndfbin\NdfHeader.cs" />
     <Compile Include="Model\Ndfbin\NdfClass.cs" />
     <Compile Include="Model\Ndfbin\NdfFooter.cs" />
@@ -158,6 +159,9 @@
     <Compile Include="View\Ndfbin\ValueEditing\Int32EditingTemplate.xaml.cs">
       <DependentUpon>Int32EditingTemplate.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Ndfbin\ValueEditing\MapEditingTemplate.xaml.cs">
+      <DependentUpon>MapEditingTemplate.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Ndfbin\ValueEditing\ObjectReferenceEditingTemplate.xaml.cs">
       <DependentUpon>ObjectReferenceEditingTemplate.xaml</DependentUpon>
     </Compile>
@@ -217,6 +221,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Ndfbin\ValueEditing\Int32EditingTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ndfbin\ValueEditing\MapEditingTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -312,6 +320,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\add_property-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\delete_property-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\Add_Row-26.png" />
+    <Resource Include="View\Images\Delete_Row-26.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

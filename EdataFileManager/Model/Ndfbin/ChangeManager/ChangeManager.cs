@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
+using EdataFileManager.Model.Ndfbin.Types;
 using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.Model.Ndfbin.ChangeManager
@@ -36,7 +38,16 @@ namespace EdataFileManager.Model.Ndfbin.ChangeManager
 
         protected void ReverChangeExeCute(object obj)
         {
-            throw new NotImplementedException();
+            var cv = CollectionViewSource.GetDefaultView(Changes);
+
+            var item = cv.CurrentItem as ChangeEntry;
+
+            if (item == null)
+                return;
+
+            Changes.Remove(item);
+
+            item.ChangedValue.Value = NdfTypeManager.GetValue(item.OldValue, item.ChangedValue.Value.Type, item.ChangedValue.Manager, item.ChangedValue.Value.OffSet);
         }
     }
 }

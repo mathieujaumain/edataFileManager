@@ -6,22 +6,22 @@
              StartupUri="View/ManagerMainView.xaml">
     <Application.Resources>
         <BitmapImage UriSource="View\Images\about-26.png" x:Key="AboutIcon" />
-        <BitmapImage UriSource="\View\Images\reuse-26.png" x:Key="ExtractRawIcon" />
-        <BitmapImage UriSource="\View\Images\zip-26.png" x:Key="ExtractZipedPartIcon" />
-        <BitmapImage UriSource="\View\Images\open_in_browser-26.png" x:Key="OpenDetailsIcon" />
-        <BitmapImage UriSource="\View\Images\play-26.png" x:Key="OpenMovieIcon" />
-        <BitmapImage UriSource="\View\Images\text-26.png" x:Key="OpenDictionayIcon" />
+        <BitmapImage UriSource="View\Images\reuse-26.png" x:Key="ExtractRawIcon" />
+        <BitmapImage UriSource="View\Images\zip-26.png" x:Key="ExtractZipedPartIcon" />
+        <BitmapImage UriSource="View\Images\open_in_browser-26.png" x:Key="OpenDetailsIcon" />
+        <BitmapImage UriSource="View\Images\play-26.png" x:Key="OpenMovieIcon" />
+        <BitmapImage UriSource="View\Images\text-26.png" x:Key="OpenDictionayIcon" />
 
-        <BitmapImage UriSource="\View\Images\save-26.png" x:Key="SaveIcon" />
+        <BitmapImage UriSource="View\Images\save-26.png" x:Key="SaveIcon" />
 
-        <BitmapImage UriSource="\View\Images\empty_filter-26.png" x:Key="EmptyFilter" />
-        <BitmapImage UriSource="\View\Images\filled_filter-26.png" x:Key="FilledFilter" />
+        <BitmapImage UriSource="View\Images\empty_filter-26.png" x:Key="EmptyFilter" />
+        <BitmapImage UriSource="View\Images\filled_filter-26.png" x:Key="FilledFilter" />
 
-        <BitmapImage UriSource="\View\Images\View_Details-26.png" x:Key="ViewChanges" />
+        <BitmapImage UriSource="View\Images\View_Details-26.png" x:Key="ViewChanges" />
 
-        <BitmapImage UriSource="\View\Images\google_code-26.png" x:Key="ScriptIcon" />
-        <BitmapImage UriSource="\View\Images\question-26.png" x:Key="UnknownFileIcon" />
-        <BitmapImage UriSource="\View\Images\package-16.png" x:Key="PackageFileIcon" />
+        <BitmapImage UriSource="View\Images\google_code-26.png" x:Key="ScriptIcon" />
+        <BitmapImage UriSource="View\Images\question-26.png" x:Key="UnknownFileIcon" />
+        <BitmapImage UriSource="View\Images\package-16.png" x:Key="PackageFileIcon" />
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Extension:EdataFileTypeToImageConverter x:Key="EdataFileTypeToImageConverter" />
@@ -48,6 +48,18 @@
             <ValueEditing:ObjectReferenceEditingTemplate />
         </DataTemplate>
 
+        <DataTemplate x:Key="MapEditingTemplate">
+            <ValueEditing:MapEditingTemplate />
+        </DataTemplate>
+        
+
+        <Style TargetType="Image">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
     </Application.Resources>
 </Application>

@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using EdataFileManager.ViewModel;
 using EdataFileManager.ViewModel.Edata;
 

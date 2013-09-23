@@ -25,12 +25,19 @@
                                 
                                AllowsTransparency="True" StaysOpen="False">
             <DataGrid ItemsSource="{Binding Path=NdfbinManager.ChangeManager.Changes}"
+                      IsSynchronizedWithCurrentItem="True"
                       CanUserResizeRows="False"
                       CanUserAddRows="False"  
                       CanUserDeleteRows="False" 
                       AutoGenerateColumns="False"
                       SelectionMode="Single"
-                      SelectionUnit="Cell">
+                      SelectionUnit="FullRow">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem  Header="Revert" Command="{Binding Path=.NdfbinManager.ChangeManager.RevertChange}" />
+                        <MenuItem  Header="Follow" Command="{Binding Path=NdfbinManager.ChangeManager.FollowChange}" Visibility="Hidden" /> 
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Path=ChangedValue.Property.Class.Name}" Header="Class" IsReadOnly="True"/>
                     <DataGridTextColumn Binding="{Binding Path=ChangedValue.Property.Name}" Header="Property" IsReadOnly="True" />
@@ -168,7 +175,6 @@
                                     </DataGrid.Columns>
                                 </DataGrid>
                                 <Button Grid.Column="1" VerticalAlignment="Bottom" Command="{Binding SelectedValue.ApplyPropertyFilter,  ElementName=classGrid}" Margin="3">Apply</Button>
-
                             </Grid>
                         </Popup>
                     </Grid>

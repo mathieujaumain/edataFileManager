@@ -86,7 +86,7 @@ namespace EdataFileManager.ViewModel.Ndf
                 if (OwnerFile != null)
                     path = OwnerFile.Path;
 
-                return string.Format("Ndf Content Viewer [{0}]", path);
+                return string.Format("Ndf Editor [{0}]", path);
             }
         }
 
