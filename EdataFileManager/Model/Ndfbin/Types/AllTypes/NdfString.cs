@@ -1,4 +1,6 @@
-﻿namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
+﻿using System;
+
+namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 {
     public class NdfString : NdfFlatValueWrapper
     {
@@ -9,8 +11,9 @@
 
         public override byte[] GetBytes(out bool valid)
         {
-            valid = false;
-            return new byte[0];
+            valid = true;
+
+            return BitConverter.GetBytes(((NdfStringReference)Value).Id);
         }
     }
 }

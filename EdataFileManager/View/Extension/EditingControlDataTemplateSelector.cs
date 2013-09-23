@@ -45,6 +45,9 @@ namespace EdataFileManager.View.Extension
                 case NdfType.Vector:
                     return null;
 
+                case NdfType.Map:
+                    return element.FindResource("MapEditingTemplate") as DataTemplate;
+
                 case NdfType.ObjectReference:
                     return element.FindResource("ObjectReferenceEditingTemplate") as DataTemplate;
 

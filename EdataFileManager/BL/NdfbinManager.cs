@@ -232,7 +232,7 @@ namespace EdataFileManager.BL
 
         protected NdfObject ParseObject(byte[] data, uint index, long objOffset)
         {
-            var instance = new NdfObject { Id = index, Data = data, Offset = objOffset};
+            var instance = new NdfObject { Id = index, Data = data, Offset = objOffset };
 
             using (var ms = new MemoryStream(data))
             {
@@ -335,7 +335,12 @@ namespace EdataFileManager.BL
                     if (type == NdfType.List)
                         res = new CollectionItemValueHolder(ReadValue(ms, out triggerBreak, prop), this, prop.InstanceOffset);
                     else
-                        res = new CollectionItemValueHolder(new NdfMap(ReadValue(ms, out triggerBreak, prop), ReadValue(ms, out triggerBreak, prop), ms.Position), this, prop.InstanceOffset);
+                        res = new CollectionItemValueHolder(
+                            new NdfMap(
+                                new MapValueHolder(ReadValue(ms, out triggerBreak, prop), this, prop.InstanceOffset),
+                                new MapValueHolder(ReadValue(ms, out triggerBreak, prop), this, prop.InstanceOffset),
+                                ms.Position),
+                                this, prop.InstanceOffset);
 
                     lstValue.Add(res);
 
@@ -347,7 +352,10 @@ namespace EdataFileManager.BL
             }
             else if (type == NdfType.Map)
             {
-                value = new NdfMap(ReadValue(ms, out triggerBreak, prop), ReadValue(ms, out triggerBreak, prop), ms.Position);
+                value = new NdfMap(
+                   new MapValueHolder(ReadValue(ms, out triggerBreak, prop), this, prop.InstanceOffset),
+                   new MapValueHolder(ReadValue(ms, out triggerBreak, prop), this, prop.InstanceOffset),
+                    ms.Position);
             }
             else
             {

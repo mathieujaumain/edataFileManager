@@ -273,13 +273,14 @@ namespace EdataFileManager.ViewModel.Edata
         {
             byte[] headerBuffer;
 
+            var type = EdataFileType.Unknown;
+
             using (var fs = new FileStream(fileName, FileMode.Open))
             {
                 headerBuffer = new byte[12];
                 fs.Read(headerBuffer, 0, headerBuffer.Length);
 
-                var type = EdataManager.GetFileTypeFromHeaderData(headerBuffer);
-
+                type = EdataManager.GetFileTypeFromHeaderData(headerBuffer);
                 if (type == EdataFileType.Ndfbin)
                 {
                     var buffer = new byte[fs.Length];
@@ -293,9 +294,10 @@ namespace EdataFileManager.ViewModel.Edata
 
                     view.Show();
                 }
-                else if (type == EdataFileType.Package)
-                    AddFile(fileName);
             }
+
+            if (type == EdataFileType.Package)
+                AddFile(fileName);
         }
 
         protected void CloseFileExecute(object obj)

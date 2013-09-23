@@ -16,6 +16,8 @@ namespace EdataFileManager
         {
             e.Handled = true;
 
+            //MessageBox.Show(e.Exception.ToString());
+
             //TODO Logging;
         }
     }
