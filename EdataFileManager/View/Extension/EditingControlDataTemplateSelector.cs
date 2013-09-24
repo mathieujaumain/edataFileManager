@@ -28,6 +28,9 @@ namespace EdataFileManager.View.Extension
             {
                 case NdfType.Float32:
                 case NdfType.Float64:
+                case NdfType.Float64_2:
+                case NdfType.Int8:
+                case NdfType.Int16:
                     return element.FindResource("FloatEditingTemplate") as DataTemplate;
                 case NdfType.UInt32:
                     return element.FindResource("UInt32EditingTemplate") as DataTemplate;
@@ -36,7 +39,7 @@ namespace EdataFileManager.View.Extension
                 case NdfType.Guid:
                     return element.FindResource("GuidEditingTemplate") as DataTemplate;
                 case NdfType.Boolean:
-                case NdfType.Boolean2:
+                
                     return element.FindResource("BooleanEditingTemplate") as DataTemplate;
 
                 case NdfType.Color32:

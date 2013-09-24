@@ -97,5 +97,21 @@ namespace EdataFileManager.Util
             // This also ensures that the count does not exceed the length of either buffer.  
             return b1.Length == b2.Length && memcmp(b1, b2, b1.Length) == 0;
         }
+
+
+
+            //        var path = Settings.SettingsManager.Load().SavePath;
+
+            //var file = Path.Combine(path, string.Format("test_{0}.ndfbin", DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ff")));
+
+            //if (!File.Exists(file))
+            //    using (var fs = File.Create(file)) { }
+
+
+            //using (var fs = new FileStream(file, FileMode.Truncate))
+            //{
+            //    fs.Write(contentData, 0, contentData.Length);
+            //}
+
     }
 }

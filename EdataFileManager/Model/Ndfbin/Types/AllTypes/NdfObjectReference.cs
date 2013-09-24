@@ -9,12 +9,15 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
     public class NdfObjectReference : NdfValueWrapper
     {
         private uint _instanceId;
+        private bool _isDead;
 
-        public NdfObjectReference(NdfClass cls, uint instance, long offset)
+        public NdfObjectReference(NdfClass cls, uint instance, long offset, bool isDead = false)
             : base(NdfType.ObjectReference, offset)
         {
             Class = cls;
             InstanceId = instance;
+
+            _isDead = isDead;
         }
 
         public NdfClass Class
@@ -63,7 +66,7 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
             refereceData.AddRange(BitConverter.GetBytes(InstanceId));
 
-            refereceData.AddRange(BitConverter.GetBytes(Class.Id));
+            refereceData.AddRange(_isDead ? new byte[] {0xFF, 0xFF, 0xFF, 0xFF} : BitConverter.GetBytes(Class.Id));
 
             return refereceData.ToArray();
         }

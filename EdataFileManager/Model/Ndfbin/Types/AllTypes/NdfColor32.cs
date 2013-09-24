@@ -7,9 +7,9 @@ using System.Windows.Media;
 
 namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 {
-    public class NdfColor : NdfFlatValueWrapper
+    public class NdfColor32 : NdfFlatValueWrapper
     {
-        public NdfColor(Color value, long offset)
+        public NdfColor32(Color value, long offset)
             : base(NdfType.Color32, value, offset)
         {
 

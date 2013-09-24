@@ -14,11 +14,19 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         }
 
-        public override byte[] GetBytes( out bool valid)
+        public override byte[] GetBytes(out bool valid)
         {
-            valid = false;
+            valid = true;
+            var data = new List<byte>();
 
-            return new byte[0];
+            var val = (string)Value;
+
+            var valBytes = Encoding.Unicode.GetBytes(val);
+
+            data.AddRange(BitConverter.GetBytes(valBytes.Length));
+            data.AddRange(valBytes);
+
+            return data.ToArray();
         }
     }
 }

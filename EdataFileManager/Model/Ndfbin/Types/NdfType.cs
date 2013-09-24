@@ -3,15 +3,20 @@
     public enum NdfType : uint
     {
         Boolean = 0x00000000,
-        Boolean2 = 0x00000001,
+        Int8 = 0x00000001,
+
+        Int16 = 25,
 
         Int32 = 0x00000002,
         UInt32 = 0x00000003,
         Float32 = 0x00000005,
         Float64 = 0x00000006,
+        Float64_2 = 33,
+
 
         Guid = 26,
         Vector = 0x0000000b,
+        Color128 = 0x0000000c,
         Color32 = 0x0000000d,
 
         TableString = 0x00000007,

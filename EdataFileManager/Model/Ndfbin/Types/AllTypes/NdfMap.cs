@@ -34,7 +34,8 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
             if (!valid)
                 return new byte[0];
 
-            mapdata.AddRange(BitConverter.GetBytes((uint)NdfType.Map));
+            /// TODO Why do we have to add Map here?
+            //mapdata.AddRange(BitConverter.GetBytes((uint)NdfType.Map));
 
             if (Key.Value.Type == NdfType.ObjectReference || Key.Value.Type == NdfType.TransTableReference)
                 mapdata.AddRange(BitConverter.GetBytes((uint)NdfType.Reference));
@@ -53,7 +54,6 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         public override string ToString()
         {
-
             return string.Format("Map: {0} : {1}", Key.Value, ((MapValueHolder)Value).Value);
         }
     }

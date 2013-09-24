@@ -15,14 +15,14 @@ namespace EdataFileManager.BL
 {
     public class NdfbinManager
     {
-        private long _id;
-
         public byte[] FileData { get; protected set; }
         public NdfFooter Footer { get; protected set; }
         public NdfHeader Header { get; protected set; }
         public ObservableCollection<NdfClass> Classes { get; protected set; }
         public ObservableCollection<NdfString> Strings { get; protected set; }
         public ObservableCollection<NdfTranReference> Trans { get; protected set; }
+
+        private readonly List<NdfObject> _allInstances = new List<NdfObject>();
 
         public ChangeManager ChangeManager
         {
@@ -34,14 +34,25 @@ namespace EdataFileManager.BL
 
         public bool HasChanges { get; set; }
 
+        public bool HasUnkownTypes { get; set; }
+
+        public List<NdfObject> AllInstances
+        {
+            get { return _allInstances; }
+        }
+
+        public bool HasUnkownType
+        {
+            get;
+            set;
+        }
+
         //protected List<byte[]> _unknownTypes = new List<byte[]>();
         //protected List<int> _unknownTypesCount = new List<int>();
 
         public NdfbinManager(byte[] fileData)
         {
             FileData = fileData;
-
-            _id = DateTime.Now.Ticks;
         }
 
         public byte[] GetContent()
@@ -211,7 +222,11 @@ namespace EdataFileManager.BL
                 for (uint i = 0; i < instanceOffsets.Length; i++)
                 {
                     if (i == instanceOffsets.Length - 1)
-                        size = ms.Length - instanceOffsets[i];
+
+                        if ((ms.Length - instanceOffsets[i] - 4) >= 0)
+                            size = ms.Length - instanceOffsets[i] - 4;
+                        else
+                            size = ms.Length - instanceOffsets[i];
                     else
                         size = instanceOffsets[i + 1] - instanceOffsets[i] - 4;
 
@@ -221,9 +236,11 @@ namespace EdataFileManager.BL
                     ms.Read(buffer, 0, buffer.Length);
                     ms.Seek(4, SeekOrigin.Current);
 
-                    var obj = ParseObject(buffer, i, objOffset);
-
-                    objects.Add(obj);
+                    if (buffer.Length > 0)
+                    {
+                        var obj = ParseObject(buffer, i, objOffset);
+                        objects.Add(obj);
+                    }
                 }
             }
 
@@ -247,6 +264,7 @@ namespace EdataFileManager.BL
                     throw new InvalidDataException("Object without class found.");
 
                 cls.Instances.Add(instance);
+                _allInstances.Add(instance);
 
                 NdfPropertyValue prop;
                 bool triggerBreak;
@@ -326,7 +344,12 @@ namespace EdataFileManager.BL
 
             if (type == NdfType.List || type == NdfType.MapList)
             {
-                var lstValue = new NdfCollection(ms.Position);
+                NdfCollection lstValue;
+
+                if (type == NdfType.List)
+                    lstValue = new NdfCollection(ms.Position);
+                else
+                    lstValue = new NdfMapList(ms.Position);
 
                 CollectionItemValueHolder res;
 
@@ -395,6 +418,8 @@ namespace EdataFileManager.BL
                     abCount++;
                     if (abCount == 4)
                     {
+                        if (ms.Position >= ms.Length)
+                            continue;
                         offsets.Add(ms.Position);
                         abCount = 0;
                     }
@@ -500,13 +525,15 @@ namespace EdataFileManager.BL
         /// <returns></returns>
         public byte[] BuildNdfFile(bool compress)
         {
+            var contentData = RecompileContent();
+
             var header = new byte[] { 0x45, 0x55, 0x47, 0x30, 0x00, 0x00, 0x00, 0x00, 0x43, 0x4E, 0x44, 0x46 };
             var compressed = compress ? new byte[] { 0x80, 0x00, 0x00, 0x00 } : new byte[4];
 
-            var blockSize = BitConverter.GetBytes((long)ContentData.Length + 40 - 0xE0);
-            var blockSizeE0 = BitConverter.GetBytes((long)(ContentData.Length + 40));
+            var blockSize = BitConverter.GetBytes((long)contentData.Length + 40 - 0xE0);
+            var blockSizeE0 = BitConverter.GetBytes((long)(contentData.Length + 40));
 
-            var blockSize3 = BitConverter.GetBytes((ContentData.Length));
+            var blockSize3 = BitConverter.GetBytes((contentData.Length));
 
             var contBuffer = ContentData;
 
@@ -523,40 +550,140 @@ namespace EdataFileManager.BL
                 {
                     ms.Write(blockSize3, 0, blockSize3.Length);
 
-                    contBuffer = Compressor.Comp(ContentData);
+                    contBuffer = Compressor.Comp(contentData);
                 }
 
                 ms.Write(contBuffer, 0, contBuffer.Length);
 
                 return ms.ToArray();
             }
-
         }
 
-        public void CommitChanges()
+        /// <summary>
+        /// Recompileing
+        /// </summary>
+        /// <returns></returns>
+        protected byte[] RecompileObj()
         {
-            using (var ms = new MemoryStream(ContentData))
+            var objectPart = new List<byte>();
+
+            byte[] objSep = { 0xAB, 0xAB, 0xAB, 0xAB };
+
+            foreach (var instance in _allInstances)
             {
-                bool valid;
+                objectPart.AddRange(BitConverter.GetBytes(instance.Class.Id));
 
-                foreach (var change in ChangeManager.Changes)
+                foreach (var propertyValue in instance.PropertyValues)
                 {
+                    bool valid;
 
-                    var value = change.ChangedValue.Value.GetBytes(out valid);
+                    var valueBytes = propertyValue.Value.GetBytes(out valid);
 
-                    if (!valid)
+                    if (propertyValue.Value.Type == NdfType.Unset || !valid)
                         continue;
 
-                    long offset = change.ChangedValue.InstanceOffset + change.ChangedValue.Value.OffSet;
+                    objectPart.AddRange(BitConverter.GetBytes(propertyValue.Property.Id));
 
-                    ms.Seek(offset, SeekOrigin.Begin);
+                    if (propertyValue.Value.Type == NdfType.ObjectReference ||
+                        propertyValue.Value.Type == NdfType.TransTableReference)
+                        objectPart.AddRange(BitConverter.GetBytes((uint)NdfType.Reference));
 
-                    ms.Write(value, 0, value.Length);
+                    objectPart.AddRange(BitConverter.GetBytes((uint)propertyValue.Value.Type));
+                    objectPart.AddRange(valueBytes);
                 }
+
+                objectPart.AddRange(objSep);
             }
 
-            ChangeManager.Changes.Clear();
 
+            return objectPart.ToArray();
         }
+
+        protected byte[] RecompileStrTable(IEnumerable<NdfStringReference> table)
+        {
+            var strBlock = new List<byte>();
+
+            foreach (var stringReference in table)
+            {
+                strBlock.AddRange(BitConverter.GetBytes(stringReference.Value.Length));
+                strBlock.AddRange(Encoding.GetEncoding("ISO-8859-1").GetBytes(stringReference.Value));
+            }
+
+            return strBlock.ToArray();
+        }
+
+        protected byte[] RecompileContent()
+        {
+            byte[] buffer;
+
+            var footer = new NdfFooter();
+
+            using (var ms = new MemoryStream())
+            {
+
+                buffer = RecompileObj();
+                footer.AddEntry("OBJE", ms.Position + 40, buffer.Length);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = GetSingleNdfBlockData("TOPO");
+                footer.AddEntry("TOPO", ms.Position + 40, buffer.Length);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = GetSingleNdfBlockData("CHNK");
+                footer.AddEntry("CHNK", ms.Position + 40, buffer.Length);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = GetSingleNdfBlockData("CLAS");
+                footer.AddEntry("CLAS", ms.Position + 40, buffer.Length);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = GetSingleNdfBlockData("PROP");
+                footer.AddEntry("PROP", ms.Position + 40, buffer.Length);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = RecompileStrTable(Strings);
+                footer.AddEntry("STRG", ms.Position + 40, buffer.Length);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = RecompileStrTable(Trans);
+                footer.AddEntry("TRAN", ms.Position + 40, buffer.Length);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = GetSingleNdfBlockData("IMPR");
+                footer.AddEntry("IMPR", ms.Position + 40, buffer.Length);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = GetSingleNdfBlockData("EXPR");
+                footer.AddEntry("EXPR", ms.Position + 40, buffer.Length);
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = footer.GetBytes();
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = ms.ToArray();
+            }
+
+            Footer = footer;
+
+            return buffer;
+        }
+
+        public byte[] GetSingleNdfBlockData(string blockName)
+        {
+            if (string.IsNullOrEmpty(blockName))
+                throw new ArgumentException("blockName");
+
+            using (var ms = new MemoryStream(ContentData))
+            {
+                var footerEntry = Footer.Entries.Single(x => x.Name == blockName);
+                var buffer = new byte[footerEntry.Size];
+
+                ms.Seek(footerEntry.Offset - 40, SeekOrigin.Begin);
+                ms.Read(buffer, 0, buffer.Length);
+
+                return buffer;
+            }
+        }
+
     }
 }

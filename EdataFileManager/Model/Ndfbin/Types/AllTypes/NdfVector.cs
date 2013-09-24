@@ -23,9 +23,9 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
             var vector = new List<byte>();
 
-            vector.AddRange(BitConverter.GetBytes(pt.X));
-            vector.AddRange(BitConverter.GetBytes(pt.Y));
-            vector.AddRange(BitConverter.GetBytes(pt.Z));
+            vector.AddRange(BitConverter.GetBytes((Single)pt.X));
+            vector.AddRange(BitConverter.GetBytes((Single)pt.Y));
+            vector.AddRange(BitConverter.GetBytes((Single)pt.Z));
 
             return vector.ToArray();
         }

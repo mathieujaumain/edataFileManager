@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -45,7 +46,7 @@ namespace EdataFileManager.ViewModel.Ndf
             Strings = ndfbinManager.Strings;
             Trans = ndfbinManager.Trans;
 
-            SaveNdfbinCommand = new ActionCommand(SaveNdfbinExecute, () => NdfbinManager.ChangeManager.HasChanges);
+            SaveNdfbinCommand = new ActionCommand(SaveNdfbinExecute); //, () => NdfbinManager.ChangeManager.HasChanges);
         }
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace EdataFileManager.ViewModel.Ndf
             Strings = ndfbinManager.Strings;
             Trans = ndfbinManager.Trans;
 
-            SaveNdfbinCommand = new ActionCommand(SaveNdfbinExecute, () => NdfbinManager.ChangeManager.HasChanges);
+            SaveNdfbinCommand = new ActionCommand(SaveNdfbinExecute, () => false);
         }
 
         public NdfbinManager NdfbinManager { get; protected set; }
@@ -259,7 +260,7 @@ namespace EdataFileManager.ViewModel.Ndf
             {
                 var changesCount = NdfbinManager.ChangeManager.Changes.Count;
 
-                NdfbinManager.CommitChanges();
+                //NdfbinManager.CommitChanges();
 
                 var newFile = NdfbinManager.BuildNdfFile(NdfbinManager.Header.IsCompressedBody);
 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -12,7 +13,7 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
         public NdfCollection(long offset)
             : base(NdfType.List, offset)
         {
-
+            
         }
 
         public NdfCollection(IEnumerable<CollectionItemValueHolder> list, long offset)
@@ -119,9 +120,29 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         public override byte[] GetBytes(out bool valid)
         {
-            valid = false;
+            valid = true;
 
-            return new byte[0];
+            bool itemValid;
+
+            var data = new List<byte>();
+
+            data.AddRange(BitConverter.GetBytes(InnerList.Count));
+
+            foreach (var valueHolder in InnerList)
+            {
+                var valueDat = valueHolder.Value.GetBytes(out itemValid);
+
+                if(!itemValid)
+                    continue;
+
+                if (valueHolder.Value.Type == NdfType.ObjectReference || valueHolder.Value.Type == NdfType.TransTableReference)
+                    data.AddRange(BitConverter.GetBytes((uint)NdfType.Reference));
+
+                data.AddRange(BitConverter.GetBytes((uint)valueHolder.Value.Type));
+                data.AddRange(valueDat);
+            }
+
+            return data.ToArray();
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
