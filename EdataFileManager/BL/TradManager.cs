@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Text;
-using EdataFileManager.NdfBin.Model.Trad;
+using EdataFileManager.Model.Trad;
 
 namespace EdataFileManager.BL
 {
@@ -13,6 +14,16 @@ namespace EdataFileManager.BL
         public TradManager(byte[] data)
         {
             ParseTradFile(data);
+
+            _entries.CollectionChanged += EntriesCollectionChanged;
+        }
+
+        private void EntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+                foreach (var tradEntry in e.NewItems)
+                    ((TradEntry)tradEntry).UserCreated = true;
+
         }
 
         public ObservableCollection<TradEntry> Entries
@@ -42,7 +53,7 @@ namespace EdataFileManager.BL
             {
                 ms.Seek(entry.OffsetCont, SeekOrigin.Begin);
 
-                buffer = new byte[entry.ContLen*2];
+                buffer = new byte[entry.ContLen * 2];
 
                 ms.Read(buffer, 0, buffer.Length);
 
@@ -54,12 +65,14 @@ namespace EdataFileManager.BL
         {
             var entries = new ObservableCollection<TradEntry>();
 
-            var hashBuffer = new byte[8];
+            byte[] hashBuffer;
             var buffer = new byte[4];
 
             for (int i = 0; i < entryCount; i++)
             {
                 var entry = new TradEntry { OffsetDic = (uint)ms.Position };
+
+                hashBuffer = new byte[8];
 
                 ms.Read(hashBuffer, 0, hashBuffer.Length);
                 entry.Hash = hashBuffer;
@@ -88,6 +101,56 @@ namespace EdataFileManager.BL
             ms.Read(buffer, 0, buffer.Length);
 
             return BitConverter.ToUInt32(buffer, 0);
+        }
+
+        public byte[] BuildTradFile()
+        {
+            using (var ms = new MemoryStream())
+            {
+                byte[] buffer = Encoding.ASCII.GetBytes("TRAD");
+                ms.Write(buffer, 0, buffer.Length);
+
+                buffer = BitConverter.GetBytes(Entries.Count);
+                ms.Write(buffer, 0, buffer.Length);
+
+                // Write dictionary
+                foreach (var entry in Entries)
+                {
+                    entry.OffsetDic = (uint)ms.Position;
+
+                    // Hash
+                    ms.Write(entry.Hash, 0, entry.Hash.Length);
+
+                    // Content offset : we dont know it yet
+                    ms.Seek(4, SeekOrigin.Current);
+
+                    // Content length
+                    buffer = BitConverter.GetBytes(entry.Content.Length);
+                    ms.Write(buffer, 0, buffer.Length);
+                }
+
+                foreach (var entry in Entries)
+                {
+                    entry.OffsetCont = (uint)ms.Position;
+                    buffer = Encoding.Unicode.GetBytes(entry.Content);
+                    ms.Write(buffer, 0, buffer.Length);
+                }
+
+                foreach (var entry in Entries)
+                {
+                    ms.Seek(entry.OffsetDic, SeekOrigin.Begin);
+
+                    ms.Seek(8, SeekOrigin.Current);
+
+                    buffer = BitConverter.GetBytes(entry.OffsetCont);
+
+                    ms.Write(buffer, 0, buffer.Length);
+                }
+
+                //Util.Utils.SaveDebug("dicttest.diccmp",ms.ToArray());
+
+                return ms.ToArray();
+            }
         }
     }
 }

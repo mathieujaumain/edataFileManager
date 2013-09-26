@@ -10,6 +10,7 @@ using EdataFileManager.Model.Ndfbin;
 using EdataFileManager.Model.Ndfbin.Types;
 using EdataFileManager.Model.Ndfbin.Types.AllTypes;
 using EdataFileManager.View.Ndfbin;
+using EdataFileManager.View.Ndfbin.Lists;
 using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.ViewModel.Ndf
@@ -48,7 +49,7 @@ namespace EdataFileManager.ViewModel.Ndf
 
         public ICommand DetailsCommand { get; set; }
 
-        private void DetailsCommandExecute(object obj)
+        public static void DetailsCommandExecute(object obj)
         {
             var item = obj as IEnumerable<DataGridCellInfo>;
 
@@ -57,16 +58,31 @@ namespace EdataFileManager.ViewModel.Ndf
 
             var prop = item.First().Item as IValueHolder;
 
-            if (prop == null || prop.Value.Type != NdfType.ObjectReference)
+            if (prop == null)
                 return;
 
+            switch (prop.Value.Type)
+            {
+                case NdfType.MapList:
+                case NdfType.List:
+                    FollowList(prop);
+                    break;
+                case NdfType.ObjectReference:
+                    FollowObjectReference(prop);
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        private static void FollowObjectReference(IValueHolder prop)
+        {
             var refe = prop.Value as NdfObjectReference;
 
             if (refe == null)
                 return;
 
             var vm = new NdfClassViewModel(refe.Class);
-
 
             var inst = vm.Instances.SingleOrDefault(x => x.Id == refe.InstanceId);
 
@@ -80,5 +96,16 @@ namespace EdataFileManager.ViewModel.Ndf
             view.Show();
         }
 
+        private static void FollowList(IValueHolder prop)
+        {
+            var refe = prop.Value as NdfCollection;
+
+            if (refe == null)
+                return;
+
+            var view = new ListEditorWindow { DataContext = prop };
+
+            view.Show();
+        }
     }
 }

@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using EdataFileManager.BL;
-using EdataFileManager.NdfBin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EdataFileManager.Test

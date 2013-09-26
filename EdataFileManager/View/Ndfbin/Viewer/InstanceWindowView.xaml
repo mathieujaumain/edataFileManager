@@ -1,7 +1,7 @@
 ﻿<Window x:Class="EdataFileManager.View.Ndfbin.InstanceWindowView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:Ndfbin="clr-namespace:EdataFileManager.View.Ndfbin" Title="{Binding Path=Name}" Height="300" Width="800">
+        xmlns:Ndfbin="clr-namespace:EdataFileManager.View.Ndfbin" Title="{Binding Path=Name}" Height="300" Width="800" Icon="{StaticResource ScriptIcon}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

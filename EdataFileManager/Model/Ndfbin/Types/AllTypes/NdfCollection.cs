@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Windows.Data;
+using System.Windows.Input;
+using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 {
@@ -13,7 +16,28 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
         public NdfCollection(long offset)
             : base(NdfType.List, offset)
         {
-            
+            AddRowCommand = new ActionCommand(AddRowExecute);
+            DeleteRowCommand = new ActionCommand(DeleteRowExecute, DeleteRowCanExecute);
+        }
+
+        private bool DeleteRowCanExecute()
+        {
+            var cv = CollectionViewSource.GetDefaultView(this);
+
+            return cv.CurrentItem != null;
+        }
+
+        private void DeleteRowExecute(object obj)
+        {
+            var cv = CollectionViewSource.GetDefaultView(this);
+
+            if (cv.CurrentItem != null)
+                Remove(cv.CurrentItem);
+        }
+
+        private void AddRowExecute(object obj)
+        {
+            //var wr = new CollectionItemValueHolder();
         }
 
         public NdfCollection(IEnumerable<CollectionItemValueHolder> list, long offset)
@@ -29,9 +53,40 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
             get { return _innerList; }
         }
 
+        public ICommand AddRowCommand { get; protected set; }
+
+        public ICommand DeleteRowCommand { get; protected set; }
+
         public override string ToString()
         {
             return string.Format("Collection[{0}]", InnerList.Count);
+        }
+
+        public override byte[] GetBytes(out bool valid)
+        {
+            valid = true;
+
+            bool itemValid;
+
+            var data = new List<byte>();
+
+            data.AddRange(BitConverter.GetBytes(InnerList.Count));
+
+            foreach (var valueHolder in InnerList)
+            {
+                var valueDat = valueHolder.Value.GetBytes(out itemValid);
+
+                if (!itemValid)
+                    continue;
+
+                if (valueHolder.Value.Type == NdfType.ObjectReference || valueHolder.Value.Type == NdfType.TransTableReference)
+                    data.AddRange(BitConverter.GetBytes((uint)NdfType.Reference));
+
+                data.AddRange(BitConverter.GetBytes((uint)valueHolder.Value.Type));
+                data.AddRange(valueDat);
+            }
+
+            return data.ToArray();
         }
 
         #region IList<NdfValueWrapper> Members
@@ -118,32 +173,7 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         #endregion
 
-        public override byte[] GetBytes(out bool valid)
-        {
-            valid = true;
-
-            bool itemValid;
-
-            var data = new List<byte>();
-
-            data.AddRange(BitConverter.GetBytes(InnerList.Count));
-
-            foreach (var valueHolder in InnerList)
-            {
-                var valueDat = valueHolder.Value.GetBytes(out itemValid);
-
-                if(!itemValid)
-                    continue;
-
-                if (valueHolder.Value.Type == NdfType.ObjectReference || valueHolder.Value.Type == NdfType.TransTableReference)
-                    data.AddRange(BitConverter.GetBytes((uint)NdfType.Reference));
-
-                data.AddRange(BitConverter.GetBytes((uint)valueHolder.Value.Type));
-                data.AddRange(valueDat);
-            }
-
-            return data.ToArray();
-        }
+        #region IList
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
@@ -219,5 +249,7 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
         {
             get { return this; }
         }
+
+        #endregion
     }
 }

@@ -59,6 +59,8 @@ namespace EdataFileManager.Model.Ndfbin
                     OldValue = _oldVal
                 });
 
+                OnPropertyChanged(() => Value);
+
                 _oldVal = newValue;
             }
 

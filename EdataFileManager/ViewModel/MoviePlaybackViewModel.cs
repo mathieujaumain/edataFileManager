@@ -1,9 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
-using System.Windows.Data;
-using EdataFileManager.NdfBin;
-using EdataFileManager.ViewModel.Base;
+﻿using EdataFileManager.ViewModel.Base;
 
 namespace EdataFileManager.ViewModel
 {
@@ -19,7 +14,11 @@ namespace EdataFileManager.ViewModel
         public string File
         {
             get { return _derp; }
-            set { _derp = value; OnPropertyChanged(() => File); }
+            set
+            {
+                _derp = value;
+                OnPropertyChanged(() => File);
+            }
         }
     }
 }

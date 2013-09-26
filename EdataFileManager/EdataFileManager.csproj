@@ -128,8 +128,8 @@
     <Compile Include="ViewModel\Edata\ManagerMainViewModel.cs" />
     <Compile Include="ViewModel\Base\ActionCommand.cs" />
     <Compile Include="ViewModel\Base\ViewModelBase.cs" />
-    <Compile Include="ViewModel\Ndf\ListEditorViewModel.cs" />
-    <Compile Include="ViewModel\Ndf\NdfDetailsViewModel.cs" />
+    <Compile Include="ViewModel\Ndf\AddCollectionItemViewModel.cs" />
+    <Compile Include="ViewModel\Ndf\NdfEditorMainViewModel.cs" />
     <Compile Include="ViewModel\Ndf\NdfClassViewModel.cs" />
     <Compile Include="ViewModel\Ndf\NdfObjectViewModel.cs" />
     <Compile Include="ViewModel\TradFileViewModel.cs" />
@@ -142,11 +142,20 @@
     <Compile Include="View\MoviePlaybackView.xaml.cs">
       <DependentUpon>MoviePlaybackView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Ndfbin\InstanceWindowView.xaml.cs">
+    <Compile Include="View\Ndfbin\Viewer\AddCollectionItemView.xaml.cs">
+      <DependentUpon>AddCollectionItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ndfbin\Viewer\InstanceWindowView.xaml.cs">
       <DependentUpon>InstanceWindowView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Ndfbin\InstanceView.xaml.cs">
+    <Compile Include="View\Ndfbin\Viewer\InstanceView.xaml.cs">
       <DependentUpon>InstanceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ndfbin\Viewer\ListEditorWindow.xaml.cs">
+      <DependentUpon>ListEditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Ndfbin\Viewer\ListViewer.xaml.cs">
+      <DependentUpon>ListViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Ndfbin\NdfbinView.xaml.cs">
       <DependentUpon>NdfbinView.xaml</DependentUpon>
@@ -199,11 +208,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Ndfbin\InstanceWindowView.xaml">
+    <Page Include="View\Ndfbin\Viewer\AddCollectionItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Ndfbin\InstanceView.xaml">
+    <Page Include="View\Ndfbin\Viewer\InstanceWindowView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ndfbin\Viewer\InstanceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ndfbin\Viewer\ListEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Ndfbin\Viewer\ListViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -337,6 +358,9 @@
   <ItemGroup>
     <Resource Include="View\Images\Add_Row-26.png" />
     <Resource Include="View\Images\Delete_Row-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="View\Images\refresh_shield-26.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

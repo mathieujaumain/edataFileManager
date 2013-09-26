@@ -23,6 +23,15 @@
         <BitmapImage UriSource="View\Images\question-26.png" x:Key="UnknownFileIcon" />
         <BitmapImage UriSource="View\Images\package-16.png" x:Key="PackageFileIcon" />
 
+        <BitmapImage UriSource="View\Images\refresh_shield-26.png" x:Key="CreateHashIcon" />
+
+        <BitmapImage UriSource="View\Images\Add_Row-26.png" x:Key="AddRowIcon" />
+        <BitmapImage UriSource="View\Images\Delete_Row-26.png" x:Key="DeleteRowIcon" />
+        <BitmapImage UriSource="View\Images\add_property-26.png" x:Key="AddPropIcon" />
+        <BitmapImage UriSource="View\Images\delete_property-26.png" x:Key="DeletePropIcon" />
+
+
+
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Extension:EdataFileTypeToImageConverter x:Key="EdataFileTypeToImageConverter" />
 

@@ -33,7 +33,7 @@ namespace EdataFileManager.Model.Ndfbin.ChangeManager
 
         public ChangeManager()
         {
-            RevertChange = new ActionCommand(ReverChangeExeCute);
+            RevertChange = new ActionCommand(ReverChangeExeCute, () => false);
         }
 
         protected void ReverChangeExeCute(object obj)
@@ -45,9 +45,8 @@ namespace EdataFileManager.Model.Ndfbin.ChangeManager
             if (item == null)
                 return;
 
-            Changes.Remove(item);
-
-            item.ChangedValue.Value = NdfTypeManager.GetValue(item.OldValue, item.ChangedValue.Value.Type, item.ChangedValue.Manager, item.ChangedValue.Value.OffSet);
+            //Changes.Remove(item);
+            //item.ChangedValue.Value = NdfTypeManager.GetValue(item.OldValue, item.ChangedValue.Value.Type, item.ChangedValue.Manager, item.ChangedValue.Value.OffSet);
         }
     }
 }

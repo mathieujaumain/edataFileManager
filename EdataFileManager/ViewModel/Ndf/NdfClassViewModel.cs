@@ -123,9 +123,8 @@ namespace EdataFileManager.ViewModel.Ndf
             foreach (var property in Object.Properties)
             {
                 property.OnPropertyChanged("Value");
-                property.OnPropertyChanged("ValueData");
-                property.OnPropertyChanged("ValueType");
-
+                //property.OnPropertyChanged("ValueData");
+                //property.OnPropertyChanged("ValueType");
             }
         }
 

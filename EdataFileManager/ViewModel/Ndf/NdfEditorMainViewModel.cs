@@ -14,7 +14,7 @@ using EdataFileManager.ViewModel.Edata;
 
 namespace EdataFileManager.ViewModel.Ndf
 {
-    public class NdfDetailsViewModel : ViewModelBase
+    public class NdfEditorMainViewModel : ViewModelBase
     {
         private readonly ObservableCollection<NdfClassViewModel> _classes = new ObservableCollection<NdfClassViewModel>();
         private ICollectionView _classesCollectionView;
@@ -30,7 +30,7 @@ namespace EdataFileManager.ViewModel.Ndf
 
         private string _statusText = string.Empty;
 
-        public NdfDetailsViewModel(EdataContentFile contentFile, EdataFileViewModel ownerVm)
+        public NdfEditorMainViewModel(EdataContentFile contentFile, EdataFileViewModel ownerVm)
         {
             OwnerFile = contentFile;
             EdataFileViewModel = ownerVm;
@@ -53,7 +53,7 @@ namespace EdataFileManager.ViewModel.Ndf
         /// Virtual call
         /// </summary>
         /// <param name="content"></param>
-        public NdfDetailsViewModel(byte[] content)
+        public NdfEditorMainViewModel(byte[] content)
         {
             OwnerFile = null;
             EdataFileViewModel = null;
@@ -226,8 +226,25 @@ namespace EdataFileManager.ViewModel.Ndf
             if (clas == null || ClassesFilterExpression == string.Empty)
                 return true;
 
-            return clas.Name.ToLower().Contains(ClassesFilterExpression.ToLower()) ||
-                   clas.Id.ToString(CultureInfo.CurrentCulture).Contains(ClassesFilterExpression);
+            var parts = ClassesFilterExpression.Split(new string[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
+
+            int cls;
+
+            if (parts.Length > 1 && Int32.TryParse(parts[0], out cls) && (clas.Id == cls || clas.Name == parts[0]))
+            {
+                int inst;
+                if (Int32.TryParse(parts[1], out inst))
+                {
+                    var instObj = clas.Instances.SingleOrDefault(x => x.Id == inst);
+
+                    if (instObj != null)
+                        clas.InstancesCollectionView.MoveCurrentTo(instObj);
+                }
+            }
+
+
+            return clas.Name.ToLower().Contains(parts[0].ToLower()) ||
+                   clas.Id.ToString(CultureInfo.CurrentCulture).Contains(parts[0]);
         }
 
         public bool FilterStrings(object o)
@@ -269,9 +286,11 @@ namespace EdataFileManager.ViewModel.Ndf
                 EdataFileViewModel.LoadFile(EdataFileViewModel.LoadedFile);
 
                 var newOwen = EdataFileViewModel.EdataManager.Files.Single(x => x.Path == OwnerFile.Path);
+
                 OwnerFile = newOwen;
 
                 StatusText = string.Format("Saving of {0} changes finished! {1}", changesCount, EdataFileViewModel.EdataManager.FilePath);
+
             }
             catch (Exception e)
             {

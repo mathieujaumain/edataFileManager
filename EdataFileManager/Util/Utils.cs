@@ -99,19 +99,59 @@ namespace EdataFileManager.Util
         }
 
 
+        public static void SaveDebug(string fileName, byte[] contentData)
+        {
+            var path = Settings.SettingsManager.Load().SavePath;
 
-            //        var path = Settings.SettingsManager.Load().SavePath;
+            var file = Path.Combine(path, string.Format("{0}_{1}", DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ff"), fileName));
 
-            //var file = Path.Combine(path, string.Format("test_{0}.ndfbin", DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ff")));
+            if (!File.Exists(file))
+                using (File.Create(file))
+                { }
 
-            //if (!File.Exists(file))
-            //    using (var fs = File.Create(file)) { }
 
+            using (var fs = new FileStream(file, FileMode.Truncate))
+            {
+                fs.Write(contentData, 0, contentData.Length);
+            }
 
-            //using (var fs = new FileStream(file, FileMode.Truncate))
-            //{
-            //    fs.Write(contentData, 0, contentData.Length);
-            //}
+        }
 
+        public static string GenerateCoupon(int length, Random random)
+        {
+            const string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            var result = new StringBuilder(length);
+            for (int i = 0; i < length; i++)
+                result.Append(characters[random.Next(characters.Length)]);
+            return result.ToString();
+        }
+
+        public static byte[] CreateLocalisationHash(string text, int maxSize = 8)
+        {
+            long fValue = 0;
+            for (int i = 0; i < maxSize; ++i)
+            {
+                int value;
+                ushort chr = text[i];
+
+                if (chr == 0)
+                    break;
+
+                if ('0' <= chr && chr <= '9')
+                    value = 1 + chr - '0';
+                else if ('A' <= chr && chr <= 'Z')
+                    value = 2 + '9' - '0' + chr - 'A';
+                else if (chr == '_')
+                    value = 3 + '9' - '0' + 'Z' - 'A';
+                else if ('a' <= chr && chr <= 'z')
+                    value = 4 + '9' - '0' + 'Z' - 'A' + chr - 'a';
+                else
+                    throw new InvalidDataException("");
+
+                fValue = (fValue << 6) | value;
+            }
+
+            return BitConverter.GetBytes(fValue);
+        }
     }
 }

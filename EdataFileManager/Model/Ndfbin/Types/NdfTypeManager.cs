@@ -5,8 +5,6 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using EdataFileManager.BL;
 using EdataFileManager.Model.Ndfbin.Types.AllTypes;
-using EdataFileManager.NdfBin;
-using EdataFileManager.Util;
 
 namespace EdataFileManager.Model.Ndfbin.Types
 {

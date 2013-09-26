@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Windows.Input;
 using EdataFileManager.BL;
 using EdataFileManager.Model.Ndfbin.ChangeManager;
 using EdataFileManager.Model.Ndfbin.Types;
 using EdataFileManager.Model.Ndfbin.Types.AllTypes;
 using EdataFileManager.Util;
 using EdataFileManager.ViewModel.Base;
+using EdataFileManager.ViewModel.Ndf;
 
 namespace EdataFileManager.Model.Ndfbin
 {
@@ -15,9 +17,13 @@ namespace EdataFileManager.Model.Ndfbin
         private NdfValueWrapper _value;
         private byte[] _valueData;
 
+        public ICommand DetailsCommand { get; set; }
+
         public NdfPropertyValue(NdfObject instance)
         {
             _instance = instance;
+
+            DetailsCommand = new ActionCommand(NdfObjectViewModel.DetailsCommandExecute);
         }
 
         public NdfType Type

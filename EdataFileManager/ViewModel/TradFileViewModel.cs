@@ -5,11 +5,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Data;
+using System.Windows.Input;
 using EdataFileManager.BL;
 using EdataFileManager.Model.Edata;
-using EdataFileManager.NdfBin;
-using EdataFileManager.NdfBin.Model.Trad;
+using EdataFileManager.Model.Trad;
+using EdataFileManager.Util;
 using EdataFileManager.ViewModel.Base;
+using EdataFileManager.ViewModel.Edata;
 
 namespace EdataFileManager.ViewModel
 {
@@ -20,12 +22,61 @@ namespace EdataFileManager.ViewModel
         private ObservableCollection<TradEntry> _entries;
         private ICollectionView _entriesCollectionView;
 
-        public TradFileViewModel(byte[] data, EdataContentFile contentFile)
-        {
-            var mgr = new TradManager(data);
-            Entries = mgr.Entries;
+        public TradManager Manager { get; protected set; }
 
-            TitleText = string.Format("Dictionary Viewer [{0}]", contentFile.Path);
+        public EdataFileViewModel OwnerVm { get; protected set; }
+        public EdataContentFile OwnerFile { get; protected set; }
+
+        public ICommand SaveCommand { get; protected set; }
+        public ICommand CreateHashCommand { get; protected set; }
+
+
+        public TradFileViewModel(EdataContentFile owner, EdataFileViewModel contentFile)
+        {
+            SaveCommand = new ActionCommand(SaveCommandExecute);
+            CreateHashCommand = new ActionCommand(CreateHashExecute, CreateHashCanExecute);
+
+            OwnerFile = owner;
+            OwnerVm = contentFile;
+
+            Manager = new TradManager(OwnerVm.EdataManager.GetRawData(OwnerFile));
+
+            Entries = Manager.Entries;
+
+            TitleText = string.Format("Dictionary Viewer [{0}]", OwnerFile.Path);
+        }
+
+        private bool CreateHashCanExecute()
+        {
+            var item = EntriesCollectionView.CurrentItem as TradEntry;
+
+            if (item == null || !item.UserCreated)
+                return false;
+
+            return true;
+        }
+
+        private void CreateHashExecute(object obj)
+        {
+            var item = EntriesCollectionView.CurrentItem as TradEntry;
+
+            if (item == null || !item.UserCreated)
+                return;
+            
+            item.Hash = Utils.CreateLocalisationHash(Utils.GenerateCoupon(8,new Random()));
+        }
+
+        private void SaveCommandExecute(object obj)
+        {
+            var newFile = Manager.BuildTradFile();
+
+            OwnerVm.EdataManager.ReplaceFile(OwnerFile, newFile);
+
+            OwnerVm.LoadFile(OwnerVm.LoadedFile);
+
+            var newOwen = OwnerVm.EdataManager.Files.Single(x => x.Path == OwnerFile.Path);
+
+            OwnerFile = newOwen;
         }
 
         public ObservableCollection<TradEntry> Entries

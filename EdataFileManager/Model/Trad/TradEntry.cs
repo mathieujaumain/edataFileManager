@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using EdataFileManager.Util;
+﻿using EdataFileManager.Util;
 using EdataFileManager.ViewModel.Base;
 
-namespace EdataFileManager.NdfBin.Model.Trad
+namespace EdataFileManager.Model.Trad
 {
     public class TradEntry : ViewModelBase
     {
@@ -15,6 +11,8 @@ namespace EdataFileManager.NdfBin.Model.Trad
         private uint _offsetCont;
         private uint _contLen;
         private string _content;
+
+        private bool _userCreated;
 
         public string HashView
         {
@@ -61,7 +59,18 @@ namespace EdataFileManager.NdfBin.Model.Trad
         public string Content
         {
             get { return _content; }
-            set { _content = value; OnPropertyChanged(() => Content); }
+            set
+            {
+                _content = value;
+
+                OnPropertyChanged(() => Content);
+            }
+        }
+
+        public bool UserCreated
+        {
+            get { return _userCreated; }
+            set { _userCreated = value; OnPropertyChanged(() => UserCreated); }
         }
     }
 }

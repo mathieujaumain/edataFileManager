@@ -128,7 +128,7 @@ namespace EdataFileManager.ViewModel.Edata
             if (ndf == null)
                 return;
 
-            var tradVm = new TradFileViewModel(vm.EdataManager.GetRawData(ndf), ndf);
+            var tradVm = new TradFileViewModel(ndf, vm);
 
             var view = new TradFileView() { DataContext = tradVm };
 
@@ -147,7 +147,7 @@ namespace EdataFileManager.ViewModel.Edata
             if (ndf == null)
                 return;
 
-            var detailsVm = new NdfDetailsViewModel(ndf, vm);
+            var detailsVm = new NdfEditorMainViewModel(ndf, vm);
 
             var view = new NdfbinView { DataContext = detailsVm };
 
@@ -288,7 +288,7 @@ namespace EdataFileManager.ViewModel.Edata
                     fs.Seek(0, SeekOrigin.Begin);
                     fs.Read(buffer, 0, buffer.Length);
 
-                    var detailsVm = new NdfDetailsViewModel(buffer);
+                    var detailsVm = new NdfEditorMainViewModel(buffer);
 
                     var view = new NdfbinView { DataContext = detailsVm };
 

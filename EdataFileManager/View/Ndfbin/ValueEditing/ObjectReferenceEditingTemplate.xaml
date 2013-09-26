@@ -10,7 +10,8 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Label Content="{Binding Path=Class.Name}" />
+        <!--<Label Content="{Binding Path=Class.Name}" />-->
+        <ComboBox Grid.Column="0" ItemsSource="{Binding Class.Manager.Classes}" DisplayMemberPath="Name" SelectedItem="{Binding Path=Class}"></ComboBox>
         <ComboBox Grid.Column="1" ItemsSource="{Binding Class.Instances}" DisplayMemberPath="Id" SelectedItem="{Binding Path=Instance}"></ComboBox>
     </Grid>
 </UserControl>
