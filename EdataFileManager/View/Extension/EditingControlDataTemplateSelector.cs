@@ -24,6 +24,9 @@ namespace EdataFileManager.View.Extension
 
             var wrap = propVal.Value;
 
+            if (wrap == null)
+                return null;
+
             switch (wrap.Type)
             {
                 case NdfType.Float32:

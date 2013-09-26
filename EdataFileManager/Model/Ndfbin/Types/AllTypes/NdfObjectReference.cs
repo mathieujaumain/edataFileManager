@@ -10,6 +10,7 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
     {
         private uint _instanceId;
         private bool _isDead;
+        public NdfClass _class;
 
         public NdfObjectReference(NdfClass cls, uint instance, long offset, bool isDead = false)
             : base(NdfType.ObjectReference, offset)
@@ -22,8 +23,8 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         public NdfClass Class
         {
-            get;
-            protected set;
+            get { return _class; }
+            protected set { _class = value; OnPropertyChanged("Class"); }
         }
 
         public uint InstanceId
@@ -38,12 +39,14 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
         public NdfObject Instance
         {
-            get { return Class.Instances.Single(x => x.Id == InstanceId); }
+            get { return Class.Instances.SingleOrDefault(x => x.Id == InstanceId); }
             set
             {
                 if (!Class.Instances.Contains(value))
-                    throw new ArgumentException("instance");
-                InstanceId = value.Id;
+                    InstanceId = Class.Instances.First().Id;
+                else
+                    InstanceId = value.Id;
+
                 OnPropertyChanged("Instance");
                 OnPropertyChanged("InstanceId");
             }
@@ -66,7 +69,7 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
 
             refereceData.AddRange(BitConverter.GetBytes(InstanceId));
 
-            refereceData.AddRange(_isDead ? new byte[] {0xFF, 0xFF, 0xFF, 0xFF} : BitConverter.GetBytes(Class.Id));
+            refereceData.AddRange(_isDead ? new byte[] { 0xFF, 0xFF, 0xFF, 0xFF } : BitConverter.GetBytes(Class.Id));
 
             return refereceData.ToArray();
         }

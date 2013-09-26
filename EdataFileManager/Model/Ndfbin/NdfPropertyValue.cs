@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Windows.Data;
 using System.Windows.Input;
 using EdataFileManager.BL;
 using EdataFileManager.Model.Ndfbin.ChangeManager;
 using EdataFileManager.Model.Ndfbin.Types;
 using EdataFileManager.Model.Ndfbin.Types.AllTypes;
 using EdataFileManager.Util;
+using EdataFileManager.View.Ndfbin.Viewer;
 using EdataFileManager.ViewModel.Base;
 using EdataFileManager.ViewModel.Ndf;
 
@@ -18,13 +20,58 @@ namespace EdataFileManager.Model.Ndfbin
         private byte[] _valueData;
 
         public ICommand DetailsCommand { get; set; }
+        public ICommand AddRowCommand { get; protected set; }
+        public ICommand DeleteRowCommand { get; protected set; }
 
         public NdfPropertyValue(NdfObject instance)
         {
             _instance = instance;
 
             DetailsCommand = new ActionCommand(NdfObjectViewModel.DetailsCommandExecute);
+            AddRowCommand = new ActionCommand(AddRowExecute);
+            DeleteRowCommand = new ActionCommand(DeleteRowExecute, DeleteRowCanExecute);
         }
+
+        private bool DeleteRowCanExecute()
+        {
+            var cv = CollectionViewSource.GetDefaultView(Value);
+
+            return cv != null && cv.CurrentItem != null;
+        }
+
+        private void DeleteRowExecute(object obj)
+        {
+            var cv = CollectionViewSource.GetDefaultView(Value);
+
+            if (cv == null || cv.CurrentItem == null)
+                return;
+
+            var val = cv.CurrentItem as CollectionItemValueHolder;
+
+            if (val == null)
+                return;
+
+            ((NdfCollection)Value).Remove(cv.CurrentItem);
+        }
+
+        private void AddRowExecute(object obj)
+        {
+            var cv = CollectionViewSource.GetDefaultView(Value);
+
+            if (cv == null)
+                return;
+
+            var view = new AddCollectionItemView();
+            var vm = new AddCollectionItemViewModel(Manager, view);
+
+            view.DataContext = vm;
+
+            var ret = view.ShowDialog();
+
+            if (ret.HasValue && ret.Value)
+                ((NdfCollection)Value).Add(vm.Wrapper);
+        }
+
 
         public NdfType Type
         {

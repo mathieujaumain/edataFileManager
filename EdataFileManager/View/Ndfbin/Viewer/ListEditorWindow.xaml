@@ -8,10 +8,10 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <ToolBar>
-            <Button ToolTip="Add new row" Command="{Binding Path=Value.AddRowCommand}">
+            <Button ToolTip="Add new row" Command="{Binding Path=AddRowCommand}">
                 <Image Source="{StaticResource AddRowIcon}"  />
             </Button>
-            <Button ToolTip="Delete selected row" Command="{Binding Path=Value.DeleteRowCommand}">
+            <Button ToolTip="Delete selected row" Command="{Binding Path=DeleteRowCommand}">
                 <Image Source="{StaticResource DeleteRowIcon}"  />
             </Button>
         </ToolBar>

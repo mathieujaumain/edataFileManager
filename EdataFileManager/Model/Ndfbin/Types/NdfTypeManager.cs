@@ -70,6 +70,8 @@ namespace EdataFileManager.Model.Ndfbin.Types
                     var cls = mgr.Classes.SingleOrDefault(x => x.Id == clsId); // mgr.Classes[(int)clsId]; due to deadrefs...
                     return new NdfObjectReference(cls, instId, pos, cls == null);
 
+                case NdfType.Map:
+                    return new NdfMap(new MapValueHolder(null, mgr, 0), new MapValueHolder(null, mgr, 0), pos);
                 case NdfType.Guid:
                     return new NdfGuid(new Guid(data), pos);
 

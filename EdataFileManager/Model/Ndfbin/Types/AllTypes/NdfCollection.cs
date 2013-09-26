@@ -16,29 +16,10 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
         public NdfCollection(long offset)
             : base(NdfType.List, offset)
         {
-            AddRowCommand = new ActionCommand(AddRowExecute);
-            DeleteRowCommand = new ActionCommand(DeleteRowExecute, DeleteRowCanExecute);
+
         }
 
-        private bool DeleteRowCanExecute()
-        {
-            var cv = CollectionViewSource.GetDefaultView(this);
 
-            return cv.CurrentItem != null;
-        }
-
-        private void DeleteRowExecute(object obj)
-        {
-            var cv = CollectionViewSource.GetDefaultView(this);
-
-            if (cv.CurrentItem != null)
-                Remove(cv.CurrentItem);
-        }
-
-        private void AddRowExecute(object obj)
-        {
-            //var wr = new CollectionItemValueHolder();
-        }
 
         public NdfCollection(IEnumerable<CollectionItemValueHolder> list, long offset)
             : this(offset)
@@ -53,9 +34,6 @@ namespace EdataFileManager.Model.Ndfbin.Types.AllTypes
             get { return _innerList; }
         }
 
-        public ICommand AddRowCommand { get; protected set; }
-
-        public ICommand DeleteRowCommand { get; protected set; }
 
         public override string ToString()
         {
