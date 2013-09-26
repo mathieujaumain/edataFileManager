@@ -9,6 +9,7 @@ using EdataFileManager.Model.Ndfbin;
 using EdataFileManager.Model.Ndfbin.ChangeManager;
 using EdataFileManager.Model.Ndfbin.Types;
 using EdataFileManager.Model.Ndfbin.Types.AllTypes;
+using EdataFileManager.Util;
 using NdfString = EdataFileManager.Model.Ndfbin.NdfStringReference;
 
 namespace EdataFileManager.BL
@@ -526,6 +527,10 @@ namespace EdataFileManager.BL
         public byte[] BuildNdfFile(bool compress)
         {
             var contentData = RecompileContent();
+
+            ContentData = contentData;
+
+            //Utils.SaveDebug("listaddtest", contentData);
 
             var header = new byte[] { 0x45, 0x55, 0x47, 0x30, 0x00, 0x00, 0x00, 0x00, 0x43, 0x4E, 0x44, 0x46 };
             var compressed = compress ? new byte[] { 0x80, 0x00, 0x00, 0x00 } : new byte[4];

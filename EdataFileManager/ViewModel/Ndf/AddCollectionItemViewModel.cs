@@ -38,8 +38,7 @@ namespace EdataFileManager.ViewModel.Ndf
 
         private void GetValueForType()
         {
-            Wrapper =
-                new CollectionItemValueHolder(NdfTypeManager.GetValue(new byte[NdfTypeManager.SizeofType(Type)], Type, Manager, 0), Manager, 0);
+            Wrapper = new CollectionItemValueHolder(NdfTypeManager.GetValue(new byte[NdfTypeManager.SizeofType(Type)], Type, Manager, 0), Manager, 0);
         }
 
         public List<NdfType> TypeSelection
@@ -72,6 +71,7 @@ namespace EdataFileManager.ViewModel.Ndf
         private void OkCommandExecute(object obj)
         {
             View.DialogResult = true;
+            View.Close();
         }
 
         private void SetTypeSelection()

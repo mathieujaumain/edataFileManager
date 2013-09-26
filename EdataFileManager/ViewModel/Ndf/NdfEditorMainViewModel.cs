@@ -9,6 +9,7 @@ using System.Windows.Input;
 using EdataFileManager.BL;
 using EdataFileManager.Model.Edata;
 using EdataFileManager.Model.Ndfbin;
+using EdataFileManager.Util;
 using EdataFileManager.ViewModel.Base;
 using EdataFileManager.ViewModel.Edata;
 
