@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using EdataFileManager.Model.Ndfbin;
 using EdataFileManager.Model.Ndfbin.Types;
@@ -26,14 +28,78 @@ namespace EdataFileManager.ViewModel.Ndf
 
             propVals.AddRange(obj.PropertyValues);
 
-            foreach (var property in obj.Class.Properties)
-                if (propVals.Count(x => x.Property == property) == 0)
-                    propVals.Add(new NdfPropertyValue(Object) { Property = property, Value = new NdfNull(0) });
-
             foreach (var source in propVals.OrderBy(x => x.Property.Id))
                 _propertyValues.Add(source);
 
             DetailsCommand = new ActionCommand(DetailsCommandExecute);
+            AddPropertyCommand = new ActionCommand(AddPropertyExecute, AddPropertyCanExecute);
+            RemovePropertyCommand = new ActionCommand(RemovePropertyExecute, RemovePropertyCanExecute);
+        }
+
+        private void AddPropertyExecute(object obj)
+        {
+            var cv = CollectionViewSource.GetDefaultView(PropertyValues);
+
+            var item = cv.CurrentItem as NdfPropertyValue;
+
+            if (item == null)
+                return;
+
+            var type = NdfType.Unset;
+
+            foreach (var instance in Object.Class.Instances)
+            {
+                foreach (var propertyValue in instance.PropertyValues)
+                {
+                    if (propertyValue.Property.Id == item.Property.Id)
+                        if (propertyValue.Type != NdfType.Unset)
+                            type = propertyValue.Type;
+                }
+            }
+
+            if (type == NdfType.Unset || type == NdfType.Unknown)
+                return;
+
+            item.Value = NdfTypeManager.GetValue(new byte[NdfTypeManager.SizeofType(type)], type, item.Manager, 0);
+        }
+
+        private bool AddPropertyCanExecute()
+        {
+            var cv = CollectionViewSource.GetDefaultView(PropertyValues);
+
+            var item = cv.CurrentItem as NdfPropertyValue;
+
+            if (item == null)
+                return false;
+
+            return item.Type == NdfType.Unset;
+        }
+
+        private void RemovePropertyExecute(object obj)
+        {
+            var cv = CollectionViewSource.GetDefaultView(PropertyValues);
+
+            var item = cv.CurrentItem as NdfPropertyValue;
+
+            if (item == null || item.Type == NdfType.Unset || item.Type == NdfType.Unknown)
+                return;
+
+            var result = MessageBox.Show("Do you want set this property to null?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+                item.Value = NdfTypeManager.GetValue(new byte[0], NdfType.Unset, item.Manager, 0);
+        }
+
+        private bool RemovePropertyCanExecute()
+        {
+            var cv = CollectionViewSource.GetDefaultView(PropertyValues);
+
+            var item = cv.CurrentItem as NdfPropertyValue;
+
+            if (item == null)
+                return false;
+
+            return item.Type != NdfType.Unset;
         }
 
         public uint Id
@@ -47,7 +113,9 @@ namespace EdataFileManager.ViewModel.Ndf
             get { return _propertyValues; }
         }
 
-        public ICommand DetailsCommand { get; set; }
+        public ICommand DetailsCommand { get; protected set; }
+        public ICommand AddPropertyCommand { get; protected set; }
+        public ICommand RemovePropertyCommand { get; protected set; }
 
         public static void DetailsCommandExecute(object obj)
         {

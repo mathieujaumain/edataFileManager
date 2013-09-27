@@ -35,7 +35,7 @@
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem  Header="Revert" Command="{Binding Path=.NdfbinManager.ChangeManager.RevertChange}" />
-                        <MenuItem  Header="Follow" Command="{Binding Path=NdfbinManager.ChangeManager.FollowChange}" Visibility="Hidden" /> 
+                        <MenuItem  Header="Follow" Command="{Binding Path=NdfbinManager.ChangeManager.FollowChange}" Visibility="Hidden" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
@@ -121,6 +121,12 @@
                         </Grid.ColumnDefinitions>
                         <Label VerticalAlignment="Top" >Properties</Label>
                         <ToolBar Grid.Column="2">
+                            <Button ToolTip="Add property value" Command="{Binding SelectedValue.AddPropertyCommand, ElementName=instanceGrid}">
+                                <Image Source="{StaticResource AddPropIcon}"  />
+                            </Button>
+                            <Button ToolTip="Set property to null" Command="{Binding SelectedValue.RemovePropertyCommand, ElementName=instanceGrid}">
+                                <Image Source="{StaticResource DeletePropIcon}"  />
+                            </Button>
                             <ToggleButton x:Name="filterButton">
                                 <Image Source="{StaticResource EmptyFilter}" >
                                     <Image.Style>

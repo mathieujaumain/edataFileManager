@@ -85,6 +85,9 @@ namespace EdataFileManager.Model.Ndfbin.Types
                 case NdfType.LocalisationHash:
                     return new NdfLocalisationHash(data, 0);
 
+                case NdfType.Unset:
+                    return new NdfNull(pos);
+
                 default:
                     return null;
             }

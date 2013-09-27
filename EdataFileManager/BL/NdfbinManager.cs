@@ -287,6 +287,10 @@ namespace EdataFileManager.BL
                     if (triggerBreak)
                         break;
                 }
+
+                foreach (var property in instance.Class.Properties)
+                    if (instance.PropertyValues.All(x => x.Property != property))
+                        instance.PropertyValues.Add(new NdfPropertyValue(instance) { Property = property, Value = new NdfNull(0) });
             }
             return instance;
         }
@@ -582,6 +586,9 @@ namespace EdataFileManager.BL
                 {
                     bool valid;
 
+                    if (propertyValue.Type == NdfType.Unset)
+                        continue;
+
                     var valueBytes = propertyValue.Value.GetBytes(out valid);
 
                     if (propertyValue.Value.Type == NdfType.Unset || !valid)
@@ -599,7 +606,6 @@ namespace EdataFileManager.BL
 
                 objectPart.AddRange(objSep);
             }
-
 
             return objectPart.ToArray();
         }
