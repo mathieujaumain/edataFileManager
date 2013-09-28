@@ -7,11 +7,19 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Margin="5">
+        <ToolBar>
+            <Button ToolTip="Add property value" Command="{Binding InstancesCollectionView.CurrentItem.AddPropertyCommand}">
+                <Image Source="{StaticResource AddPropIcon}"  />
+            </Button>
+            <Button ToolTip="Set property to null" Command="{Binding InstancesCollectionView.CurrentItem.RemovePropertyCommand}">
+                <Image Source="{StaticResource DeletePropIcon}"  />
+            </Button>
+            <StackPanel Orientation="Horizontal" Margin="5">
             <TextBlock Text="{Binding Path=Name}"  />
             <TextBlock Text=" : " />
             <TextBlock Text="{Binding InstancesCollectionView.CurrentItem.Id}" />
         </StackPanel>
+        </ToolBar>
         <Ndfbin:InstanceView DataContext="{Binding Path=InstancesCollectionView.CurrentItem}" Grid.Row="1" />
     </Grid>
 </Window>
